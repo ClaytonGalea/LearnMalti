@@ -4,7 +4,9 @@
     {
         public static void Seed(AppDbContext db)
         {
-            var items = db.LearningItems.ToList();
+            var items = db.LearningItems
+    .Where(x => x.WordKey == null && x.NumberForm == null)
+    .ToList();
 
             foreach (var item in items)
             {

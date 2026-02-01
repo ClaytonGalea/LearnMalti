@@ -1,0 +1,50 @@
+﻿@{
+    Layout = "~/Views/Shared/_GameLevelLayout.cshtml";
+}
+
+<title>Singular & Plural</title>
+<link rel="stylesheet" href="/css/sinplu.css" />
+
+@if (ViewBag.Step > 0 && ViewBag.TotalSteps > 0)
+{
+    <div class="level-header">
+        <h2 class="level-title">Singular & Plural</h2>
+        <div class="progress-hud">
+            Question @ViewBag.Step of @ViewBag.TotalSteps
+        </div>
+    </div>
+}
+
+<!-- BACKGROUND OBJECTS -->
+<div class="tutorial-background">
+
+    <!-- LEFT OBJECT (Singular) -->
+    <div class="flip-card left-object">
+        <div class="flip-card-inner">
+            <div class="flip-card-front">
+                <img src="/images/sinplu/sample_singular.png" />
+            </div>
+            <div class="flip-card-back">
+                <p>Wieħed ☝️</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT OBJECT (Plural) -->
+    <div class="flip-card right-object">
+        <div class="flip-card-inner">
+            <div class="flip-card-front">
+                <img src="/images/sinplu/sample_plural.png" />
+            </div>
+            <div class="flip-card-back">
+                <p>Ħafna 👀</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="sinplu-content">
+    @RenderBody()
+</div>

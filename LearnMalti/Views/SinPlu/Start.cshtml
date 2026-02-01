@@ -1,0 +1,240 @@
+﻿@{
+    Layout = "~/Views/Shared/_SinPluLayout.cshtml";
+
+    string playerCode = ViewBag.PlayerCode;
+    int step = ViewBag.Step;
+    int score = ViewBag.Score;
+    int mode = ViewBag.Mode;
+    int lives = ViewBag.Lives ?? 3;
+
+    string type = ViewBag.QuestionType;
+
+    var choices = ViewBag.Choices as List<string>;
+
+    var singular = ViewBag.Singular;
+    var plural = ViewBag.Plural;
+    string wordKey = ViewBag.WordKey;
+
+    ViewBag.HasLives = true;
+    ViewBag.Lives = lives;
+}
+
+<div class="card sinplu-card">
+
+    @* 🟦 QUIZ (Steps 1–5) *@
+    @if (type == "Quiz")
+    {
+        <h2 class="quiz-title">
+            What is the plural of the word: "@singular.MalteseText"?
+        </h2>
+        <div class="compare-row">
+
+            <div class="compare-card">
+                <img src="/images/Words/@(wordKey)_s.png" />
+            </div>
+
+            <div class="arrow-emoji">➡️</div>
+
+            <div class="compare-card">
+                <img src="/images/Words/@(wordKey)_p.png" />
+            </div>
+
+        </div>
+
+
+       
+
+        <div class="answers-row">
+            @foreach (var c in choices)
+            {
+                <button class="choice" onclick="submitAnswer('@c')">@c</button>
+            }
+        </div>
+    }
+
+    @* 🟨 INPUT (Steps 6–7) *@
+    @if (type == "Input")
+    {
+        <h2 class="quiz-title">@ViewBag.Prompt</h2>
+
+        <div class="input-image">
+            <img src="/images/Words/@(wordKey)_p.png" />
+        </div>
+
+        <div class="input-container">
+            <input id="userAnswer" class="text-input" placeholder="Type your answer here..." />
+        </div>
+
+        <button class="submit" onclick="submitInput()">Submit</button>
+    }
+
+    @* 🟥 MATCHING (Step 8) *@
+    @if (type == "Matching")
+    {
+        <h2 class="quiz-title">Match singular to plural</h2>
+
+        <div class="matching-container">
+
+            <div class="matching-column">
+                @foreach (var s in (List<string>)ViewBag.LeftSide)
+                {
+                    <div class="match-item maltese" data-value="@s">@s</div>
+                }
+            </div>
+
+            <div class="matching-column">
+                @foreach (var p in (List<string>)ViewBag.RightSide)
+                {
+                    <div class="match-item english" data-value="@p">@p</div>
+                }
+            </div>
+
+        </div>
+
+        <button class="submit" onclick="finishMatching()">Finish</button>
+    }
+
+</div>
+
+<script>
+    const questionType = "@type";
+
+    function normalizeText(text) {
+        return text
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .trim();
+    }
+
+    function submitAnswer(answer) {
+       const correct = "@ViewBag.CorrectAnswer";
+
+        let step = @step;
+        let score = @score;
+        let mode = @mode;
+        let lives = @lives;
+        let playerCode = "@playerCode";
+
+        if (normalizeText(answer) === normalizeText(correct)) {
+            score++;
+
+            if (mode === 1) {
+                fetch(`/api/playerapi/addxp?playerCode=${playerCode}&amount=30`, {
+                    method: "POST"
+                });
+            }
+
+            Swal.fire({
+                title: "Correct!",
+                text: mode === 1 ? "+30 XP" : "Good job!",
+                icon: "success",
+                timer: 900,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.href =
+                    `/SinPlu/Start?playerCode=${playerCode}&step=${step + 1}&score=${score}&mode=${mode}&lives=${lives}`;
+            });
+            return;
+        }
+
+        lives--;
+
+        if (lives <= 0) {
+            window.location.href =
+                `/SinPlu/Completed?playerCode=${playerCode}&mode=${mode}&failed=true`;
+            return;
+        }
+
+        Swal.fire({
+            title: "Try again!",
+            text: `Lives left: ${lives}`,
+            icon: "error",
+            timer: 800,
+            showConfirmButton: false
+        }).then(() => {
+            window.location.href =
+                `/SinPlu/Start?playerCode=${playerCode}&step=${step}&score=${score}&mode=${mode}&lives=${lives}`;
+        });
+    }
+
+    function submitInput() {
+        const answer = document.getElementById("userAnswer").value;
+        submitAnswer(answer);
+    }
+
+    /* ===== MATCHING LOGIC ===== */
+    if (questionType === "Matching") {
+
+        const correctPairs = @Html.Raw(ViewBag.CorrectPairsJson ?? "null");
+        let selectedLeft = null;
+        let matchedCount = 0;
+
+        document.querySelectorAll(".match-item.maltese").forEach(item => {
+            item.addEventListener("click", () => {
+                if (item.classList.contains("matched")) return;
+
+                document.querySelectorAll(".match-item.maltese")
+                    .forEach(i => i.classList.remove("selected"));
+
+                item.classList.add("selected");
+                selectedLeft = item;
+            });
+        });
+
+        document.querySelectorAll(".match-item.english").forEach(item => {
+            item.addEventListener("click", () => {
+                if (!selectedLeft || item.classList.contains("matched")) return;
+
+                const left = normalizeText(selectedLeft.dataset.value);
+                const right = normalizeText(item.dataset.value);
+
+                const isCorrect = correctPairs.some(p =>
+                    normalizeText(p.Singular) === left &&
+                    normalizeText(p.Plural) === right
+                );
+
+                    if (isCorrect) {
+
+                    // 🧼 CLEAR WRONG STATE FIRST
+                    selectedLeft.classList.remove("wrong");
+                    item.classList.remove("wrong");
+
+                    // ✅ MARK AS MATCHED
+                    selectedLeft.classList.add("matched");
+                    item.classList.add("matched");
+
+                    matchedCount++;
+                } else {
+                    selectedLeft.classList.add("wrong");
+                    item.classList.add("wrong");
+
+                    setTimeout(() => {
+                        selectedLeft.classList.remove("wrong", "selected");
+                        item.classList.remove("wrong");
+                    }, 300);
+                }
+
+                selectedLeft.classList.remove("selected");
+                selectedLeft = null;
+            });
+        });
+
+        window.finishMatching = function () {
+            if (matchedCount < correctPairs.length) {
+                Swal.fire("Finish all matches first!");
+                return;
+            }
+
+            Swal.fire({
+                title: "Excellent!",
+                icon: "success",
+                timer: 1000,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.href =
+                    `/SinPlu/Completed?playerCode=@playerCode&mode=@mode`;
+            });
+        };
+    }
+</script>
