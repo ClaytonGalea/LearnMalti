@@ -1,0 +1,46 @@
+﻿@{
+    Layout = "~/Views/Shared/_GameLevelLayout.cshtml";
+}
+
+<title>Colors</title>
+<link rel="stylesheet" href="/css/color.css" />
+
+@if (ViewBag.Step > 0 && ViewBag.TotalSteps > 0)
+{
+    <div class="level-header">
+        <h2 class="level-title">Colors</h2>
+        <div class="progress-hud">
+            Question @ViewBag.Step of @ViewBag.TotalSteps
+        </div>
+    </div>
+}
+
+<div class="tutorial-background colors-bg">
+
+    <!-- LEFT COLORS -->
+    <div class="colors-column">
+        <div class="color-card red"><span>Aħmar</span></div>
+        <div class="color-card blue"><span>Blu</span></div>
+        <div class="color-card yellow"><span>Isfar</span></div>
+        <div class="color-card green"><span>Aħdar</span></div>
+        <div class="color-card black"><span>Iswed</span></div>
+    </div>
+
+    <!-- CENTER SPACER (IMPORTANT) -->
+    <div class="colors-spacer"></div>
+
+    <!-- RIGHT COLORS -->
+    <div class="colors-column">
+        <div class="color-card white"><span>Abjad</span></div>
+        <div class="color-card orange"><span>Oranġjo</span></div>
+        <div class="color-card purple"><span>Vjola</span></div>
+        <div class="color-card pink"><span>Roża</span></div>
+        <div class="color-card brown"><span>Kannella</span></div>
+    </div>
+
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="color-content">
+    @RenderBody()
+</div>

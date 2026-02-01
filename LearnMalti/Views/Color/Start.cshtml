@@ -1,0 +1,259 @@
+﻿@model LearnMalti.Models.LearningItem
+
+@{
+    Layout = "~/Views/Shared/_ColorLayout.cshtml";
+
+    string playerCode = ViewBag.PlayerCode;
+    int step = ViewBag.Step;
+    int score = ViewBag.Score;
+    int mode = ViewBag.Mode;
+    int lives = ViewBag.Lives ?? 3;
+
+    string type = ViewBag.QuestionType;
+    var choices = ViewBag.Choices as List<string>;
+
+    ViewBag.HasLives = true;
+    ViewBag.Lives = lives;
+
+    string pairsJson = type == "Matching" && ViewBag.Pairs != null
+    ? System.Text.Json.JsonSerializer.Serialize<object>(ViewBag.Pairs)
+    : "null";
+
+
+}
+
+<div class="card">
+
+    @* 🟦 IMAGE QUIZ (steps 1–2) *@
+    @if (type == "ImageQuiz")
+    {
+        <h2 class="quiz-title">@Model.EnglishText</h2>
+
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <img src="@Model.ImageUrl" class="image" />
+        }
+
+        @foreach (var c in choices)
+        {
+            <button class="choice" onclick="submitAnswer('@c')">@c</button>
+        }
+    }
+
+    @* 🟨 COLOR MIXING (steps 3–4) *@
+    @if (type == "Mixing")
+    {
+        <h2 class="quiz-title">@ViewBag.Question</h2>
+
+        @foreach (var c in choices)
+        {
+            <button class="choice" onclick="submitAnswer('@c')">@c</button>
+        }
+    }
+
+    @* 🟩 CONTEXT IMAGE QUESTIONS (steps 5–9) *@
+    @if (type == "Context")
+    {
+        <div class="context-image-wrapper">
+            <img src="@ViewBag.ContextImage"
+                 alt="Context image" />
+        </div>
+
+
+        <p class="sentence">@ViewBag.ContextText</p>
+
+        <div class="answer-row">
+            <input id="fillInput"
+                   class="color-input"
+                   placeholder="There the word in Maltese" />
+
+            <button class="color-submit"
+                    onclick="submitAnswer(document.getElementById('fillInput').value)">
+                Check
+            </button>
+        </div>
+    }
+
+    @* 🟥 MATCHING (Question 10) *@
+    @if (type == "Matching")
+    {
+        <h3 class="sentence">Match the Maltese colors to their meanings</h3>
+
+        <div class="matching-container">
+            <div class="matching-column">
+                @foreach (var m in (List<string>)ViewBag.Maltese)
+                {
+                    <div class="match-item maltese" data-value="@m">@m</div>
+                }
+            </div>
+
+            <div class="matching-column">
+                @foreach (var e in (List<string>)ViewBag.English)
+                {
+                    <div class="match-item english" data-value="@e">@e</div>
+                }
+            </div>
+        </div>
+
+        <button class="color-submit" onclick="finishMatching()">Submit</button>
+    }
+
+<script>
+    const questionType = "@type";
+
+    function normalizeText(text) {
+        return text
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .trim();
+    }
+
+    function submitAnswer(answer) {
+
+        const correct = @Html.Raw(
+            System.Text.Json.JsonSerializer.Serialize(
+                ViewBag.CorrectAnswer ?? Model.MalteseText
+            )
+        );
+
+        let step = @step;
+        let score = @score;
+        let mode = @mode;
+        let lives = @lives;
+        let playerCode = "@playerCode";
+
+        // ✅ CORRECT
+        if (normalizeText(answer) === normalizeText(correct)) {
+            score++;
+
+            if (mode === 1) {
+                fetch(`/api/playerapi/addxp?playerCode=${playerCode}&amount=20`, {
+                    method: "POST"
+                });
+            }
+
+            Swal.fire({
+                title: "Correct!",
+                text: mode === 1 ? "+20 XP" : "Good job!",
+                icon: "success",
+                timer: 900,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.href =
+                    `/Color/Start?playerCode=${playerCode}&step=${step + 1}&score=${score}&mode=${mode}&lives=${lives}`;
+            });
+
+            return;
+        }
+
+        // ❌ WRONG
+        if (mode === 1) {
+            lives--;
+
+            if (lives <= 0) {
+                window.location.href =
+                    `/Color/Completed?playerCode=${playerCode}&mode=${mode}&failed=true`;
+                return;
+            }
+
+            Swal.fire({
+                title: "Wrong!",
+                text: `Lives left: ${lives}`,
+                icon: "error",
+                timer: 900,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.href =
+                    `/Color/Start?playerCode=${playerCode}&step=${step}&score=${score}&mode=${mode}&lives=${lives}`;
+            });
+        }
+        else {
+            Swal.fire({
+                title: "Try again!",
+                icon: "error",
+                timer: 700,
+                showConfirmButton: false
+            });
+        }
+    }
+
+        if (questionType === "Matching") {
+
+            const correctPairs = @Html.Raw(
+            System.Text.Json.JsonSerializer.Serialize<object>(ViewBag.Pairs)
+        );
+
+
+            let selectedMaltese = null;
+            let matchedCount = 0;
+
+            document.querySelectorAll(".match-item.maltese").forEach(item => {
+                item.addEventListener("click", () => {
+                    if (item.classList.contains("matched")) return;
+
+                    document.querySelectorAll(".match-item.maltese")
+                        .forEach(i => i.classList.remove("selected"));
+
+                    item.classList.add("selected");
+                    selectedMaltese = item;
+                });
+            });
+
+            document.querySelectorAll(".match-item.english").forEach(item => {
+                item.addEventListener("click", () => {
+                    if (!selectedMaltese || item.classList.contains("matched")) return;
+
+                    const maltese = normalizeText(selectedMaltese.dataset.value);
+                    const english = normalizeText(item.dataset.value);
+
+                    const isCorrect = correctPairs.some(p =>
+                        normalizeText(p.Maltese) === maltese &&
+                        normalizeText(p.English) === english
+                    );
+
+                    if (isCorrect) {
+                            selectedMaltese.classList.remove("wrong", "selected");
+                            item.classList.remove("wrong");
+
+                            // ✅ mark as matched
+                            selectedMaltese.classList.add("matched");
+                            item.classList.add("matched");
+
+                            matchedCount++;
+                    } else {
+                        selectedMaltese.classList.add("wrong");
+                        item.classList.add("wrong");
+
+                        setTimeout(() => {
+                            selectedMaltese.classList.remove("wrong", "selected");
+                            item.classList.remove("wrong");
+                        }, 400);
+                    }
+
+                    selectedMaltese.classList.remove("selected");
+                    selectedMaltese = null;
+                });
+            });
+
+            window.finishMatching = function () {
+                if (matchedCount < correctPairs.length) {
+                    Swal.fire("Finish all matches first!");
+                    return;
+                }
+
+                Swal.fire({
+                    title: "Excellent!",
+                    icon: "success",
+                    timer: 1000,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href =
+                        `/Color/Completed?playerCode=@playerCode&mode=@mode`;
+                });
+            };
+        }
+
+
+
+</script>

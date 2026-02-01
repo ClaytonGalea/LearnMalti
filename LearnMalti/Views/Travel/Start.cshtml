@@ -1,0 +1,144 @@
+﻿@model LearnMalti.Models.LearningItem
+@{
+    Layout = "~/Views/Shared/_TravelLayout.cshtml";
+
+    string playerCode = ViewBag.PlayerCode;
+    int step = ViewBag.Step;
+    int score = ViewBag.Score;
+    int mode = ViewBag.Mode;
+    string type = ViewBag.QuestionType;
+    var choices = ViewBag.Choices as List<string>;
+    string sentence = ViewBag.Sentence;
+    int lives = ViewBag.Lives ?? 3;
+    ViewBag.HasLives = true;
+    ViewBag.Lives = lives;
+
+}
+
+<div class="card">
+
+    @if (type == "Quiz")
+    {
+        <h2 class="quiz-title">@Model.EnglishText</h2>
+
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <img src="@Model.ImageUrl"
+                 class="image quiz-image"
+                 alt="@Model.EnglishText" />
+        }
+
+        @foreach (var c in choices)
+        {
+            <button class="choice" onclick="submitAnswer('@c')">@c</button>
+        }
+    }
+
+
+    @if (type == "ImageInput")
+    {
+        <img src="@Model.ImageUrl" class="image" />
+
+        <div class="answer-row">
+            <input id="fillInput"
+                   class="input"
+                   placeholder="Ikteb il-kelma bil-Malti" />
+
+            <button class="submit"
+                    onclick="submitAnswer(document.getElementById('fillInput').value)">
+                Submit
+            </button>
+        </div>
+    }
+
+    @if (type == "Sentence")
+    {
+        <p class="english-sentence">@ViewBag.EnglishSentence</p>
+
+        <h3 class="sentence">@ViewBag.Sentence</h3>
+
+        @foreach (var c in (List<string>)ViewBag.Choices)
+        {
+            <button class="choice" onclick="submitAnswer('@c')">@c</button>
+        }
+    }
+
+
+</div>
+
+<script>
+    function normalize(text) {
+        return text
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "");
+    }
+
+    function submitAnswer(answer) {
+        const correct = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            ViewBag.CorrectAnswer ?? Model.MalteseText
+        ));
+
+        let step = @step;
+        let score = @score;
+        let mode = @mode;
+        let lives = @lives;
+        let playerCode = "@playerCode";
+
+        // ✅ CORRECT ANSWER
+        if (normalize(answer.trim()) === normalize(correct)) {
+            score++;
+
+            if (mode === 1) {
+                fetch(`/api/playerapi/addxp?playerCode=${playerCode}&amount=20`, {
+                    method: "POST"
+                });
+            }
+
+            Swal.fire({
+                title: "Correct!",
+                text: mode === 1 ? "+20 XP" : "Good job!",
+                icon: "success",
+                timer: 900,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.href =
+                    `/Travel/Start?playerCode=${playerCode}&step=${step + 1}&score=${score}&mode=${mode}&lives=${lives}`;
+            });
+
+            return;
+        }
+
+
+        // ❌ WRONG ANSWER
+        if (mode === 1) {
+            lives--;
+
+                if (lives <= 0) {
+                     window.location.href = `/Travel/Completed?playerCode=${playerCode}&mode=${mode}&failed=true`;
+                     return;
+        }
+
+            Swal.fire({
+                title: "Wrong!",
+                text: `Lives left: ${lives}`,
+                icon: "error",
+                timer: 900,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.href =
+                    `/Travel/Start?playerCode=${playerCode}&step=${step}&score=${score}&mode=${mode}&lives=${lives}`;
+            });
+
+        } else {
+            // 🟢 PRACTICE MODE → unlimited attempts
+            Swal.fire({
+                title: "Try again!",
+                icon: "error",
+                timer: 800,
+                showConfirmButton: false
+            });
+        }
+    }
+</script>
+

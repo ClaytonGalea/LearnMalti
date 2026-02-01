@@ -1,0 +1,169 @@
+﻿@{
+    Layout = null;
+    ViewData["Title"] = "Select Mode";
+}
+
+<div class="mode-container">
+
+    <div class="mode-box">
+
+        <h1 class="mode-title">🎓 Choose Your Year Level 🎓</h1>
+        <p class="mode-subtitle">Pick your level to begin learning Malti!</p>
+
+        <div class="mode-options">
+
+            <!-- YEAR 1 → Gamified -->
+            <div class="mode-card">
+                <p class="mode-desc">Fun, interactive, game-based learning!</p>
+                <br />
+                <button class="mode-btn blue" onclick="selectMode(1, this)">🎮 Gamified</button>
+            </div>
+
+            <!-- YEAR 2 → Non-Gamified -->
+            <div class="mode-card">
+                <p class="mode-desc">Straightforward learning without the game features.</p>
+
+                <button class="mode-btn purple" onclick="selectMode(0, this)">📚 Non-Gamified</button>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    async function selectMode(mode, btn) {
+
+         // Disable button immediately
+        btn.disabled = true;
+        btn.innerText = "Loading...";
+
+       try {
+            const response = await fetch(`/api/playerapi/create?mode=${mode}`, {
+                method: "POST"
+            });
+
+            const data = await response.json();
+
+            // Redirect to game page
+            window.location.href = `/Menu/Game?playerCode=${data.playerCode}&mode=${mode}`;
+        }
+        catch (err) {
+            console.error(err);
+            btn.disabled = false;
+            btn.innerText = (mode === 1) ? "🎮 Gamified" : "📚 Non-Gamified";
+        }
+    }
+</script>
+
+<style>
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+    }
+    /* Full-screen background */
+    .mode-container {
+        height: 100vh;
+        width: 100vw;
+        background: linear-gradient(180deg, #A5D6A7 0%, #C8E6C9 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "Comic Sans MS", "Poppins", sans-serif;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+    }
+
+    .mode-box {
+        background: white;
+        padding: 40px;
+        border-radius: 30px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        width: 75%;
+        max-width: 1000px;
+        animation: fadeIn 1s ease-out;
+    }
+
+    .mode-title {
+        font-size: 48px;
+        margin-bottom: 10px;
+    }
+
+    .mode-subtitle {
+        font-size: 20px;
+        margin-bottom: 40px;
+        color: #444;
+    }
+
+    .mode-options {
+        display: flex;
+        justify-content: space-around;
+        gap: 40px;
+        flex-wrap: wrap;
+    }
+
+    .mode-card {
+        background: #FAFAFA;
+        padding: 30px;
+        border-radius: 25px;
+        width: 350px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: transform .2s ease;
+    }
+
+        .mode-card:hover {
+            transform: scale(1.05);
+        }
+
+    .mode-header {
+        font-size: 36px;
+        margin-bottom: 10px;
+    }
+
+    .mode-desc {
+        color: #666;
+        font-size: 18px;
+        margin-bottom: 25px;
+    }
+
+    .mode-btn {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        border-radius: 15px;
+        font-size: 24px;
+        font-weight: bold;
+        border: none;
+        color: white;
+        cursor: pointer;
+        transition: transform .2s ease, background-color .2s ease;
+    }
+
+        .mode-btn:hover {
+            transform: scale(1.05);
+        }
+
+    .blue {
+        background-color: #42A5F5;
+    }
+
+        .blue:hover {
+            background-color: #1E88E5;
+        }
+
+    .purple {
+        background-color: #AB47BC;
+    }
+
+        .purple:hover {
+            background-color: #8E24AA;
+        }
+       }
+
+    }
+</style>

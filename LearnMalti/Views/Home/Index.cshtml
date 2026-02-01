@@ -1,0 +1,80 @@
+﻿@{
+    Layout = null;
+    ViewData["Title"] = "Learn Maltese";
+}
+
+<div class="landing-container">
+
+    <div class="landing-box">
+        <h1 class="landing-title">🌞Learn Maltese🌞</h1>
+
+        <p class="landing-subtitle">
+            Click <strong>Start Game</strong> to begin your journey!
+        </p>
+
+        <a class="start-btn" href="/Menu/SelectMode">
+            🎮 Start Game
+        </a>
+    </div>
+
+</div>
+
+<style>
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    /* Full-screen background */
+    .landing-container {
+        height: 100vh;
+        width: 100%;
+        background: linear-gradient(180deg, #A5D6A7 0%, #C8E6C9 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "Comic Sans MS", "Poppins", sans-serif;
+        text-align: center;
+    }
+
+    /* Main white box */
+    .landing-box {
+        background: white;
+        padding: 50px;
+        border-radius: 30px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        width: 500px;
+        animation: fadeIn 1s ease-out;
+    }
+
+    .landing-title {
+        font-size: 50px;
+        margin-bottom: 10px;
+    }
+
+    .landing-subtitle {
+        font-size: 22px;
+        margin-bottom: 30px;
+        color: #555;
+    }
+
+    .start-btn {
+        display: inline-block;
+        font-size: 26px;
+        padding: 15px 30px;
+        background-color: #42A5F5;
+        color: white;
+        border-radius: 15px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+            background-color: #1E88E5;
+        }}
+</style>

@@ -1,0 +1,312 @@
+﻿@{
+    Layout = null;
+    var player = ViewBag.Player;
+    ViewData["Title"] = "Game Hub";
+    string playerCode = Context.Request.Query["playerCode"];
+    int mode = int.Parse(Context.Request.Query["mode"]); // 0 = non-gamified, 1 = gamified
+}
+
+<div class="game-container">
+
+    <!-- LEFT SIDEBAR -->
+    <div class="sidebar">
+
+        <h2 class="sidebar-title">👤 Player</h2>
+        <p class="player-id">ID: @playerCode</p>
+        @if (mode == 1)
+        {
+            <div class="xp-box">
+                <h3>⭐ XP</h3>
+                <div class="xp-bar">
+                    @{
+                        int xpForNextLevel = 100; // adjust if you want scaling
+                        double percent = ((double)player.CurrentXp / xpForNextLevel) * 100;
+                    }
+                    <div class="xp-fill" style="width: @percent%;"></div>
+                </div>
+                <p class="level">Level @player.CurrentLevel</p>
+            </div>
+            <div class="badges-box">
+                <h3>🏆 Badges</h3>
+
+                <div class="badges">
+                    @if (ViewBag.Badges != null && ViewBag.Badges.Count > 0)
+                    {
+                        foreach (var badge in ViewBag.Badges)
+                        {
+                            <span class="badge-icon" title="@badge.Name">
+                                @badge.IconKey
+                            </span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="no-badges">No badges yet</span>
+                    }
+                </div>
+            </div>
+
+
+            <div class="leaderboard-box">
+                <h3>🏅 Leaderboard</h3>
+                <div id="leaderboard">
+                    <p>Loading...</p>
+                </div>
+            </div>
+
+        }
+
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+
+        <h1 class="main-title">🌈 Learn Maltese Adventure</h1>
+
+        <div class="section">
+
+            <h2 class="section-title">📘 Tutorial Level</h2>
+            <button class="section-btn" onclick="window.location.href='/Tutorial/Start?playerCode=@player.PlayerCode&mode=@mode'">
+                Start Tutorial
+            </button>
+
+
+        </div>
+
+        <div class="section">
+
+            <h2 class="section-title">🍎 Vocabulary Levels</h2>
+
+            <div class="level-row">
+                <button class="level-btn" onclick="window.location.href='/FoodDrink/Start?playerCode=@player.PlayerCode&mode=@mode'">🥪 Food & Drink</button>
+                <button class="level-btn" onclick="window.location.href='/Travel/Start?playerCode=@player.PlayerCode&mode=@mode'">✈ Travel</button>
+                <button class="level-btn" onclick="window.location.href='/Greeting/Start?playerCode=@player.PlayerCode&mode=@mode'">👋 Greetings</button>
+                <button class="level-btn" onclick="window.location.href='/Color/Start?playerCode=@player.PlayerCode&mode=@mode'">🎨 Colors</button>
+            </div>
+
+        </div>
+
+        <div class="section">
+
+            <h2 class="section-title">✏ Grammar Levels</h2>
+
+            <div class="level-row">
+                <button class="level-btn">Fill-in-the-Blank</button>
+                <button class="level-btn">Verb Conjugations</button>
+                <button class="level-btn">Build-a-Sentence</button>
+            </div>
+
+        </div>
+
+        <div class="section">
+
+                <h2 class="section-title">🎮 Mini-Games</h2>
+
+                <div class="level-row">
+                    <button class="level-btn">⏱ Timed Quiz (60s)</button>
+                    <button class="level-btn">📦 Collect-the-Word</button>
+                </div>
+
+            </div>
+
+            <div class="section">
+
+            <h2 class="section-title">👑 Boss Challenge</h2>
+            <button class="section-btn boss-btn">Start Boss Level</button>
+
+        </div>
+       
+
+    </div>
+
+</div>
+
+<style>
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+    }
+    .game-container {
+        display: flex;
+        height: 100vh;
+        width: 100vw;
+        background: linear-gradient(180deg, #E0F7FA, #B2EBF2);
+        font-family: "Comic Sans MS", "Poppins", sans-serif;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+        width: 260px;
+        background: #ffffffcc;
+        backdrop-filter: blur(5px);
+        padding: 25px;
+        border-right: 3px solid #b0bec5;
+    }
+
+    .sidebar-title {
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+
+    .player-id {
+        color: #555;
+        margin-bottom: 25px;
+    }
+
+    .xp-box {
+        padding-top: 18px;
+        margin-top: 12px;
+        margin-bottom: 30px;
+        border-top: 1px solid #e0e0e0;
+    }
+
+    
+    .badges-box,
+    .leaderboard-box {
+        padding-top: 18px;
+        margin-top: 12px;
+        border-top: 1px solid #e0e0e0; /* ⬅ separator line */
+    }
+
+    .xp-bar {
+        width: 100%;
+        height: 15px;
+        background: #eeeeee;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 5px;
+    }
+
+    .xp-fill {
+        height: 100%;
+        background-color: #42A5F5;
+    }
+
+    .level {
+        font-weight: bold;
+        color: #1976D2;
+    }
+
+    .badges-box {
+        margin-bottom: 30px;
+    }
+
+    .badges {
+        display: flex;
+        gap: 10px;
+    }
+
+    .badge-icon {
+        font-size: 28px;
+    }
+
+    /* MAIN CONTENT */
+    .main-content {
+        flex: 1;
+        padding: 40px;
+        overflow-y: auto;
+    }
+
+    .main-title {
+        font-size: 46px;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .section {
+        margin-bottom: 40px;
+        background: white;
+        padding: 25px;
+        border-radius: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .section-title {
+        font-size: 30px;
+        margin-bottom: 20px;
+    }
+
+    .section-btn, .level-btn, .boss-btn {
+        padding: 15px 25px;
+        font-size: 22px;
+        border-radius: 15px;
+        background-color: #42A5F5;
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin: 10px;
+    }
+
+        .section-btn:hover, .level-btn:hover {
+            transform: scale(1.05);
+            background-color: #1E88E5;
+        }
+
+    .boss-btn {
+        background: #E53935;
+    }
+
+        .boss-btn:hover {
+            background: #C62828;
+        }
+
+    .level-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+
+</style>
+
+<script>
+    async function addXp() {
+        const url = `/api/playerapi/addxp?playerCode=@player.PlayerCode&amount=20`;
+
+        const response = await fetch(url, { method: "POST" });
+        const result = await response.json();
+
+        console.log("XP updated:", result);
+
+        // Reload to show new XP bar
+        location.reload();
+     }
+        
+</script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch("/api/playerapi/leaderboard")
+            .then(res => res.json())
+            .then(players => {
+                const board = document.getElementById("leaderboard");
+
+                if (players.length === 0) {
+                    board.innerHTML = "<p>No players yet.</p>";
+                    return;
+                }
+
+                let html = "<ol class='leaderboard-list'>";
+
+                players.forEach(p => {
+                    html += `
+                        <li>
+                            <strong>${p.playerCode}</strong>
+                            <span>Lvl ${p.currentLevel}</span>
+                        </li>`;
+                });
+
+                html += "</ol>";
+
+                board.innerHTML = html;
+            })
+            .catch(err => {
+                document.getElementById("leaderboard").innerHTML =
+                    "<p>Error loading leaderboard.</p>";
+            });
+    });
+</script>

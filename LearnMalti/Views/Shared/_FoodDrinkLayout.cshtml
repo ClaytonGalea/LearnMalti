@@ -1,0 +1,43 @@
+﻿@{
+    Layout = "~/Views/Shared/_GameLevelLayout.cshtml";
+}
+<title>Food and Drinks</title>
+<link rel="stylesheet" href="/css/fooddrink.css" />
+
+@if (ViewBag.Step > 0 && ViewBag.TotalSteps > 0)
+{
+    <div class="level-header">
+        <h2 class="level-title">Food & Drink</h2>
+        <div class="progress-hud">
+            Question @ViewBag.Step of @ViewBag.TotalSteps
+        </div>
+    </div>
+}
+
+<div class="tutorial-background">
+    <div class="flip-card tree">
+        <div class="flip-card-inner">
+            <div class="flip-card-front">
+                <img src="/images/words/fish.png" />
+            </div>
+            <div class="flip-card-back">
+                <p>Ħuta 🐟</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flip-card bird">
+        <div class="flip-card-inner">
+            <div class="flip-card-front">
+                <img src="/images/words/tomato.png" />
+            </div>
+            <div class="flip-card-back">
+                <p>Tadam 🍅</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="fooddrink-content">
+    @RenderBody()
+</div>

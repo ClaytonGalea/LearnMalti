@@ -1,0 +1,63 @@
+﻿@{
+    Layout = ViewBag.Layout;
+
+    string playerCode = ViewBag.PlayerCode;
+    int mode = ViewBag.Mode;
+
+    bool timeRanOut = ViewBag.TimeUp == true;
+    bool failed = ViewBag.Failed == true;
+
+    string title = ViewBag.Title;
+    string badgeText = ViewBag.BadgeText;
+    string retryUrl = ViewBag.RetryUrl;
+    bool showFeedback = ViewBag.ShowFeedback == true;
+}
+
+<div class="completion-wrapper">
+    <div class="completion-card">
+
+        @if (timeRanOut)
+        {
+            <h1 class="completion-title lost">⏳ Time's Up!</h1>
+            <p class="completion-message">Unlucky! You ran out of time.</p>
+
+            <button class="retry-btn"
+                    onclick="window.location.href='@retryUrl'">
+                🔄 Try Again
+            </button>
+        }
+        else if (failed){
+            <h1 class="completion-title lost">💔 No Lives Left!</h1>
+            <p class="completion-message">
+                You’ve used all your attempts. Give it another try!
+            </p>
+
+            @if (ViewBag.RetryUrl != null)
+            {
+                <button class="retry-btn"
+                        onclick="window.location.href='@ViewBag.RetryUrl'">
+                    🔄 Try Again
+                </button>
+            }
+        }
+        else
+        {
+            <h1 class="completion-title win">🎉 @title</h1>
+            <p class="completion-message">@badgeText</p>
+
+            @if (showFeedback)
+            {
+                <button class="feedback-btn"
+                        onclick="window.location.href='/Menu/Feedback?playerCode=@playerCode'">
+                    📝 Give Feedback
+                </button>
+            }
+
+            <button class="menu-btn"
+                    onclick="window.location.href='/Menu/Game?playerCode=@playerCode&mode=@mode'">
+                🏠 Back to Menu
+            </button>
+        }
+
+    </div>
+</div>

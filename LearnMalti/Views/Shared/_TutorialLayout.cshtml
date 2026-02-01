@@ -1,0 +1,154 @@
+﻿@{
+    Layout = "~/Views/Shared/_GameLevelLayout.cshtml";
+}
+@{
+    string playerCode = ViewBag.PlayerCode;
+    int mode = ViewBag.Mode;
+    int step = ViewBag.Step ?? 0;
+    int total = ViewBag.TotalSteps ?? 0;
+    string title = ViewBag.Title ?? "Tutorial";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@title</title>
+    <link rel="stylesheet" href="/css/tutorial.css" />
+</head>
+<body>
+    <audio id="birdSound" preload="auto"></audio>
+
+    <div class="level-header">
+        <h2 class="level-title">@title</h2>
+        <div class="progress-hud">
+            Question @step of @total
+        </div>
+    </div>
+
+
+    <!-- BACKGROUND OBJECTS -->
+    <div class="tutorial-background">
+        <div class="flip-card tree">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <img src="/images/tree.png" />
+                </div>
+                <div class="flip-card-back">
+                    <p>Sigra 🌳</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flip-card bird" data-sound="/Sounds/BirdSound.mp3">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <img src="/images/bird.png" />
+                </div>
+                <div class="flip-card-back">
+                    <p>Ghasfur 🐦</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="tutorial-content">
+        @RenderBody()
+    </div>
+
+    <!-- TIMER SCRIPT -->
+    <script>
+        function startTimer(seconds, onFinish) {
+            let time = seconds;
+            const el = document.getElementById("timerText");
+
+            if (!el) return;
+            el.innerText = time;
+
+            const interval = setInterval(() => {
+                time--;
+                el.innerText = time;
+
+                if (time <= 0) {
+                    clearInterval(interval);
+                    onFinish();
+                }
+            }, 1000);
+        }
+    </script>
+
+    @if (mode == 1)
+    {
+        <script>
+            startTimer(20, () => {
+                window.location.href =
+                     "/Tutorial/Completed?playerCode=@playerCode&total=@total&mode=@mode&timeUp=true";
+            });
+        </script>
+
+        <script>
+            // Unlock audio after first interaction
+            document.addEventListener('click', () => {
+                const audio = document.getElementById('birdSound');
+                audio.play().catch(() => {});
+                audio.pause();
+            }, { once: true });
+        </script>
+
+        <script>
+            let audioUnlocked = false;
+            const audio = document.getElementById('birdSound');
+
+            document.addEventListener('click', () => {
+                if (audioUnlocked) return;
+
+                audio.src = "/Sounds/BirdSound.mp3";
+                audio.volume = 0;
+                audio.play().then(() => {
+                    audio.pause();
+                    audio.currentTime = 0;
+                    audio.volume = 0.4;
+                    audioUnlocked = true;
+                    console.log("🔓 Audio unlocked");
+                }).catch(err => {
+                    console.error("Audio unlock failed:", err);
+                });
+            }, { once: true });
+        </script>
+
+
+        <script>
+            document.querySelectorAll('.flip-card').forEach(card => {
+                let played = false;
+
+                card.addEventListener('mouseenter', () => {
+                    if (!audioUnlocked || played) return;
+
+                    const soundSrc = card.dataset.sound;
+                    if (!soundSrc) return;
+
+                    const audio = document.getElementById('birdSound');
+
+                    if (audio.src !== location.origin + soundSrc) {
+                        audio.src = soundSrc;
+                    }
+
+                    audio.currentTime = 0;
+                    audio.play().catch(err => {
+                        console.warn("Sound blocked:", err);
+                    });
+
+                    played = true;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    played = false;
+                });
+            });
+        </script>
+
+    }
+
+
+</body>
+</html>

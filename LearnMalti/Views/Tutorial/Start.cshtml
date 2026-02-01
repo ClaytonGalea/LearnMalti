@@ -1,0 +1,68 @@
+﻿@model LearnMalti.Models.LearningItem
+
+@{
+    Layout = "~/Views/Shared/_TutorialLayout.cshtml";
+}
+<div class="quiz-card">
+
+    <h1 class="english-word hover-word"
+        data-translation="@Model.MalteseText">
+        @Model.EnglishText
+    </h1>
+
+    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+    {
+        <img src="@Model.ImageUrl" class="quiz-image" />
+    }
+
+    <div class="choices-container">
+        @foreach (var choice in (List<string>)ViewBag.Choices)
+        {
+            <button class="choice-btn"
+                    onclick="checkAnswer('@choice')">
+                @choice
+            </button>
+        }
+    </div>
+
+</div>
+
+<script>
+    function checkAnswer(answer) {
+        const correct = "@Model.MalteseText";
+        const nextStep = @ViewBag.Step + 1;
+        const score = @ViewBag.Score;
+        const mode = @ViewBag.Mode;
+        const playerCode = "@ViewBag.PlayerCode";
+
+        if (answer === correct) {
+
+            if (mode === 1) {
+                fetch(`/api/playerapi/addxp?playerCode=${playerCode}&amount=20`, {
+                    method: "POST"
+                });
+            }
+
+            Swal.fire({
+                title: "Correct!",
+                text: mode === 1 ? "+20 XP" : "Good job!",
+                icon: "success",
+                timer: 1000,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.href =
+                    `/Tutorial/Start?playerCode=${playerCode}&step=${nextStep}&score=${score + 1}&mode=${mode}`;
+            });
+
+            return;
+        }
+
+        Swal.fire({
+            title: "Incorrect!",
+            text: "Try again 🙂",
+            icon: "info",
+            timer: 1200,
+            showConfirmButton: false
+        });
+    }
+</script>
