@@ -79,7 +79,7 @@
     @if (mode == 1)
     {
         <script>
-            startTimer(200, () => {
+            startTimer(60, () => {
                 window.location.href =
                     "/FoodDrink/Completed?playerCode=@playerCode&total=@total&mode=@mode&timeUp=true";
             });

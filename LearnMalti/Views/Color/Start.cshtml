@@ -242,8 +242,16 @@
                     return;
                 }
 
+
+                if (@mode === 1) {
+                 fetch(`/api/playerapi/addxp?playerCode=@playerCode&amount=40`, {
+                 method: "POST"
+            });
+         }
+
                 Swal.fire({
                     title: "Excellent!",
+                    text: @mode === 1 ? "+40 XP" : "Well done!",
                     icon: "success",
                     timer: 1000,
                     showConfirmButton: false

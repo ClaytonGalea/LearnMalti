@@ -51,22 +51,6 @@ namespace LearnMalti.Controllers
         }
 
 
-        /*public IActionResult Completed(string playerCode, int score, int total, int mode, bool timeUp = false)
-        {
-            ViewBag.PlayerCode = playerCode;
-            ViewBag.Score = score;
-            ViewBag.TotalSteps = total;
-            ViewBag.Mode = mode;
-            ViewBag.TimeUp = timeUp;
-
-            if (!timeUp)
-            {
-                AwardBadgeIfNotExists(playerCode, 1);
-            }
-
-            return View();
-        }*/
-
         public IActionResult Completed(string playerCode, int mode, bool timeUp = false)
         {
             ViewBag.PlayerCode = playerCode;

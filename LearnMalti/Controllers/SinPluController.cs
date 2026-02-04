@@ -127,6 +127,33 @@ namespace LearnMalti.Controllers
             return View("Start");
         }
 
+        private void AwardBadgeIfNotExists(string playerCode, int badgeId)
+        {
+            // 1️⃣ Find the player
+            var player = _context.Players
+                .FirstOrDefault(p => p.PlayerCode == playerCode);
+
+            if (player == null)
+                return; // safety check
+
+            // 2️⃣ Check if badge already exists
+            bool alreadyHasBadge = _context.PlayerBadges
+                .Any(pb => pb.PlayerId == player.PlayerId && pb.BadgeId == badgeId);
+
+            if (!alreadyHasBadge)
+            {
+                var playerBadge = new PlayerBadge
+                {
+                    PlayerId = player.PlayerId, // ✅ FK
+                    BadgeId = badgeId,
+                    EarnedAt = DateTime.Now
+                };
+
+                _context.PlayerBadges.Add(playerBadge);
+                _context.SaveChanges();
+            }
+        }
+
         private string GetQuestionType(int step)
         {
             if (step <= 5) return "Quiz";
@@ -176,18 +203,35 @@ namespace LearnMalti.Controllers
                 .ToList();
         }
 
-        public IActionResult Completed(string playerCode, int mode, bool failed = false)
+        public IActionResult Completed(string playerCode, int mode, bool timeUp = false, bool failed = false)
         {
             ViewBag.PlayerCode = playerCode;
             ViewBag.Mode = mode;
+            ViewBag.TimeUp = timeUp;
             ViewBag.Failed = failed;
+
+            if (!timeUp && !failed)
+            {
+                AwardBadgeIfNotExists(playerCode, 10);
+            }
 
             ViewBag.Layout = "~/Views/Shared/_SinPluLayout.cshtml";
             ViewBag.Title = "Singular & Plural Completed";
 
-            ViewBag.BadgeText = failed
-                ? "Try again!"
-                : "Great job! You learned singular and plural words.";
+
+            if (timeUp)
+            {
+                ViewBag.BadgeText = "Unlucky! You ran out of time.";
+            }
+            else if (failed)
+            {
+                ViewBag.BadgeText = "You used all your lives. Give it another try!";
+            }
+            else
+            {
+                ViewBag.BadgeText =
+                    "Great job! You got all the questions right and have been awarded the grammar Badge";
+            }
 
             ViewBag.RetryUrl =
                 $"/SinPlu/Start?playerCode={playerCode}&step=1&score=0&mode={mode}&lives=3";

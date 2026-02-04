@@ -5,6 +5,8 @@
 <title>Travel</title>
 <link rel="stylesheet" href="/css/travel.css" />
 
+<audio id="trainSound" preload="auto"></audio>
+<audio id="busSound" preload="auto"></audio>
 @if (ViewBag.Step > 0 && ViewBag.TotalSteps > 0)
 {
     <div class="level-header">
@@ -17,7 +19,7 @@
 
 <!-- BACKGROUND OBJECTS (same as tutorial) -->
 <div class="tutorial-background">
-    <div class="flip-card tree">
+    <div class="flip-card tree" data-sound="/Sounds/TrainSound.mp3">
         <div class="flip-card-inner">
             <div class="flip-card-front">
                 <img src="/images/words/train.png" />
@@ -28,13 +30,13 @@
         </div>
     </div>
 
-    <div class="flip-card bird">
+    <div class="flip-card bird" data-sound="/Sounds/BusSound.mp3">
         <div class="flip-card-inner">
             <div class="flip-card-front">
-                <img src="/images/words/car.png" />
+                <img src="/images/words/bus.png" />
             </div>
             <div class="flip-card-back">
-                <p>Karozza 🚗</p>
+                <p>Xarabank</p>
             </div>
         </div>
     </div>
@@ -44,3 +46,46 @@
 <div class="travel-content">
     @RenderBody()
 </div>
+
+
+<script>
+    const audio = document.getElementById('trainSound');
+    let audioUnlocked = false;
+
+    // 🔓 Unlock audio on first user interaction (NO hardcoded sound)
+    document.addEventListener('click', () => {
+        if (audioUnlocked) return;
+
+        audio.volume = 0;
+        audio.src = "/Sounds/TrainSound.mp3"; // any valid sound just to unlock
+        audio.play().then(() => {
+            audio.pause();
+            audio.currentTime = 0;
+            audio.volume = 0.7;
+            audioUnlocked = true;
+            console.log("🔓 Audio unlocked");
+        }).catch(() => {});
+    }, { once: true });
+
+    // 🔊 Play sound per card
+    document.querySelectorAll('.flip-card').forEach(card => {
+        let played = false;
+
+        card.addEventListener('mouseenter', () => {
+            if (!audioUnlocked || played) return;
+
+            const soundSrc = card.dataset.sound;
+            if (!soundSrc) return;
+
+            audio.src = soundSrc;
+            audio.currentTime = 0;
+            audio.play().catch(() => {});
+
+            played = true;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            played = false;
+        });
+    });
+</script>

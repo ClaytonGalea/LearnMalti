@@ -152,9 +152,10 @@ body {
 }
 
 /* Background positions */
-.tree {
+.dog {
     left: 4vw;
     bottom: 8vh;
+    top: auto;
 }
 
 .bird {
@@ -271,4 +272,43 @@ body {
     .hover-word:hover::after,
     .hover-word:hover::before {
         opacity: 1;
+    }
+
+/* ===== GUIDED OVERLAY ===== */
+.guide-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 9999;
+}
+
+    .guide-overlay.hidden {
+        display: none;
+    }
+
+.guide-spotlight {
+    position: absolute;
+    border-radius: 14px;
+    box-shadow: 0 0 0 9999px rgba(0,0,0,0.6);
+    transition: all 0.3s ease;
+}
+
+.guide-bubble {
+    position: absolute;
+    background: white;
+    padding: 16px 18px;
+    border-radius: 14px;
+    width: 260px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+    font-size: 1rem;
+}
+
+    .guide-bubble button {
+        margin-top: 12px;
+        padding: 8px 14px;
+        border-radius: 10px;
+        border: none;
+        background: #ffd54f;
+        font-weight: bold;
+        cursor: pointer;
     }

@@ -84,21 +84,21 @@ namespace LearnMalti.Controllers
             {
                 switch (step)
                 {
-                    case 8:
+                    case 5:
                         ViewBag.Sentence = "Trid immorru dawra bil- ____?";
                         ViewBag.EnglishSentence = "Would you like to go for a drive with the car?";
                         ViewBag.CorrectAnswer = "Karozza";
                         ViewBag.Choices = new List<string> { "Mappa", "Karozza", "Muntanja" };
                         break;
 
-                    case 9:
+                    case 6:
                         ViewBag.Sentence = "Naħseb li tlifna t-triq, iftaħ il- ____.";
                         ViewBag.EnglishSentence = "I think we are lost, open the map.";
                         ViewBag.CorrectAnswer = "Mappa";
                         ViewBag.Choices = new List<string> { "Ajruplan", "Mappa", "Triq" };
                         break;
 
-                    case 10:
+                    case 7:
                         ViewBag.Sentence = "Din hija t-____ it-tajba.";
                         ViewBag.EnglishSentence = "This is the right road.";
                         ViewBag.CorrectAnswer = "Triq";
@@ -118,10 +118,10 @@ namespace LearnMalti.Controllers
 
         private string GetQuestionType(int step)
         {
-            // 1–3 Quiz, 4–7 Fill, 8–10 Quiz
-            if (step <= 3) return "Quiz";
-            if (step <= 7) return "ImageInput";
-            return "Sentence";
+            // 1–4 Quiz, 5–7 Sentence, 8–10 Image Input
+            if (step <= 4) return "Quiz";
+            if (step <= 7) return "Sentence";
+            return "ImageInput";
         }
 
         public IActionResult Completed(string playerCode, int score, int total, int mode, bool timeUp = false, bool failed = false)

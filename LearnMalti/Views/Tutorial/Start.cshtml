@@ -28,6 +28,16 @@
 </div>
 
 <script>
+    
+    const correctSound = document.getElementById("correctSound");
+    const incorrectSound = document.getElementById("incorrectSound");
+
+    function playSound(audio) {
+        audio.currentTime = 0;
+        audio.play().catch(() => {});
+    }
+
+
     function checkAnswer(answer) {
         const correct = "@Model.MalteseText";
         const nextStep = @ViewBag.Step + 1;
@@ -36,6 +46,8 @@
         const playerCode = "@ViewBag.PlayerCode";
 
         if (answer === correct) {
+             playSound(correctSound);
+           
 
             if (mode === 1) {
                 fetch(`/api/playerapi/addxp?playerCode=${playerCode}&amount=20`, {
@@ -56,6 +68,8 @@
 
             return;
         }
+        incorrectSound.currentTime = 0;
+        incorrectSound.play().catch(() => {});
 
         Swal.fire({
             title: "Incorrect!",
