@@ -3,6 +3,18 @@
   "WorkspaceRootPath": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{7538C4B8-6890-420B-AE3C-E22445216B8B}|LearnMalti\\LearnMalti.csproj|c:\\users\\clayt\\onedrive\\documents\\level 6 year 3\\thesis\\learnmalti\\learnmalti\\controllers\\colorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7538C4B8-6890-420B-AE3C-E22445216B8B}|LearnMalti\\LearnMalti.csproj|solutionrelative:learnmalti\\controllers\\colorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7538C4B8-6890-420B-AE3C-E22445216B8B}|LearnMalti\\LearnMalti.csproj|c:\\users\\clayt\\onedrive\\documents\\level 6 year 3\\thesis\\learnmalti\\learnmalti\\views\\color\\start.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{7538C4B8-6890-420B-AE3C-E22445216B8B}|LearnMalti\\LearnMalti.csproj|solutionrelative:learnmalti\\views\\color\\start.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7538C4B8-6890-420B-AE3C-E22445216B8B}|LearnMalti\\LearnMalti.csproj|c:\\users\\clayt\\onedrive\\documents\\level 6 year 3\\thesis\\learnmalti\\learnmalti\\views\\shared\\_colorlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{7538C4B8-6890-420B-AE3C-E22445216B8B}|LearnMalti\\LearnMalti.csproj|solutionrelative:learnmalti\\views\\shared\\_colorlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{7538C4B8-6890-420B-AE3C-E22445216B8B}|LearnMalti\\LearnMalti.csproj|c:\\users\\clayt\\onedrive\\documents\\level 6 year 3\\thesis\\learnmalti\\learnmalti\\views\\shared\\_gamelevellayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{7538C4B8-6890-420B-AE3C-E22445216B8B}|LearnMalti\\LearnMalti.csproj|solutionrelative:learnmalti\\views\\shared\\_gamelevellayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -23,16 +35,8 @@
       "RelativeMoniker": "D:0:0:{7538C4B8-6890-420B-AE3C-E22445216B8B}|LearnMalti\\LearnMalti.csproj|solutionrelative:learnmalti\\views\\game\\complete.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7538C4B8-6890-420B-AE3C-E22445216B8B}|LearnMalti\\LearnMalti.csproj|c:\\users\\clayt\\onedrive\\documents\\level 6 year 3\\thesis\\learnmalti\\learnmalti\\controllers\\colorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7538C4B8-6890-420B-AE3C-E22445216B8B}|LearnMalti\\LearnMalti.csproj|solutionrelative:learnmalti\\controllers\\colorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{7538C4B8-6890-420B-AE3C-E22445216B8B}|LearnMalti\\LearnMalti.csproj|c:\\users\\clayt\\onedrive\\documents\\level 6 year 3\\thesis\\learnmalti\\learnmalti\\views\\shared\\_greetinglayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{7538C4B8-6890-420B-AE3C-E22445216B8B}|LearnMalti\\LearnMalti.csproj|solutionrelative:learnmalti\\views\\shared\\_greetinglayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7538C4B8-6890-420B-AE3C-E22445216B8B}|LearnMalti\\LearnMalti.csproj|c:\\users\\clayt\\onedrive\\documents\\level 6 year 3\\thesis\\learnmalti\\learnmalti\\views\\shared\\_colorlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{7538C4B8-6890-420B-AE3C-E22445216B8B}|LearnMalti\\LearnMalti.csproj|solutionrelative:learnmalti\\views\\shared\\_colorlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7538C4B8-6890-420B-AE3C-E22445216B8B}|LearnMalti\\LearnMalti.csproj|c:\\users\\clayt\\onedrive\\documents\\level 6 year 3\\thesis\\learnmalti\\learnmalti\\controllers\\fooddrinkcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -49,10 +53,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{7538C4B8-6890-420B-AE3C-E22445216B8B}|LearnMalti\\LearnMalti.csproj|c:\\users\\clayt\\onedrive\\documents\\level 6 year 3\\thesis\\learnmalti\\learnmalti\\views\\shared\\_sinplulayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{7538C4B8-6890-420B-AE3C-E22445216B8B}|LearnMalti\\LearnMalti.csproj|solutionrelative:learnmalti\\views\\shared\\_sinplulayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7538C4B8-6890-420B-AE3C-E22445216B8B}|LearnMalti\\LearnMalti.csproj|c:\\users\\clayt\\onedrive\\documents\\level 6 year 3\\thesis\\learnmalti\\learnmalti\\views\\color\\start.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{7538C4B8-6890-420B-AE3C-E22445216B8B}|LearnMalti\\LearnMalti.csproj|solutionrelative:learnmalti\\views\\color\\start.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7538C4B8-6890-420B-AE3C-E22445216B8B}|LearnMalti\\LearnMalti.csproj|c:\\users\\clayt\\onedrive\\documents\\level 6 year 3\\thesis\\learnmalti\\learnmalti\\views\\shared\\_fooddrinklayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -170,7 +170,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -182,72 +182,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "_GameLevelLayout.cshtml",
               "DocumentMoniker": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Views\\Shared\\_GameLevelLayout.cshtml",
               "RelativeDocumentMoniker": "LearnMalti\\Views\\Shared\\_GameLevelLayout.cshtml",
               "ToolTip": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Views\\Shared\\_GameLevelLayout.cshtml",
               "RelativeToolTip": "LearnMalti\\Views\\Shared\\_GameLevelLayout.cshtml",
-              "ViewState": "AgIAADsAAAAAAAAAAAAlwFcAAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAE0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2026-02-12T12:38:14.206Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "_Layout.cshtml",
-              "DocumentMoniker": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Views\\Shared\\_Layout.cshtml",
-              "RelativeDocumentMoniker": "LearnMalti\\Views\\Shared\\_Layout.cshtml",
-              "ToolTip": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Views\\Shared\\_Layout.cshtml",
-              "RelativeToolTip": "LearnMalti\\Views\\Shared\\_Layout.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-12T12:39:13.985Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "FoodDrinkController.cs",
-              "DocumentMoniker": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Controllers\\FoodDrinkController.cs",
-              "RelativeDocumentMoniker": "LearnMalti\\Controllers\\FoodDrinkController.cs",
-              "ToolTip": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Controllers\\FoodDrinkController.cs",
-              "RelativeToolTip": "LearnMalti\\Controllers\\FoodDrinkController.cs",
-              "ViewState": "AgIAAHQAAAAAAAAAAAAtwIsAAAAOAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-12T10:05:07.631Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Complete.cshtml",
-              "DocumentMoniker": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Views\\Game\\Complete.cshtml",
-              "RelativeDocumentMoniker": "LearnMalti\\Views\\Game\\Complete.cshtml",
-              "ToolTip": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Views\\Game\\Complete.cshtml",
-              "RelativeToolTip": "LearnMalti\\Views\\Game\\Complete.cshtml",
-              "ViewState": "AgIAACQAAAAAAAAAAAAAAC0AAAA4AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-12T09:34:47.375Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 6,
-              "Title": "_GreetingLayout.cshtml",
-              "DocumentMoniker": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Views\\Shared\\_GreetingLayout.cshtml",
-              "RelativeDocumentMoniker": "LearnMalti\\Views\\Shared\\_GreetingLayout.cshtml",
-              "ToolTip": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Views\\Shared\\_GreetingLayout.cshtml",
-              "RelativeToolTip": "LearnMalti\\Views\\Shared\\_GreetingLayout.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-03T07:45:28.598Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
               "Title": "_TutorialLayout.cshtml",
               "DocumentMoniker": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Views\\Shared\\_TutorialLayout.cshtml",
               "RelativeDocumentMoniker": "LearnMalti\\Views\\Shared\\_TutorialLayout.cshtml",
@@ -255,12 +203,11 @@
               "RelativeToolTip": "LearnMalti\\Views\\Shared\\_TutorialLayout.cshtml",
               "ViewState": "AgIAAHYAAAAAAAAAAAAwwIwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-04T14:51:49.03Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-04T14:51:49.03Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "Start.cshtml",
               "DocumentMoniker": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Views\\SinPlu\\Start.cshtml",
               "RelativeDocumentMoniker": "LearnMalti\\Views\\SinPlu\\Start.cshtml",
@@ -268,25 +215,98 @@
               "RelativeToolTip": "LearnMalti\\Views\\SinPlu\\Start.cshtml",
               "ViewState": "AgIAABUAAAAAAAAAAAAAACgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-03T07:39:47.005Z",
+              "WhenOpened": "2026-02-03T07:39:47.005Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "LearnMalti\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "LearnMalti\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-12T12:39:13.985Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ColorController.cs",
+              "DocumentMoniker": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Controllers\\ColorController.cs",
+              "RelativeDocumentMoniker": "LearnMalti\\Controllers\\ColorController.cs",
+              "ToolTip": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Controllers\\ColorController.cs",
+              "RelativeToolTip": "LearnMalti\\Controllers\\ColorController.cs",
+              "ViewState": "AgIAAHwAAAAAAAAAAAAkwIgAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-12T11:51:44.365Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 2,
               "Title": "_ColorLayout.cshtml",
               "DocumentMoniker": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Views\\Shared\\_ColorLayout.cshtml",
               "RelativeDocumentMoniker": "LearnMalti\\Views\\Shared\\_ColorLayout.cshtml",
               "ToolTip": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Views\\Shared\\_ColorLayout.cshtml",
               "RelativeToolTip": "LearnMalti\\Views\\Shared\\_ColorLayout.cshtml",
-              "ViewState": "AgIAABsAAAAAAAAAAAAAACQAAAA1AAAAAAAAAA==",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAACUAAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2026-02-12T11:17:44.898Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
+              "Title": "Start.cshtml",
+              "DocumentMoniker": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Views\\Color\\Start.cshtml",
+              "RelativeDocumentMoniker": "LearnMalti\\Views\\Color\\Start.cshtml",
+              "ToolTip": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Views\\Color\\Start.cshtml",
+              "RelativeToolTip": "LearnMalti\\Views\\Color\\Start.cshtml",
+              "ViewState": "AgIAADQAAAAAAAAAAAAqwEMAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-03T07:42:16.641Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "_GreetingLayout.cshtml",
+              "DocumentMoniker": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Views\\Shared\\_GreetingLayout.cshtml",
+              "RelativeDocumentMoniker": "LearnMalti\\Views\\Shared\\_GreetingLayout.cshtml",
+              "ToolTip": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Views\\Shared\\_GreetingLayout.cshtml",
+              "RelativeToolTip": "LearnMalti\\Views\\Shared\\_GreetingLayout.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-03T07:45:28.598Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Complete.cshtml",
+              "DocumentMoniker": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Views\\Game\\Complete.cshtml",
+              "RelativeDocumentMoniker": "LearnMalti\\Views\\Game\\Complete.cshtml",
+              "ToolTip": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Views\\Game\\Complete.cshtml",
+              "RelativeToolTip": "LearnMalti\\Views\\Game\\Complete.cshtml",
+              "ViewState": "AgIAACQAAAAAAAAAAAAAAC0AAAA4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-02-12T09:34:47.375Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "FoodDrinkController.cs",
+              "DocumentMoniker": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Controllers\\FoodDrinkController.cs",
+              "RelativeDocumentMoniker": "LearnMalti\\Controllers\\FoodDrinkController.cs",
+              "ToolTip": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Controllers\\FoodDrinkController.cs",
+              "RelativeToolTip": "LearnMalti\\Controllers\\FoodDrinkController.cs",
+              "ViewState": "AgIAAHQAAAAAAAAAAAAtwIsAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-12T10:05:07.631Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "_TravelLayout.cshtml",
               "DocumentMoniker": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Views\\Shared\\_TravelLayout.cshtml",
               "RelativeDocumentMoniker": "LearnMalti\\Views\\Shared\\_TravelLayout.cshtml",
@@ -294,25 +314,11 @@
               "RelativeToolTip": "LearnMalti\\Views\\Shared\\_TravelLayout.cshtml",
               "ViewState": "AgIAAEIAAAAAAAAAAAAAADsAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-04T14:51:43.051Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-04T14:51:43.051Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "ColorController.cs",
-              "DocumentMoniker": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Controllers\\ColorController.cs",
-              "RelativeDocumentMoniker": "LearnMalti\\Controllers\\ColorController.cs",
-              "ToolTip": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Controllers\\ColorController.cs",
-              "RelativeToolTip": "LearnMalti\\Controllers\\ColorController.cs",
-              "ViewState": "AgIAANUAAAAAAAAAAAAlwOQAAAAZAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-12T11:51:44.365Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "SinPluController.cs",
               "DocumentMoniker": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Controllers\\SinPluController.cs",
               "RelativeDocumentMoniker": "LearnMalti\\Controllers\\SinPluController.cs",
@@ -320,8 +326,7 @@
               "RelativeToolTip": "LearnMalti\\Controllers\\SinPluController.cs",
               "ViewState": "AgIAAHIAAAAAAAAAAAAlwCAAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-03T07:46:09.404Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-03T07:46:09.404Z"
             },
             {
               "$type": "Document",
@@ -333,12 +338,11 @@
               "RelativeToolTip": "LearnMalti\\wwwroot\\css\\color.css",
               "ViewState": "AgIAACQBAAAAAAAAAAAqwCkBAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-02-12T11:22:39.488Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-12T11:22:39.488Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "_SinPluLayout.cshtml",
               "DocumentMoniker": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Views\\Shared\\_SinPluLayout.cshtml",
               "RelativeDocumentMoniker": "LearnMalti\\Views\\Shared\\_SinPluLayout.cshtml",
@@ -346,8 +350,7 @@
               "RelativeToolTip": "LearnMalti\\Views\\Shared\\_SinPluLayout.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-06T12:35:58.247Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-06T12:35:58.247Z"
             },
             {
               "$type": "Document",
@@ -359,8 +362,7 @@
               "RelativeToolTip": "LearnMalti\\Views\\Shared\\_FoodDrinkLayout.cshtml",
               "ViewState": "AgIAAAEAAAAAAAAAAAAAABgAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-06T12:22:19.028Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-06T12:22:19.028Z"
             },
             {
               "$type": "Document",
@@ -372,8 +374,7 @@
               "RelativeToolTip": "LearnMalti\\Views\\FoodDrink\\Start.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-12T11:41:45.2Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-12T11:41:45.2Z"
             },
             {
               "$type": "Document",
@@ -385,21 +386,7 @@
               "RelativeToolTip": "LearnMalti\\wwwroot\\css\\fooddrink.css",
               "ViewState": "AgIAACMAAAAAAAAAAAAIwDQAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-02-12T09:48:02.031Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "Start.cshtml",
-              "DocumentMoniker": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Views\\Color\\Start.cshtml",
-              "RelativeDocumentMoniker": "LearnMalti\\Views\\Color\\Start.cshtml",
-              "ToolTip": "C:\\Users\\Clayt\\OneDrive\\Documents\\Level 6 Year 3\\Thesis\\LearnMalti\\LearnMalti\\Views\\Color\\Start.cshtml",
-              "RelativeToolTip": "LearnMalti\\Views\\Color\\Start.cshtml",
-              "ViewState": "AgIAAMMAAAAAAAAAAAAAAO8AAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-03T07:42:16.641Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-12T09:48:02.031Z"
             },
             {
               "$type": "Document",
@@ -411,8 +398,7 @@
               "RelativeToolTip": "LearnMalti\\wwwroot\\css\\completion.css",
               "ViewState": "AgIAAB0AAAAAAAAAAAAAADIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-02-12T10:02:02.378Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-12T10:02:02.378Z"
             },
             {
               "$type": "Document",
@@ -424,8 +410,7 @@
               "RelativeToolTip": "LearnMalti\\Views\\Tutorial\\Start.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-04T15:01:15.78Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-04T15:01:15.78Z"
             },
             {
               "$type": "Document",
@@ -437,8 +422,7 @@
               "RelativeToolTip": "LearnMalti\\Views\\Greeting\\Start.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-03T07:40:03.32Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-03T07:40:03.32Z"
             },
             {
               "$type": "Document",
@@ -450,8 +434,7 @@
               "RelativeToolTip": "LearnMalti\\wwwroot\\css\\greeting.css",
               "ViewState": "AgIAAAwAAAAAAAAAAAAUwBoAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-02-12T10:15:41.958Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-12T10:15:41.958Z"
             },
             {
               "$type": "Document",
@@ -463,8 +446,7 @@
               "RelativeToolTip": "LearnMalti\\Views\\Menu\\Game.cshtml",
               "ViewState": "AgIAADkAAAAAAAAAAAAAAF0AAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-06T11:50:29.099Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-06T11:50:29.099Z"
             },
             {
               "$type": "Document",
@@ -488,8 +470,7 @@
               "RelativeToolTip": "LearnMalti\\Views\\Menu\\SelectMode.cshtml",
               "ViewState": "AgIAAAEAAAAAAAAAAAAUwBUAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-12T09:04:52.866Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-12T09:04:52.866Z"
             },
             {
               "$type": "Document",

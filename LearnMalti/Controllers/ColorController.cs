@@ -142,8 +142,8 @@ namespace LearnMalti.Controllers
             {
                 case 5:
                     ViewBag.ContextImage = "/images/kid_white_shirt.png";
-                    ViewBag.ContextText = "X'kulur hija l-qmis tat-tifel?";
-                    ViewBag.CorrectAnswer = "Abjad";
+                    ViewBag.ContextText = "X'kulur hu xagħar it-tifel?";
+                    ViewBag.CorrectAnswer = "Kannella";
                     break;
 
                 case 6:
@@ -154,7 +154,7 @@ namespace LearnMalti.Controllers
 
                 case 7:
                     ViewBag.ContextImage = "/images/red_ball.png";
-                    ViewBag.ContextText = "X'kulur hu l-ballun";
+                    ViewBag.ContextText = "X'kulur hu l-ballun?";
                     ViewBag.CorrectAnswer = "Aħmar";
                     break;
 

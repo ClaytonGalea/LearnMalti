@@ -170,15 +170,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
             },
             {
               "$type": "Document",
@@ -203,8 +199,7 @@
               "RelativeToolTip": "LearnMalti\\Views\\Shared\\_Layout.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-12T12:39:13.985Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-12T12:39:13.985Z"
             },
             {
               "$type": "Document",
@@ -216,8 +211,7 @@
               "RelativeToolTip": "LearnMalti\\Controllers\\FoodDrinkController.cs",
               "ViewState": "AgIAAHQAAAAAAAAAAAAtwIsAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-12T10:05:07.631Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-12T10:05:07.631Z"
             },
             {
               "$type": "Document",
@@ -229,8 +223,7 @@
               "RelativeToolTip": "LearnMalti\\Views\\Game\\Complete.cshtml",
               "ViewState": "AgIAACQAAAAAAAAAAAAAAC0AAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-12T09:34:47.375Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-12T09:34:47.375Z"
             },
             {
               "$type": "Document",
@@ -242,8 +235,7 @@
               "RelativeToolTip": "LearnMalti\\Views\\Shared\\_GreetingLayout.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-03T07:45:28.598Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-03T07:45:28.598Z"
             },
             {
               "$type": "Document",
@@ -255,8 +247,7 @@
               "RelativeToolTip": "LearnMalti\\Views\\Shared\\_TutorialLayout.cshtml",
               "ViewState": "AgIAAHYAAAAAAAAAAAAwwIwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-04T14:51:49.03Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-04T14:51:49.03Z"
             },
             {
               "$type": "Document",
@@ -268,8 +259,7 @@
               "RelativeToolTip": "LearnMalti\\Views\\SinPlu\\Start.cshtml",
               "ViewState": "AgIAABUAAAAAAAAAAAAAACgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-03T07:39:47.005Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-03T07:39:47.005Z"
             },
             {
               "$type": "Document",
@@ -281,8 +271,7 @@
               "RelativeToolTip": "LearnMalti\\Views\\Shared\\_ColorLayout.cshtml",
               "ViewState": "AgIAABsAAAAAAAAAAAAAACQAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-12T11:17:44.898Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-12T11:17:44.898Z"
             },
             {
               "$type": "Document",
@@ -294,8 +283,7 @@
               "RelativeToolTip": "LearnMalti\\Views\\Shared\\_TravelLayout.cshtml",
               "ViewState": "AgIAAEIAAAAAAAAAAAAAADsAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-04T14:51:43.051Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-04T14:51:43.051Z"
             },
             {
               "$type": "Document",
@@ -307,8 +295,7 @@
               "RelativeToolTip": "LearnMalti\\Controllers\\ColorController.cs",
               "ViewState": "AgIAANUAAAAAAAAAAAAlwOQAAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-12T11:51:44.365Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-12T11:51:44.365Z"
             },
             {
               "$type": "Document",
@@ -320,8 +307,7 @@
               "RelativeToolTip": "LearnMalti\\Controllers\\SinPluController.cs",
               "ViewState": "AgIAAHIAAAAAAAAAAAAlwCAAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-03T07:46:09.404Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-03T07:46:09.404Z"
             },
             {
               "$type": "Document",
@@ -333,8 +319,7 @@
               "RelativeToolTip": "LearnMalti\\wwwroot\\css\\color.css",
               "ViewState": "AgIAACQBAAAAAAAAAAAqwCkBAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-02-12T11:22:39.488Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-12T11:22:39.488Z"
             },
             {
               "$type": "Document",
@@ -346,8 +331,7 @@
               "RelativeToolTip": "LearnMalti\\Views\\Shared\\_SinPluLayout.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-06T12:35:58.247Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-06T12:35:58.247Z"
             },
             {
               "$type": "Document",
@@ -359,8 +343,7 @@
               "RelativeToolTip": "LearnMalti\\Views\\Shared\\_FoodDrinkLayout.cshtml",
               "ViewState": "AgIAAAEAAAAAAAAAAAAAABgAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-06T12:22:19.028Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-06T12:22:19.028Z"
             },
             {
               "$type": "Document",
@@ -372,8 +355,7 @@
               "RelativeToolTip": "LearnMalti\\Views\\FoodDrink\\Start.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-12T11:41:45.2Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-12T11:41:45.2Z"
             },
             {
               "$type": "Document",
@@ -385,8 +367,7 @@
               "RelativeToolTip": "LearnMalti\\wwwroot\\css\\fooddrink.css",
               "ViewState": "AgIAACMAAAAAAAAAAAAIwDQAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-02-12T09:48:02.031Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-12T09:48:02.031Z"
             },
             {
               "$type": "Document",
@@ -398,8 +379,7 @@
               "RelativeToolTip": "LearnMalti\\Views\\Color\\Start.cshtml",
               "ViewState": "AgIAAMMAAAAAAAAAAAAAAO8AAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-03T07:42:16.641Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-03T07:42:16.641Z"
             },
             {
               "$type": "Document",
@@ -411,8 +391,7 @@
               "RelativeToolTip": "LearnMalti\\wwwroot\\css\\completion.css",
               "ViewState": "AgIAAB0AAAAAAAAAAAAAADIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-02-12T10:02:02.378Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-12T10:02:02.378Z"
             },
             {
               "$type": "Document",
@@ -424,8 +403,7 @@
               "RelativeToolTip": "LearnMalti\\Views\\Tutorial\\Start.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-04T15:01:15.78Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-04T15:01:15.78Z"
             },
             {
               "$type": "Document",
@@ -437,8 +415,7 @@
               "RelativeToolTip": "LearnMalti\\Views\\Greeting\\Start.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-03T07:40:03.32Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-03T07:40:03.32Z"
             },
             {
               "$type": "Document",
@@ -450,8 +427,7 @@
               "RelativeToolTip": "LearnMalti\\wwwroot\\css\\greeting.css",
               "ViewState": "AgIAAAwAAAAAAAAAAAAUwBoAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-02-12T10:15:41.958Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-12T10:15:41.958Z"
             },
             {
               "$type": "Document",
@@ -463,8 +439,7 @@
               "RelativeToolTip": "LearnMalti\\Views\\Menu\\Game.cshtml",
               "ViewState": "AgIAADkAAAAAAAAAAAAAAF0AAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-06T11:50:29.099Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-06T11:50:29.099Z"
             },
             {
               "$type": "Document",
@@ -488,8 +463,7 @@
               "RelativeToolTip": "LearnMalti\\Views\\Menu\\SelectMode.cshtml",
               "ViewState": "AgIAAAEAAAAAAAAAAAAUwBUAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-02-12T09:04:52.866Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-12T09:04:52.866Z"
             },
             {
               "$type": "Document",
@@ -682,6 +656,10 @@
               "ViewState": "AgIAAAgAAAAAAAAAAAAAwFwAAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-04T15:23:34.952Z"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
             }
           ]
         }
