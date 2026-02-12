@@ -142,25 +142,25 @@ namespace LearnMalti.Controllers
             {
                 case 5:
                     ViewBag.ContextImage = "/images/kid_white_shirt.png";
-                    ViewBag.ContextText = "What color is the boy's shirt?";
+                    ViewBag.ContextText = "X'kulur hija l-qmis tat-tifel?";
                     ViewBag.CorrectAnswer = "Abjad";
                     break;
 
                 case 6:
                     ViewBag.ContextImage = "/images/blue_sofa.png";
-                    ViewBag.ContextText = "What color is the sofa?";
+                    ViewBag.ContextText = "X'kulur hu s-sufan?";
                     ViewBag.CorrectAnswer = "Blu";
                     break;
 
                 case 7:
                     ViewBag.ContextImage = "/images/red_ball.png";
-                    ViewBag.ContextText = "What color is the ball";
+                    ViewBag.ContextText = "X'kulur hu l-ballun";
                     ViewBag.CorrectAnswer = "Aħmar";
                     break;
 
                 case 8:
                     ViewBag.ContextImage = "/images/green_book.png";
-                    ViewBag.ContextText = "What color is the book?";
+                    ViewBag.ContextText = "X'kulur hu l-ktieb?";
                     ViewBag.CorrectAnswer = "Aħdar";
                     break;
 

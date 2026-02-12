@@ -10,31 +10,13 @@ namespace LearnMalti.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "NumberForm",
-                table: "LearningItems",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "");
-
-            migrationBuilder.AddColumn<string>(
-                name: "WordKey",
-                table: "LearningItems",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "");
+            // Column already exists in database.
+            // Migration intentionally left empty.
         }
 
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "NumberForm",
-                table: "LearningItems");
-
-            migrationBuilder.DropColumn(
-                name: "WordKey",
-                table: "LearningItems");
+            // No-op
         }
     }
 }

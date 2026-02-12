@@ -145,7 +145,6 @@ namespace LearnMalti.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ItemType")
@@ -157,11 +156,9 @@ namespace LearnMalti.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NumberForm")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("WordKey")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("LearningItemId");
@@ -315,6 +312,32 @@ namespace LearnMalti.Migrations
                     b.HasIndex("SurveyQuestionId");
 
                     b.ToTable("SurveyResponses");
+                });
+
+            modelBuilder.Entity("LearnMalti.Models.TimedQuizResult", b =>
+                {
+                    b.Property<int>("TimedQuizResultId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TimedQuizResultId"));
+
+                    b.Property<DateTime>("PlayedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PlayerCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
+
+                    b.Property<int>("XP")
+                        .HasColumnType("int");
+
+                    b.HasKey("TimedQuizResultId");
+
+                    b.ToTable("TimedQuizResults");
                 });
 
             modelBuilder.Entity("LearnMalti.Models.AssessmentResult", b =>

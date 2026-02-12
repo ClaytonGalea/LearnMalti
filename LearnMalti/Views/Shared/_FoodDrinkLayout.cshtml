@@ -2,7 +2,7 @@
     Layout = "~/Views/Shared/_GameLevelLayout.cshtml";
 }
 <title>Food and Drinks</title>
-<link rel="stylesheet" href="/css/fooddrink.css" />
+<link rel="stylesheet" href="~/css/fooddrink.css" asp-append-version="true" />
 
 @if (ViewBag.Step > 0 && ViewBag.TotalSteps > 0)
 {
@@ -14,28 +14,58 @@
     </div>
 }
 
-<div class="tutorial-background">
-    <div class="flip-card tree">
-        <div class="flip-card-inner">
-            <div class="flip-card-front">
-                <img src="/images/words/fish.png" />
+<div class="tutorial-background colors-bg">
+    @if (ViewBag.Step == 4)
+    {
+        <!-- LEFT -->
+        <div class="colors-column">
+            <div class="food-card">
+                <img src="/images/words/milk.png" />
+                <span>Ħalib</span>
             </div>
-            <div class="flip-card-back">
-                <p>Ħuta 🐟</p>
-            </div>
-        </div>
-    </div>
 
-    <div class="flip-card bird">
-        <div class="flip-card-inner">
-            <div class="flip-card-front">
-                <img src="/images/words/tomato.png" />
+            <div class="food-card">
+                <img src="/images/words/bread.png" />
+                <span>Ħobż</span>
             </div>
-            <div class="flip-card-back">
-                <p>Tadam 🍅</p>
+
+            <div class="food-card">
+                <img src="/images/words/meat.png" />
+                <span>Laħam</span>
+            </div>
+
+            <div class="food-card">
+                <img src="/images/words/fish.png" />
+                <span>Ħut</span>
             </div>
         </div>
-    </div>
+
+        <!-- CENTER -->
+        <div class="colors-spacer"></div>
+
+        <!-- RIGHT -->
+        <div class="colors-column">
+            <div class="food-card">
+                <img src="/images/words/oil.png" />
+                <span>Żejt</span>
+            </div>
+
+            <div class="food-card">
+                <img src="/images/words/salt.png" />
+                <span>Melħ</span>
+            </div>
+
+            <div class="food-card">
+                <img src="/images/words/coffee.png" />
+                <span>Kafè</span>
+            </div>
+
+            <div class="food-card">
+                <img src="/images/words/Ice Cream.png" />
+                <span>Ġelat</span>
+            </div>
+        </div>
+    }
 </div>
 
 <div class="fooddrink-content">

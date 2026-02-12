@@ -79,9 +79,10 @@
     @if (mode == 1)
     {
         <script>
-            startTimer(60, () => {
+            startTimer(30, () => {
                 window.location.href =
-                    "/FoodDrink/Completed?playerCode=@playerCode&total=@total&mode=@mode&timeUp=true";
+                    "@Url.Action("Completed", ViewContext.RouteData.Values["controller"].ToString())"
+                    + "?playerCode=@playerCode&total=@total&mode=@mode&timeUp=true";
             });
         </script>
     }

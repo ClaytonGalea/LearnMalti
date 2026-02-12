@@ -137,6 +137,7 @@ namespace LearnMalti.Controllers
             }
 
             ViewBag.Layout = "~/Views/Shared/_FoodDrinkLayout.cshtml";
+            //ViewBag.Title = "Food & Drink";
             ViewBag.Title = "Food & Drink Completed!";
             if (timeUp)
             {

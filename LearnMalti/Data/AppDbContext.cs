@@ -22,6 +22,9 @@ namespace LearnMalti.Data
         public DbSet<SurveyQuestion> SurveyQuestions { get; set; }
         public DbSet<SurveyResponse> SurveyResponses { get; set; }
 
+        public DbSet<TimedQuizResult> TimedQuizResults { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Unique PlayerCode
