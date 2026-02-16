@@ -1,0 +1,66 @@
+﻿@{
+    Layout = "~/Views/Shared/_GameLevelLayout.cshtml";
+}
+
+<title>Timed Quiz</title>
+<link rel="stylesheet" href="/css/timedquiz.css" />
+
+@if (ViewBag.Step > 0 && ViewBag.TotalSteps > 0)
+{
+    <div class="level-header">
+        <h2 class="level-title">Timed Quiz</h2>
+
+        <div class="progress-hud">
+            Question @ViewBag.Step
+        </div>
+
+    </div>
+}
+
+<div class="timedquiz-content">
+    @RenderBody()
+</div>
+
+<script>
+    const TIMER_KEY = "timedQuizEnd";
+    const TIMER_DURATION = 30;
+
+    const step = @((ViewBag.Step ?? 0));
+    const playerCode = "@ViewBag.PlayerCode";
+    const mode = "@ViewBag.Mode";
+
+    if (step > 0) {
+
+        let endTime = sessionStorage.getItem(TIMER_KEY);
+
+        if (step === 1) {
+            sessionStorage.removeItem(TIMER_KEY);
+            endTime = null;
+        }
+
+        if (!endTime) {
+            endTime = Date.now() + TIMER_DURATION * 1000;
+            sessionStorage.setItem(TIMER_KEY, endTime);
+        }
+
+        function updateTimer() {
+            const now = Date.now();
+            const remaining = Math.floor((endTime - now) / 1000);
+
+            const el = document.getElementById("timerText");
+            if (el) el.innerText = remaining;
+
+            if (remaining <= 0) {
+                sessionStorage.removeItem(TIMER_KEY);
+
+                window.location.href =
+                    `/TimedQuiz/Completed?playerCode=${playerCode}&mode=${mode}&score=@ViewBag.Score`;
+            }
+        }
+
+        updateTimer();
+        setInterval(updateTimer, 1000);
+    }
+</script>
+
+

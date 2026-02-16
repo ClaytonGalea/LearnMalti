@@ -1,1 +1,101 @@
-﻿
+﻿@model LearnMalti.Models.LearningItem
+
+@{
+    Layout = "~/Views/Shared/_TimedQuizLayout.cshtml";
+
+    string playerCode = ViewBag.PlayerCode;
+    int step = ViewBag.Step;
+    int score = ViewBag.Score;
+    int mode = ViewBag.Mode;
+    int lives = ViewBag.Lives ?? 3;
+
+    var choices = ViewBag.Choices as List<string>;
+
+    ViewBag.HasLives = true;
+    ViewBag.Lives = lives;
+}
+
+<div class="card">
+
+    <h2 class="quiz-title">@ViewBag.QuestionText</h2>
+
+
+    @foreach (var c in choices)
+    {
+        <button class="choice" onclick="submitAnswer('@c')">@c</button>
+    }
+
+</div>
+
+<script>
+    function normalizeText(text) {
+        return text
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .trim();
+    }
+
+    function submitAnswer(answer) {
+
+            const correct = @Html.Raw(
+        System.Text.Json.JsonSerializer.Serialize(ViewBag.CorrectAnswer)
+    );
+
+
+        let step = @step;
+        let score = @score;
+        let mode = @mode;
+        let lives = @lives;
+        let playerCode = "@playerCode";
+
+        if (normalizeText(answer) === normalizeText(correct)) {
+
+            score++;
+
+            if (mode === 1) {
+                fetch(`/api/playerapi/addxp?playerCode=${playerCode}&amount=25`, {
+                    method: "POST"
+                });
+            }
+
+            Swal.fire({
+                title: "Correct!",
+                text: mode === 1 ? "+25 XP" : "Good job!",
+                icon: "success",
+                timer: 800,
+                showConfirmButton: false
+            }).then(() => {
+
+                window.location.href =
+                    `/TimedQuiz/Start?playerCode=${playerCode}&step=${step + 1}&score=${score}&mode=${mode}&lives=${lives}`;
+            });
+
+            return;
+        }
+
+        if (mode === 1) {
+            lives--;
+
+            if (lives <= 0) {
+                sessionStorage.removeItem("learnMaltiTimedQuizEnd");
+
+                window.location.href =
+                    `/TimedQuiz/Completed?playerCode=${playerCode}&mode=${mode}&failed=true`;
+                return;
+            }
+
+            Swal.fire({
+                title: "Wrong!",
+                text: `Lives left: ${lives}`,
+                icon: "error",
+                timer: 800,
+                showConfirmButton: false
+            }).then(() => {
+
+                window.location.href =
+                    `/TimedQuiz/Start?playerCode=${playerCode}&step=${step}&score=${score}&mode=${mode}&lives=${lives}`;
+            });
+        }
+    }
+</script>

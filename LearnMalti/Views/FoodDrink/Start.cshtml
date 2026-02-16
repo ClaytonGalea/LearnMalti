@@ -23,8 +23,8 @@
         @if (!string.IsNullOrEmpty(Model.ImageUrl))
         {
             <img src="@Model.ImageUrl"
-                 class="image quiz-image"
-                 alt="@Model.EnglishText" />
+            class="image quiz-image"
+            alt="@Model.EnglishText" />
         }
 
         @foreach (var c in choices)
@@ -40,17 +40,20 @@
 
         <div class="answer-row">
             <input id="fillInput"
-                   class="input"
-                   placeholder="Ikteb il-kelma bil-Malti" />
+            class="input"
+            placeholder="Ikteb il-kelma bil-Malti" />
 
             <button class="submit"
-                    onclick="submitAnswer(document.getElementById('fillInput').value)">
+            onclick="submitAnswer(document.getElementById('fillInput').value)">
                 Submit
             </button>
 
-            <button class="hint-btn" onclick="showHint()">
-                💡 Hint
+            @if (ViewBag.Mode == 1)
+            {
+                <button class="hint-btn" onclick="showHint()">
+                    💡 Hint
             </button>
+            }
         </div>
 
         <p id="hintText" class="hint-text"></p>

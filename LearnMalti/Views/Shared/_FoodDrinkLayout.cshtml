@@ -14,59 +14,62 @@
     </div>
 }
 
-<div class="tutorial-background colors-bg">
-    @if (ViewBag.Step == 4)
-    {
-        <!-- LEFT -->
-        <div class="colors-column">
-            <div class="food-card">
-                <img src="/images/words/milk.png" />
-                <span>Ħalib</span>
+@if (ViewBag.Mode == 1)
+{
+    <div class="tutorial-background colors-bg">
+        @if (ViewBag.Step == 4)
+        {
+            <!-- LEFT -->
+            <div class="colors-column">
+                <div class="food-card">
+                    <img src="/images/words/milk.png" />
+                    <span>Ħalib</span>
+                </div>
+
+                <div class="food-card">
+                    <img src="/images/words/bread.png" />
+                    <span>Ħobż</span>
+                </div>
+
+                <div class="food-card">
+                    <img src="/images/words/meat.png" />
+                    <span>Laħam</span>
+                </div>
+
+                <div class="food-card">
+                    <img src="/images/words/fish.png" />
+                    <span>Ħut</span>
+                </div>
             </div>
 
-            <div class="food-card">
-                <img src="/images/words/bread.png" />
-                <span>Ħobż</span>
-            </div>
+            <!-- CENTER -->
+            <div class="colors-spacer"></div>
 
-            <div class="food-card">
-                <img src="/images/words/meat.png" />
-                <span>Laħam</span>
-            </div>
+            <!-- RIGHT -->
+            <div class="colors-column">
+                <div class="food-card">
+                    <img src="/images/words/oil.png" />
+                    <span>Żejt</span>
+                </div>
 
-            <div class="food-card">
-                <img src="/images/words/fish.png" />
-                <span>Ħut</span>
-            </div>
-        </div>
+                <div class="food-card">
+                    <img src="/images/words/salt.png" />
+                    <span>Melħ</span>
+                </div>
 
-        <!-- CENTER -->
-        <div class="colors-spacer"></div>
+                <div class="food-card">
+                    <img src="/images/words/coffee.png" />
+                    <span>Kafè</span>
+                </div>
 
-        <!-- RIGHT -->
-        <div class="colors-column">
-            <div class="food-card">
-                <img src="/images/words/oil.png" />
-                <span>Żejt</span>
+                <div class="food-card">
+                    <img src="/images/words/Ice Cream.png" />
+                    <span>Ġelat</span>
+                </div>
             </div>
-
-            <div class="food-card">
-                <img src="/images/words/salt.png" />
-                <span>Melħ</span>
-            </div>
-
-            <div class="food-card">
-                <img src="/images/words/coffee.png" />
-                <span>Kafè</span>
-            </div>
-
-            <div class="food-card">
-                <img src="/images/words/Ice Cream.png" />
-                <span>Ġelat</span>
-            </div>
-        </div>
-    }
-</div>
+        }
+    </div>
+}
 
 <div class="fooddrink-content">
     @RenderBody()

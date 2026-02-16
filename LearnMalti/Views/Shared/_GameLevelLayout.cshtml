@@ -28,7 +28,9 @@
                    href="/Menu/Game?playerCode=@playerCode&mode=@mode">
                     🏠 Home
                 </a>
-
+                
+        @if (ViewBag.Mode == 1)
+        {
                 @if (ViewBag.HasLives == true)
                 {
                     <div class="lives-hud">
@@ -38,7 +40,9 @@
                         }
                     </div>
                 }
-            </div>
+        }
+        </div>
+        
 
             @if (mode == 1)
             {
@@ -76,7 +80,7 @@
         }
     </script>
 
-    @if (mode == 1)
+    @if (mode == 1 && ViewBag.DisableGlobalTimer != true)
     {
         <script>
             startTimer(30, () => {
