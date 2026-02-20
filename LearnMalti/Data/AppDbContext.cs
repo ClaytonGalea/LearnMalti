@@ -15,14 +15,12 @@ namespace LearnMalti.Data
         public DbSet<Player> Players { get; set; }
         public DbSet<LearningItem> LearningItems { get; set; }
         public DbSet<PlayerProgress> PlayerProgress { get; set; }
-        public DbSet<Assessment> Assessments { get; set; }
-        public DbSet<AssessmentResult> AssessmentResults { get; set; }
         public DbSet<Badge> Badges { get; set; }
         public DbSet<PlayerBadge> PlayerBadges { get; set; }
-        public DbSet<SurveyQuestion> SurveyQuestions { get; set; }
-        public DbSet<SurveyResponse> SurveyResponses { get; set; }
-
         public DbSet<TimedQuizResult> TimedQuizResults { get; set; }
+
+        public DbSet<LevelAttempt> LevelAttempts { get; set; }
+        public DbSet<QuestionResponse> QuestionResponses { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -41,6 +39,32 @@ namespace LearnMalti.Data
             modelBuilder.Entity<PlayerBadge>()
                 .HasIndex(pb => new { pb.PlayerId, pb.BadgeId })
                 .IsUnique();
+
+            // LevelAttempt → Player
+            modelBuilder.Entity<LevelAttempt>()
+                .HasOne(la => la.Player)
+                .WithMany()
+                .HasForeignKey(la => la.PlayerId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<QuestionResponse>()
+                 .HasOne(qr => qr.LevelAttempt)
+                 .WithMany(la => la.QuestionResponses)
+                 .HasForeignKey(qr => qr.LevelAttemptId)
+                 .OnDelete(DeleteBehavior.Cascade);
+
+
+            // QuestionResponse → LearningItem
+            modelBuilder.Entity<QuestionResponse>()
+                .HasOne(qr => qr.LearningItem)
+                .WithMany()
+                .HasForeignKey(qr => qr.LearningItemId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<LevelAttempt>()
+            .Property(x => x.ScorePercentage)
+            .HasPrecision(5, 2);
+
 
             modelBuilder.Entity<Badge>().HasData(
             new Badge { BadgeId = 1, Name = "Tutorial Master", Description = "Completed the Tutorial", IconKey = "🏅" },

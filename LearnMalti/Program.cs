@@ -17,6 +17,9 @@ namespace LearnMalti
             builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            builder.Services.AddSession();
+            builder.Services.AddHttpContextAccessor();
+
             var app = builder.Build();
 
 
@@ -38,7 +41,7 @@ namespace LearnMalti
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseSession();
             app.UseAuthorization();
 
             app.MapControllerRoute(

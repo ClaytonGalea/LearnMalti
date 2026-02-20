@@ -10,6 +10,5 @@
 
         public int CurrentLevel { get; set; } = 1;
         public int CurrentXp { get; set; } = 0;
-        public int TotalXpEarned { get; set; } = 0;
     }
 }

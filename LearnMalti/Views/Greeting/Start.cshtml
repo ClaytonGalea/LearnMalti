@@ -91,6 +91,7 @@
     }
 
     function submitAnswer(answer) {
+
         const correct = @Html.Raw(
             System.Text.Json.JsonSerializer.Serialize(
                 ViewBag.CorrectAnswer ?? Model.MalteseText
@@ -102,10 +103,12 @@
         let mode = @mode;
         let lives = @lives;
         let playerCode = "@playerCode";
+        let learningItemId = @Model.LearningItemId;
 
+        // ✅ CORRECT
         if (normalizeText(answer) === normalizeText(correct)) {
-            score++;
 
+            score++;
 
             if (mode === 1) {
                 fetch(`/api/playerapi/addxp?playerCode=${playerCode}&amount=20`, {
@@ -115,18 +118,28 @@
 
             Swal.fire({
                 title: "Correct!",
-                 text: mode === 1 ? "+20 XP" : "Good job!",
+                text: mode === 1 ? "+20 XP" : "Good job!",
                 icon: "success",
                 timer: 900,
                 showConfirmButton: false
             }).then(() => {
+
                 window.location.href =
-                    `/Greeting/Start?playerCode=${playerCode}&step=${step + 1}&score=${score}&mode=${mode}&lives=${lives}`;
+                    `/Greeting/SubmitAnswer?playerCode=${playerCode}` +
+                    `&step=${step}` +
+                    `&score=${score}` +
+                    `&mode=${mode}` +
+                    `&lives=${lives}` +
+                    `&learningItemId=${learningItemId}` +
+                    `&isCorrect=true`;
             });
+
             return;
         }
 
+        // ❌ WRONG
         if (mode === 1) {
+
             lives--;
 
             if (lives <= 0) {
@@ -139,13 +152,22 @@
                 title: "Wrong!",
                 text: `Lives left: ${lives}`,
                 icon: "error",
-                timer: 800,
+                timer: 900,
                 showConfirmButton: false
             }).then(() => {
+
                 window.location.href =
-                    `/Greeting/Start?playerCode=${playerCode}&step=${step}&score=${score}&mode=${mode}&lives=${lives}`;
+                    `/Greeting/SubmitAnswer?playerCode=${playerCode}` +
+                    `&step=${step}` +
+                    `&score=${score}` +
+                    `&mode=${mode}` +
+                    `&lives=${lives}` +
+                    `&learningItemId=${learningItemId}` +
+                    `&isCorrect=false`;
             });
+
         } else {
+
             Swal.fire({
                 title: "Try again!",
                 icon: "error",
@@ -155,10 +177,12 @@
         }
     }
 
-    /* ===== MATCHING LOGIC (ONLY WHEN NEEDED) ===== */
+    /* ===== MATCHING ===== */
     if (questionType === "Matching") {
 
-        const correctPairs = @Html.Raw(pairsJson);
+        const correctPairs = @Html.Raw(
+            System.Text.Json.JsonSerializer.Serialize<object>(ViewBag.Pairs)
+        );
 
         let selectedMaltese = null;
         let matchedCount = 0;
@@ -177,6 +201,7 @@
 
         document.querySelectorAll(".match-item.english").forEach(item => {
             item.addEventListener("click", () => {
+
                 if (!selectedMaltese || item.classList.contains("matched")) return;
 
                 const maltese = normalizeText(selectedMaltese.dataset.value);
@@ -187,24 +212,22 @@
                     normalizeText(p.English) === english
                 );
 
-                    if (isCorrect) {
-                        // 🧼 clear previous wrong state
-                        selectedMaltese.classList.remove("wrong");
-                        item.classList.remove("wrong");
+                if (isCorrect) {
+                    selectedMaltese.classList.remove("wrong", "selected");
+                    item.classList.remove("wrong");
 
-                        // ✅ mark as matched
-                        selectedMaltese.classList.add("matched");
-                        item.classList.add("matched");
+                    selectedMaltese.classList.add("matched");
+                    item.classList.add("matched");
 
-                        matchedCount++;
-                    }else {
+                    matchedCount++;
+                } else {
                     selectedMaltese.classList.add("wrong");
                     item.classList.add("wrong");
 
                     setTimeout(() => {
                         selectedMaltese.classList.remove("wrong", "selected");
                         item.classList.remove("wrong");
-                    }, 50);
+                    }, 400);
                 }
 
                 selectedMaltese.classList.remove("selected");
@@ -213,17 +236,17 @@
         });
 
         window.finishMatching = function () {
+
             if (matchedCount < correctPairs.length) {
                 Swal.fire("Finish all matches first!");
                 return;
             }
 
-
-             if (@mode === 1) {
-                 fetch(`/api/playerapi/addxp?playerCode=@playerCode&amount=40`, {
-                 method: "POST"
-            });
-        }
+            if (@mode === 1) {
+                fetch(`/api/playerapi/addxp?playerCode=@playerCode&amount=40`, {
+                    method: "POST"
+                });
+            }
 
             Swal.fire({
                 title: "Excellent!",
@@ -232,8 +255,15 @@
                 timer: 1000,
                 showConfirmButton: false
             }).then(() => {
+
                 window.location.href =
-                    `/Greeting/Completed?playerCode=@playerCode&mode=@mode`;
+                    `/Greeting/SubmitAnswer?playerCode=@playerCode` +
+                    `&step=@step` +
+                    `&score=@score` +
+                    `&mode=@mode` +
+                    `&lives=@lives` +
+                    `&learningItemId=@Model.LearningItemId` +
+                    `&isCorrect=true`;
             });
         };
     }

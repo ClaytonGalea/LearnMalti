@@ -73,8 +73,8 @@
             .normalize("NFD")
             .replace(/[\u0300-\u036f]/g, "");
     }
-
     function submitAnswer(answer) {
+
         const correct = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
             ViewBag.CorrectAnswer ?? Model.MalteseText
         ));
@@ -84,9 +84,14 @@
         let mode = @mode;
         let lives = @lives;
         let playerCode = "@playerCode";
+        let learningItemId = @Model.LearningItemId;
 
-        // ✅ CORRECT ANSWER
-        if (normalize(answer.trim()) === normalize(correct)) {
+        const isCorrect =
+            normalize(answer.trim()) === normalize(correct);
+
+        // ✅ CORRECT
+        if (isCorrect) {
+
             score++;
 
             if (mode === 1) {
@@ -102,22 +107,30 @@
                 timer: 900,
                 showConfirmButton: false
             }).then(() => {
+
                 window.location.href =
-                    `/Travel/Start?playerCode=${playerCode}&step=${step + 1}&score=${score}&mode=${mode}&lives=${lives}`;
+                    `/Travel/SubmitAnswer?playerCode=${playerCode}` +
+                    `&step=${step}` +
+                    `&score=${score}` +
+                    `&mode=${mode}` +
+                    `&lives=${lives}` +
+                    `&learningItemId=${learningItemId}` +
+                    `&isCorrect=true`;
             });
 
             return;
         }
 
-
-        // ❌ WRONG ANSWER
+        // ❌ WRONG
         if (mode === 1) {
+
             lives--;
 
-                if (lives <= 0) {
-                     window.location.href = `/Travel/Completed?playerCode=${playerCode}&mode=${mode}&failed=true`;
-                     return;
-        }
+            if (lives <= 0) {
+                window.location.href =
+                    `/Travel/Completed?playerCode=${playerCode}&score=${score}&total=@ViewBag.TotalSteps&mode=${mode}&failed=true`;
+                return;
+            }
 
             Swal.fire({
                 title: "Wrong!",
@@ -126,12 +139,19 @@
                 timer: 900,
                 showConfirmButton: false
             }).then(() => {
+
                 window.location.href =
-                    `/Travel/Start?playerCode=${playerCode}&step=${step}&score=${score}&mode=${mode}&lives=${lives}`;
+                    `/Travel/SubmitAnswer?playerCode=${playerCode}` +
+                    `&step=${step}` +
+                    `&score=${score}` +
+                    `&mode=${mode}` +
+                    `&lives=${lives}` +
+                    `&learningItemId=${learningItemId}` +
+                    `&isCorrect=false`;
             });
 
         } else {
-            // 🟢 PRACTICE MODE → unlimited attempts
+
             Swal.fire({
                 title: "Try again!",
                 icon: "error",

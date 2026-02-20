@@ -22,61 +22,6 @@ namespace LearnMalti.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("LearnMalti.Models.Assessment", b =>
-                {
-                    b.Property<int>("AssessmentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AssessmentId"));
-
-                    b.Property<int>("AssessmentType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("AssessmentId");
-
-                    b.ToTable("Assessments");
-                });
-
-            modelBuilder.Entity("LearnMalti.Models.AssessmentResult", b =>
-                {
-                    b.Property<int>("AssessmentResultId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AssessmentResultId"));
-
-                    b.Property<int>("AssessmentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlayerId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ScoreGrammar")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ScoreVocabulary")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("TakenAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("TotalScore")
-                        .HasColumnType("int");
-
-                    b.HasKey("AssessmentResultId");
-
-                    b.HasIndex("AssessmentId");
-
-                    b.HasIndex("PlayerId");
-
-                    b.ToTable("AssessmentResults");
-                });
-
             modelBuilder.Entity("LearnMalti.Models.Badge", b =>
                 {
                     b.Property<int>("BadgeId")
@@ -166,6 +111,58 @@ namespace LearnMalti.Migrations
                     b.ToTable("LearningItems");
                 });
 
+            modelBuilder.Entity("LearnMalti.Models.LevelAttempt", b =>
+                {
+                    b.Property<int>("LevelAttemptId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LevelAttemptId"));
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CorrectAnswers")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DurationSeconds")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IncorrectAnswers")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LevelName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Mode")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PlayerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RetryCount")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("ScorePercentage")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("StartedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("TimeRanOut")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("TotalQuestions")
+                        .HasColumnType("int");
+
+                    b.HasKey("LevelAttemptId");
+
+                    b.HasIndex("PlayerId");
+
+                    b.ToTable("LevelAttempts");
+                });
+
             modelBuilder.Entity("LearnMalti.Models.Player", b =>
                 {
                     b.Property<int>("PlayerId")
@@ -189,9 +186,6 @@ namespace LearnMalti.Migrations
                     b.Property<string>("PlayerCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("TotalXpEarned")
-                        .HasColumnType("int");
 
                     b.Property<int>("YearGroup")
                         .HasColumnType("int");
@@ -267,51 +261,41 @@ namespace LearnMalti.Migrations
                     b.ToTable("PlayerProgress");
                 });
 
-            modelBuilder.Entity("LearnMalti.Models.SurveyQuestion", b =>
+            modelBuilder.Entity("LearnMalti.Models.QuestionResponse", b =>
                 {
-                    b.Property<int>("SurveyQuestionId")
+                    b.Property<int>("QuestionResponseId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SurveyQuestionId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("QuestionResponseId"));
 
-                    b.Property<int?>("TargetMode")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Text")
+                    b.Property<string>("CorrectAnswer")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("SurveyQuestionId");
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("bit");
 
-                    b.ToTable("SurveyQuestions");
-                });
-
-            modelBuilder.Entity("LearnMalti.Models.SurveyResponse", b =>
-                {
-                    b.Property<int>("SurveyResponseId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("LearningItemId")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SurveyResponseId"));
-
-                    b.Property<int>("PlayerId")
+                    b.Property<int>("LevelAttemptId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ResponseText")
+                    b.Property<string>("SelectedAnswer")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SurveyQuestionId")
+                    b.Property<int>("TimeTakenSeconds")
                         .HasColumnType("int");
 
-                    b.HasKey("SurveyResponseId");
+                    b.HasKey("QuestionResponseId");
 
-                    b.HasIndex("PlayerId");
+                    b.HasIndex("LearningItemId");
 
-                    b.HasIndex("SurveyQuestionId");
+                    b.HasIndex("LevelAttemptId");
 
-                    b.ToTable("SurveyResponses");
+                    b.ToTable("QuestionResponses");
                 });
 
             modelBuilder.Entity("LearnMalti.Models.TimedQuizResult", b =>
@@ -322,6 +306,12 @@ namespace LearnMalti.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TimedQuizResultId"));
 
+                    b.Property<int>("CorrectAnswers")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Mode")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("PlayedAt")
                         .HasColumnType("datetime2");
 
@@ -329,10 +319,10 @@ namespace LearnMalti.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Score")
+                    b.Property<int>("QuestionsAnswered")
                         .HasColumnType("int");
 
-                    b.Property<int>("XP")
+                    b.Property<int>("Score")
                         .HasColumnType("int");
 
                     b.HasKey("TimedQuizResultId");
@@ -340,21 +330,13 @@ namespace LearnMalti.Migrations
                     b.ToTable("TimedQuizResults");
                 });
 
-            modelBuilder.Entity("LearnMalti.Models.AssessmentResult", b =>
+            modelBuilder.Entity("LearnMalti.Models.LevelAttempt", b =>
                 {
-                    b.HasOne("LearnMalti.Models.Assessment", "Assessment")
-                        .WithMany()
-                        .HasForeignKey("AssessmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("LearnMalti.Models.Player", "Player")
                         .WithMany()
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Assessment");
 
                     b.Navigation("Player");
                 });
@@ -397,23 +379,28 @@ namespace LearnMalti.Migrations
                     b.Navigation("Player");
                 });
 
-            modelBuilder.Entity("LearnMalti.Models.SurveyResponse", b =>
+            modelBuilder.Entity("LearnMalti.Models.QuestionResponse", b =>
                 {
-                    b.HasOne("LearnMalti.Models.Player", "Player")
+                    b.HasOne("LearnMalti.Models.LearningItem", "LearningItem")
                         .WithMany()
-                        .HasForeignKey("PlayerId")
+                        .HasForeignKey("LearningItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LearnMalti.Models.LevelAttempt", "LevelAttempt")
+                        .WithMany("QuestionResponses")
+                        .HasForeignKey("LevelAttemptId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LearnMalti.Models.SurveyQuestion", "SurveyQuestion")
-                        .WithMany()
-                        .HasForeignKey("SurveyQuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("LearningItem");
 
-                    b.Navigation("Player");
+                    b.Navigation("LevelAttempt");
+                });
 
-                    b.Navigation("SurveyQuestion");
+            modelBuilder.Entity("LearnMalti.Models.LevelAttempt", b =>
+                {
+                    b.Navigation("QuestionResponses");
                 });
 #pragma warning restore 612, 618
         }

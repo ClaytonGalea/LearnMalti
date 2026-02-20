@@ -1,4 +1,5 @@
 ﻿@model LearnMalti.Models.LearningItem
+
 @{
     Layout = "~/Views/Shared/_FoodDrinkLayout.cshtml";
 
@@ -81,8 +82,8 @@
             .normalize("NFD")
             .replace(/[\u0300-\u036f]/g, "");
     }
+        function submitAnswer(answer) {
 
-    function submitAnswer(answer) {
         const correct = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
             ViewBag.CorrectAnswer ?? Model.MalteseText
         ));
@@ -92,9 +93,14 @@
         let mode = @mode;
         let lives = @lives;
         let playerCode = "@playerCode";
+        let learningItemId = @Model.LearningItemId;
 
-        // ✅ CORRECT ANSWER
-        if (normalize(answer.trim()) === normalize(correct)) {
+        const isCorrect =
+            normalize(answer.trim()) === normalize(correct);
+
+        // ✅ CORRECT
+        if (isCorrect) {
+
             score++;
 
             if (mode === 1) {
@@ -102,29 +108,38 @@
                     method: "POST"
                 });
             }
-        
+
             Swal.fire({
                 title: "Correct!",
-                 text: mode === 1 ? "+20 XP" : "Good job!",
+                text: mode === 1 ? "+20 XP" : "Good job!",
                 icon: "success",
                 timer: 900,
                 showConfirmButton: false
             }).then(() => {
+
                 window.location.href =
-                    `/FoodDrink/Start?playerCode=${playerCode}&step=${step + 1}&score=${score}&mode=${mode}&lives=${lives}`;
+                    `/FoodDrink/SubmitAnswer?playerCode=${playerCode}` +
+                    `&step=${step}` +
+                    `&score=${score}` +
+                    `&mode=${mode}` +
+                    `&lives=${lives}` +
+                    `&learningItemId=${learningItemId}` +
+                    `&isCorrect=true`;
             });
 
             return;
         }
 
-        // ❌ WRONG ANSWER
+        // ❌ WRONG
         if (mode === 1) {
+
             lives--;
 
-                if (lives <= 0) {
-                     window.location.href = `/FoodDrink/Completed?playerCode=${playerCode}&mode=${mode}&failed=true`;
-                     return;
-        }
+            if (lives <= 0) {
+                window.location.href =
+                    `/FoodDrink/Completed?playerCode=${playerCode}&mode=${mode}&failed=true`;
+                return;
+            }
 
             Swal.fire({
                 title: "Wrong!",
@@ -133,12 +148,19 @@
                 timer: 900,
                 showConfirmButton: false
             }).then(() => {
+
                 window.location.href =
-                    `/FoodDrink/Start?playerCode=${playerCode}&step=${step}&score=${score}&mode=${mode}&lives=${lives}`;
+                    `/FoodDrink/SubmitAnswer?playerCode=${playerCode}` +
+                    `&step=${step}` +
+                    `&score=${score}` +
+                    `&mode=${mode}` +
+                    `&lives=${lives}` +
+                    `&learningItemId=${learningItemId}` +
+                    `&isCorrect=false`;
             });
 
         } else {
-            // 🟢 PRACTICE MODE → unlimited attempts
+
             Swal.fire({
                 title: "Try again!",
                 icon: "error",
@@ -147,13 +169,14 @@
             });
         }
     }
+    
 
-        function showHint() {
+    function showHint() {
         const correct = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
             ViewBag.CorrectAnswer ?? Model.MalteseText
         ));
 
-        if (!correct || correct.length < 3) return;
+        if (!correct || correct.length < 3) return;                                                                                                                                                                                         
 
         const firstTwo = correct.substring(0, 2);
         const lastLetter = correct.substring(correct.length - 1);
@@ -168,5 +191,3 @@
     }
 
 </script>
-
-

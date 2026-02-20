@@ -15,12 +15,40 @@ namespace LearnMalti.Controllers
 
         public IActionResult Start(string playerCode, int step = 1, int score = 0, int mode = 1, int lives = 3)
         {
+
             // Get 10 Food & Drink items
             var items = _context.LearningItems
                 .Where(x => x.Category == "FoodDrink")
                 .OrderBy(x => x.LearningItemId)
                 .Take(10)
                 .ToList();
+
+            if (step == 1 && HttpContext.Session.GetInt32("CurrentAttemptId") == null)
+            {
+                var player = _context.Players
+                    .FirstOrDefault(p => p.PlayerCode == playerCode);
+
+                if (player != null)
+                {
+                    var attempt = new LevelAttempt
+                    {
+                        PlayerId = player.PlayerId,
+                        LevelName = "FoodDrink",
+                        Mode = mode,
+                        StartedAt = DateTime.UtcNow,
+                        TotalQuestions = items.Count,
+                        CorrectAnswers = 0,
+                        IncorrectAnswers = 0,
+                        RetryCount = 0,
+                        TimeRanOut = false
+                    };
+
+                    _context.LevelAttempts.Add(attempt);
+                    _context.SaveChanges();
+
+                    HttpContext.Session.SetInt32("CurrentAttemptId", attempt.LevelAttemptId);
+                }
+            }
 
             // ❌ FAILED (no lives left)
             if (lives <= 0)
@@ -114,7 +142,42 @@ namespace LearnMalti.Controllers
 
             return View("Start", current);
         }
+        public IActionResult SubmitAnswer(
+    string playerCode,
+    int step,
+    int score,
+    int mode,
+    int lives,
+    int learningItemId,
+    bool isCorrect)
+        {
+            var attemptId = HttpContext.Session.GetInt32("CurrentAttemptId");
 
+            if (!attemptId.HasValue)
+                return RedirectToAction("Start", new { playerCode, step, score, mode, lives });
+
+            var attempt = _context.LevelAttempts
+                .FirstOrDefault(a => a.LevelAttemptId == attemptId.Value);
+
+            if (attempt == null)
+                return RedirectToAction("Start", new { playerCode, step, score, mode, lives });
+
+            if (isCorrect)
+                attempt.CorrectAnswers++;
+            else
+                attempt.IncorrectAnswers++;
+
+            _context.SaveChanges();
+
+            return RedirectToAction("Start", new
+            {
+                playerCode,
+                step = isCorrect ? step + 1 : step,
+                score,
+                mode,
+                lives
+            });
+        }
 
         private string GetQuestionType(int step)
         {
@@ -126,6 +189,35 @@ namespace LearnMalti.Controllers
 
         public IActionResult Completed(string playerCode, int mode, bool timeUp = false, bool failed = false)
         {
+            // 🔥 UPDATE LEVEL ATTEMPT
+            var attemptId = HttpContext.Session.GetInt32("CurrentAttemptId");
+
+            if (attemptId.HasValue)
+            {
+                var attempt = _context.LevelAttempts
+                    .FirstOrDefault(a => a.LevelAttemptId == attemptId.Value);
+
+                if (attempt != null && attempt.CompletedAt == null)
+                {
+                    attempt.CompletedAt = DateTime.UtcNow;
+
+                    attempt.DurationSeconds =
+                        (int)(attempt.CompletedAt.Value - attempt.StartedAt).TotalSeconds;
+
+                    attempt.TimeRanOut = timeUp;
+
+                    attempt.ScorePercentage =
+                        attempt.TotalQuestions > 0
+                        ? Math.Round((decimal)attempt.CorrectAnswers / attempt.TotalQuestions * 100, 2)
+                        : 0;
+
+                    _context.SaveChanges();
+                }
+            }
+
+            // 🔥 OPTIONAL BUT IMPORTANT (prevents reuse of old attempt)
+            HttpContext.Session.Remove("CurrentAttemptId");
+
             ViewBag.PlayerCode = playerCode;
             ViewBag.Mode = mode;
             ViewBag.TimeUp = timeUp;
@@ -133,7 +225,7 @@ namespace LearnMalti.Controllers
 
             if (!timeUp && !failed)
             {
-                AwardBadgeIfNotExists(playerCode, 5);
+                AwardBadgeIfNotExists(playerCode, 4);
             }
 
             ViewBag.Layout = "~/Views/Shared/_FoodDrinkLayout.cshtml";
