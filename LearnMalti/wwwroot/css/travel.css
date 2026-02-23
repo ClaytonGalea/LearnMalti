@@ -379,3 +379,23 @@ top-hud {
     padding-top: 12px;
 }
 
+.hint-btn {
+    background: #64b5f6;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+    .hint-btn:hover {
+        background: #42a5f5;
+    }
+
+.hint-text {
+    margin-top: 12px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #444;
+}

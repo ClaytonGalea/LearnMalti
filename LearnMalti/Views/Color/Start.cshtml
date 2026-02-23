@@ -109,74 +109,95 @@
             .trim();
     }
 
-    function submitAnswer(answer) {
+           function submitAnswer(answer) {
 
-        const correct = @Html.Raw(
-            System.Text.Json.JsonSerializer.Serialize(
-                ViewBag.CorrectAnswer ?? Model.MalteseText
-            )
-        );
+            const correct = @Html.Raw(
+                System.Text.Json.JsonSerializer.Serialize(
+                    ViewBag.CorrectAnswer ?? Model.MalteseText
+                )
+            );
 
-        let step = @step;
-        let score = @score;
-        let mode = @mode;
-        let lives = @lives;
-        let playerCode = "@playerCode";
+            let step = @step;
+            let score = @score;
+            let mode = @mode;
+            let lives = @lives;
+            let playerCode = "@playerCode";
+            let learningItemId = @Model.LearningItemId;
 
-        // ✅ CORRECT
-        if (normalizeText(answer) === normalizeText(correct)) {
-            score++;
+            const isCorrect =
+                normalizeText(answer.trim()) === normalizeText(correct);
 
-            if (mode === 1) {
-                fetch(`/api/playerapi/addxp?playerCode=${playerCode}&amount=20`, {
-                    method: "POST"
+            // ✅ CORRECT
+            if (isCorrect) {
+
+                score++;
+
+                if (mode === 1) {
+                    fetch(`/api/playerapi/addxp?playerCode=${playerCode}&amount=20`, {
+                        method: "POST"
+                    });
+                }
+
+                Swal.fire({
+                    title: "Correct!",
+                    text: mode === 1 ? "+20 XP" : "Good job!",
+                    icon: "success",
+                    timer: 900,
+                    showConfirmButton: false
+                }).then(() => {
+
+                    window.location.href =
+                        `/Color/SubmitAnswer?playerCode=${playerCode}` +
+                        `&step=${step}` +
+                        `&score=${score}` +
+                        `&mode=${mode}` +
+                        `&lives=${lives}` +
+                        `&learningItemId=${learningItemId}` +
+                        `&isCorrect=true`;
                 });
-            }
 
-            Swal.fire({
-                title: "Correct!",
-                text: mode === 1 ? "+20 XP" : "Good job!",
-                icon: "success",
-                timer: 900,
-                showConfirmButton: false
-            }).then(() => {
-                window.location.href =
-                    `/Color/Start?playerCode=${playerCode}&step=${step + 1}&score=${score}&mode=${mode}&lives=${lives}`;
-            });
-
-            return;
-        }
-
-        // ❌ WRONG
-        if (mode === 1) {
-            lives--;
-
-            if (lives <= 0) {
-                window.location.href =
-                    `/Color/Completed?playerCode=${playerCode}&mode=${mode}&failed=true`;
                 return;
             }
 
-            Swal.fire({
-                title: "Wrong!",
-                text: `Lives left: ${lives}`,
-                icon: "error",
-                timer: 900,
-                showConfirmButton: false
-            }).then(() => {
-                window.location.href =
-                    `/Color/Start?playerCode=${playerCode}&step=${step}&score=${score}&mode=${mode}&lives=${lives}`;
-            });
+            // ❌ WRONG
+            if (mode === 1) {
+
+                lives--;
+
+                if (lives <= 0) {
+                    window.location.href =
+                        `/Color/Completed?playerCode=${playerCode}&mode=${mode}&failed=true`;
+                    return;
+                }
+
+                Swal.fire({
+                    title: "Wrong!",
+                    text: `Lives left: ${lives}`,
+                    icon: "error",
+                    timer: 900,
+                    showConfirmButton: false
+                }).then(() => {
+
+                    window.location.href =
+                        `/Color/SubmitAnswer?playerCode=${playerCode}` +
+                        `&step=${step}` +
+                        `&score=${score}` +
+                        `&mode=${mode}` +
+                        `&lives=${lives}` +
+                        `&learningItemId=${learningItemId}` +
+                        `&isCorrect=false`;
+                });
+
+            } else {
+
+                Swal.fire({
+                    title: "Try again!",
+                    icon: "error",
+                    timer: 700,
+                    showConfirmButton: false
+                });
+            }
         }
-        else {
-            Swal.fire({
-                title: "Try again!",
-                icon: "error",
-                timer: 700,
-                showConfirmButton: false
-            });
-        }
-    }
 
         if (questionType === "Matching") {
 
@@ -236,30 +257,37 @@
                 });
             });
 
-            window.finishMatching = function () {
-                if (matchedCount < correctPairs.length) {
-                    Swal.fire("Finish all matches first!");
-                    return;
-                }
+                   window.finishMatching = function () {
 
+            if (matchedCount < correctPairs.length) {
+                Swal.fire("Finish all matches first!");
+                return;
+            }
 
-                if (@mode === 1) {
-                 fetch(`/api/playerapi/addxp?playerCode=@playerCode&amount=40`, {
-                 method: "POST"
-            });
-         }
-
-                Swal.fire({
-                    title: "Excellent!",
-                    text: @mode === 1 ? "+40 XP" : "Well done!",
-                    icon: "success",
-                    timer: 1000,
-                    showConfirmButton: false
-                }).then(() => {
-                    window.location.href =
-                        `/Color/Completed?playerCode=@playerCode&mode=@mode`;
+            if (@mode === 1) {
+                fetch(`/api/playerapi/addxp?playerCode=@playerCode&amount=40`, {
+                    method: "POST"
                 });
-            };
+            }
+
+            Swal.fire({
+                title: "Excellent!",
+                text: @mode === 1 ? "+40 XP" : "Well done!",
+                icon: "success",
+                timer: 1000,
+                showConfirmButton: false
+            }).then(() => {
+
+                window.location.href =
+                    `/Color/SubmitAnswer?playerCode=@playerCode` +
+                    `&step=@step` +
+                    `&score=@score` +
+                    `&mode=@mode` +
+                    `&lives=@lives` +
+                    `&learningItemId=@Model.LearningItemId` +
+                    `&isCorrect=true`;
+            });
+        };
         }
 
 

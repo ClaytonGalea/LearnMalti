@@ -38,6 +38,7 @@ namespace LearnMalti.Controllers
             })
             .ToList();
 
+
             // 🔒 stable shuffle per player
             var rng = new Random(playerCode.GetHashCode());
 
@@ -45,6 +46,33 @@ namespace LearnMalti.Controllers
                 .OrderBy(x => rng.Next())
                 .Take(8)
                 .ToList();
+
+            if (step == 1 && HttpContext.Session.GetInt32("CurrentAttemptId") == null)
+            {
+                var player = _context.Players
+                    .FirstOrDefault(p => p.PlayerCode == playerCode);
+
+                if (player != null)
+                {
+                    var attempt = new LevelAttempt
+                    {
+                        PlayerId = player.PlayerId,
+                        LevelName = "SinPlu",
+                        Mode = mode,
+                        StartedAt = DateTime.UtcNow,
+                        TotalQuestions = pairs.Count,
+                        CorrectAnswers = 0,
+                        IncorrectAnswers = 0,
+                        RetryCount = 0,
+                        TimeRanOut = false
+                    };
+
+                    _context.LevelAttempts.Add(attempt);
+                    _context.SaveChanges();
+
+                    HttpContext.Session.SetInt32("CurrentAttemptId", attempt.LevelAttemptId);
+                }
+            }
 
             // ❌ Failed
             if (lives <= 0)
@@ -127,6 +155,42 @@ namespace LearnMalti.Controllers
             return View("Start");
         }
 
+        public IActionResult SubmitAnswer(
+    string playerCode,
+    int step,
+    int score,
+    int mode,
+    int lives,
+    string wordKey,
+    bool isCorrect)
+        {
+            var attemptId = HttpContext.Session.GetInt32("CurrentAttemptId");
+
+            if (attemptId.HasValue)
+            {
+                var attempt = _context.LevelAttempts
+                    .FirstOrDefault(a => a.LevelAttemptId == attemptId.Value);
+
+                if (attempt != null)
+                {
+                    if (isCorrect)
+                        attempt.CorrectAnswers++;
+                    else
+                        attempt.IncorrectAnswers++;
+
+                    _context.SaveChanges();
+                }
+            }
+
+            return RedirectToAction("Start", new
+            {
+                playerCode,
+                step = isCorrect ? step + 1 : step,
+                score,
+                mode,
+                lives
+            });
+        }
         private void AwardBadgeIfNotExists(string playerCode, int badgeId)
         {
             // 1️⃣ Find the player
@@ -205,6 +269,32 @@ namespace LearnMalti.Controllers
 
         public IActionResult Completed(string playerCode, int mode, bool timeUp = false, bool failed = false)
         {
+            var attemptId = HttpContext.Session.GetInt32("CurrentAttemptId");
+
+            if (attemptId.HasValue)
+            {
+                var attempt = _context.LevelAttempts
+                    .FirstOrDefault(a => a.LevelAttemptId == attemptId.Value);
+
+                if (attempt != null && attempt.CompletedAt == null)
+                {
+                    attempt.CompletedAt = DateTime.UtcNow;
+
+                    attempt.DurationSeconds =
+                        (int)(attempt.CompletedAt.Value - attempt.StartedAt).TotalSeconds;
+
+                    attempt.TimeRanOut = timeUp;
+
+                    attempt.ScorePercentage =
+                        attempt.TotalQuestions > 0
+                        ? Math.Round((decimal)attempt.CorrectAnswers / attempt.TotalQuestions * 100, 2)
+                        : 0;
+
+                    _context.SaveChanges();
+                }
+            }
+
+            HttpContext.Session.Remove("CurrentAttemptId");
             ViewBag.PlayerCode = playerCode;
             ViewBag.Mode = mode;
             ViewBag.TimeUp = timeUp;
@@ -212,7 +302,7 @@ namespace LearnMalti.Controllers
 
             if (!timeUp && !failed)
             {
-                AwardBadgeIfNotExists(playerCode, 10);
+                AwardBadgeIfNotExists(playerCode, 12);
             }
 
             ViewBag.Layout = "~/Views/Shared/_SinPluLayout.cshtml";

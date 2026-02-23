@@ -107,16 +107,23 @@
             .trim();
     }
 
-    function submitAnswer(answer) {
-       const correct = "@ViewBag.CorrectAnswer";
+        function submitAnswer(answer) {
+
+        const correct = "@ViewBag.CorrectAnswer";
 
         let step = @step;
         let score = @score;
         let mode = @mode;
         let lives = @lives;
         let playerCode = "@playerCode";
+        let wordKey = "@wordKey";
 
-        if (normalizeText(answer) === normalizeText(correct)) {
+        const isCorrect =
+            normalizeText(answer) === normalizeText(correct);
+
+        // ✅ CORRECT
+        if (isCorrect) {
+
             score++;
 
             if (mode === 1) {
@@ -132,12 +139,21 @@
                 timer: 900,
                 showConfirmButton: false
             }).then(() => {
+
                 window.location.href =
-                    `/SinPlu/Start?playerCode=${playerCode}&step=${step + 1}&score=${score}&mode=${mode}&lives=${lives}`;
+                    `/SinPlu/SubmitAnswer?playerCode=${playerCode}` +
+                    `&step=${step}` +
+                    `&score=${score}` +
+                    `&mode=${mode}` +
+                    `&lives=${lives}` +
+                    `&wordKey=${wordKey}` +
+                    `&isCorrect=true`;
             });
+
             return;
         }
 
+        // ❌ WRONG
         lives--;
 
         if (lives <= 0) {
@@ -147,14 +163,21 @@
         }
 
         Swal.fire({
-            title: "Try again!",
+            title: "Wrong!",
             text: `Lives left: ${lives}`,
             icon: "error",
             timer: 800,
             showConfirmButton: false
         }).then(() => {
+
             window.location.href =
-                `/SinPlu/Start?playerCode=${playerCode}&step=${step}&score=${score}&mode=${mode}&lives=${lives}`;
+                `/SinPlu/SubmitAnswer?playerCode=${playerCode}` +
+                `&step=${step}` +
+                `&score=${score}` +
+                `&mode=${mode}` +
+                `&lives=${lives}` +
+                `&wordKey=${wordKey}` +
+                `&isCorrect=false`;
         });
     }
 
@@ -220,28 +243,36 @@
             });
         });
 
-        window.finishMatching = function () {
-            if (matchedCount < correctPairs.length) {
-                Swal.fire("Finish all matches first!");
-                return;
-            }
+           window.finishMatching = function () {
 
-            if (@mode === 1) {
-             fetch(`/api/playerapi/addxp?playerCode=@playerCode&amount=40`, {
-             method: "POST"
-        });
-    }
+        if (matchedCount < correctPairs.length) {
+            Swal.fire("Finish all matches first!");
+            return;
+        }
 
-            Swal.fire({
-                title: "Excellent!",
-                text: @mode === 1 ? "+40 XP" : "Well done!",
-                icon: "success",
-                timer: 1000,
-                showConfirmButton: false
-            }).then(() => {
-                window.location.href =
-                    `/SinPlu/Completed?playerCode=@playerCode&mode=@mode`;
+        if (@mode === 1) {
+            fetch(`/api/playerapi/addxp?playerCode=@playerCode&amount=40`, {
+                method: "POST"
             });
-        };
+        }
+
+        Swal.fire({
+            title: "Excellent!",
+            text: @mode === 1 ? "+40 XP" : "Well done!",
+            icon: "success",
+            timer: 1000,
+            showConfirmButton: false
+        }).then(() => {
+
+            window.location.href =
+                `/SinPlu/SubmitAnswer?playerCode=@playerCode` +
+                `&step=@step` +
+                `&score=@score` +
+                `&mode=@mode` +
+                `&lives=@lives` +
+                `&wordKey=@wordKey` +
+                `&isCorrect=true`;
+        });
+    };
     }
 </script>

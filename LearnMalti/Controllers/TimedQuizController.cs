@@ -94,9 +94,31 @@ namespace LearnMalti.Controllers
         }
 
 
-        public IActionResult Completed(string playerCode, int mode, int score = 0)
+        public IActionResult Completed(
+     string playerCode,
+     int mode,
+     int score = 0,
+     int step = 1,
+     bool failed = false)
         {
             Response.Headers["Cache-Control"] = "no-store";
+
+            // 🔥 Calculate how many questions were actually answered
+            int questionsAnswered = step > 1 ? step - 1 : score;
+
+            // 🔥 Insert result into database
+            var result = new TimedQuizResult
+            {
+                Mode = mode,
+                QuestionsAnswered = questionsAnswered,
+                CorrectAnswers = score,
+                PlayerCode = playerCode,
+                Score = score, // raw correct answers
+                PlayedAt = DateTime.UtcNow
+            };
+
+            _context.TimedQuizResults.Add(result);
+            _context.SaveChanges();
 
             ViewBag.PlayerCode = playerCode;
             ViewBag.Mode = mode;
@@ -105,7 +127,8 @@ namespace LearnMalti.Controllers
             ViewBag.Layout = "~/Views/Shared/_TimedQuizLayout.cshtml";
             ViewBag.Title = "Timed Quiz Completed!";
 
-            ViewBag.BadgeText = $"You got {score} question{(score == 1 ? "" : "s")} right!";
+            ViewBag.BadgeText =
+                $"You got {score} question{(score == 1 ? "" : "s")} right!";
 
             ViewBag.RetryUrl =
                 $"/TimedQuiz/Start?playerCode={playerCode}&step=1&score=0&mode={mode}&lives=3";

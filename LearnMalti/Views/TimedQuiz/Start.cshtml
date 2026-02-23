@@ -51,6 +51,7 @@
 
         if (normalizeText(answer) === normalizeText(correct)) {
 
+            step++;
             score++;
 
             if (mode === 1) {
@@ -66,11 +67,9 @@
                 timer: 800,
                 showConfirmButton: false
             }).then(() => {
-
-                window.location.href =
-                    `/TimedQuiz/Start?playerCode=${playerCode}&step=${step + 1}&score=${score}&mode=${mode}&lives=${lives}`;
+                    window.location.href =
+                        `/TimedQuiz/Start?playerCode=${playerCode}&step=${step}&score=${score}&mode=${mode}&lives=${lives}`;
             });
-
             return;
         }
 
@@ -80,8 +79,12 @@
             if (lives <= 0) {
                 sessionStorage.removeItem("learnMaltiTimedQuizEnd");
 
-                window.location.href =
-                    `/TimedQuiz/Completed?playerCode=${playerCode}&mode=${mode}&failed=true`;
+               window.location.href =
+    `/TimedQuiz/Completed?playerCode=${playerCode}` +
+    `&mode=${mode}` +
+    `&score=${score}` +
+    `&step=${step}` +
+    `&failed=true`;
                 return;
             }
 
@@ -92,7 +95,7 @@
                 timer: 800,
                 showConfirmButton: false
             }).then(() => {
-
+                step++;
                 window.location.href =
                     `/TimedQuiz/Start?playerCode=${playerCode}&step=${step}&score=${score}&mode=${mode}&lives=${lives}`;
             });

@@ -48,7 +48,15 @@
                     onclick="submitAnswer(document.getElementById('fillInput').value)">
                 Submit
             </button>
+            @if (ViewBag.Mode == 1)
+            {
+                <button class="hint-btn" onclick="showHint()">
+                    💡 Hint
+                </button>
+            }
         </div>
+
+        <p id="hintText" class="hint-text"></p>
     }
 
     @if (type == "Sentence")
@@ -159,6 +167,25 @@
                 showConfirmButton: false
             });
         }
+    }
+
+     function showHint() {
+        const correct = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            ViewBag.CorrectAnswer ?? Model.MalteseText
+        ));
+
+        if (!correct || correct.length < 3) return;
+
+        const firstTwo = correct.substring(0, 2);
+        const lastLetter = correct.substring(correct.length - 1);
+
+        let middle = "";
+        for (let i = 0; i < correct.length - 3; i++) {
+            middle += "_ ";
+        }
+
+        document.getElementById("hintText").innerText =
+            `Hint: ${firstTwo} ${middle}${lastLetter}`;
     }
 </script>
 

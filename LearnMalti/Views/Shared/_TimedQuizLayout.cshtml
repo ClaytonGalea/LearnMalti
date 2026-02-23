@@ -26,8 +26,9 @@
     const TIMER_DURATION = 30;
 
     const step = @((ViewBag.Step ?? 0));
+    const score = @((ViewBag.Score ?? 0));
     const playerCode = "@ViewBag.PlayerCode";
-    const mode = "@ViewBag.Mode";
+    const mode = @ViewBag.Mode;
 
     if (step > 0) {
 
@@ -54,7 +55,10 @@
                 sessionStorage.removeItem(TIMER_KEY);
 
                 window.location.href =
-                    `/TimedQuiz/Completed?playerCode=${playerCode}&mode=${mode}&score=@ViewBag.Score`;
+                    `/TimedQuiz/Completed?playerCode=${playerCode}` +
+                    `&mode=${mode}` +
+                    `&score=${score}` +
+                    `&step=${step}`;
             }
         }
 
@@ -62,5 +66,4 @@
         setInterval(updateTimer, 1000);
     }
 </script>
-
 
