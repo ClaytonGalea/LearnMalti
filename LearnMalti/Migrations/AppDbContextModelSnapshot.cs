@@ -145,7 +145,8 @@ namespace LearnMalti.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("ScorePercentage")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<DateTime>("StartedAt")
                         .HasColumnType("datetime2");
@@ -307,6 +308,9 @@ namespace LearnMalti.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TimedQuizResultId"));
 
                     b.Property<int>("CorrectAnswers")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IncorrectAnswers")
                         .HasColumnType("int");
 
                     b.Property<int>("Mode")

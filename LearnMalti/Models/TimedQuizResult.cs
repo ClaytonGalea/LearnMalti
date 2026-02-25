@@ -11,6 +11,8 @@ namespace LearnMalti.Models
 
         public int CorrectAnswers { get; set; }
 
+        public int IncorrectAnswers { get; set; }
+
         public string PlayerCode { get; set; }
 
         public int Score { get; set; }

@@ -8,11 +8,15 @@
     int score = ViewBag.Score;
     int mode = ViewBag.Mode;
     int lives = ViewBag.Lives ?? 3;
+    int incorrectAnswers = ViewBag.IncorrectAnswers ?? 0;
+    int streak = ViewBag.Streak ?? 0;
+
 
     var choices = ViewBag.Choices as List<string>;
 
     ViewBag.HasLives = true;
     ViewBag.Lives = lives;
+    ViewBag.Streak = streak;
 }
 
 <div class="card">
@@ -36,69 +40,99 @@
             .trim();
     }
 
-    function submitAnswer(answer) {
+           function submitAnswer(answer) {
 
-            const correct = @Html.Raw(
-        System.Text.Json.JsonSerializer.Serialize(ViewBag.CorrectAnswer)
-    );
-
+        const correct = @Html.Raw(
+            System.Text.Json.JsonSerializer.Serialize(ViewBag.CorrectAnswer)
+        );
 
         let step = @step;
         let score = @score;
+        let incorrectAnswers = @incorrectAnswers;
+        let streak = @streak;
         let mode = @mode;
         let lives = @lives;
         let playerCode = "@playerCode";
 
+        // ✅ CORRECT
         if (normalizeText(answer) === normalizeText(correct)) {
 
             step++;
-            score++;
+            streak++;
 
-            if (mode === 1) {
-                fetch(`/api/playerapi/addxp?playerCode=${playerCode}&amount=25`, {
-                    method: "POST"
-                });
+            // 🔥 Base points
+            score += 10;
+
+            // 🔥 Bonus system
+            if (streak === 3) {
+                score += 10;
+            }
+
+            if (streak === 5) {
+                score += 20;
             }
 
             Swal.fire({
                 title: "Correct!",
-                text: mode === 1 ? "+25 XP" : "Good job!",
+                text: `Score: ${score}`,
                 icon: "success",
                 timer: 800,
                 showConfirmButton: false
             }).then(() => {
-                    window.location.href =
-                        `/TimedQuiz/Start?playerCode=${playerCode}&step=${step}&score=${score}&mode=${mode}&lives=${lives}`;
+
+                window.location.href =
+                    `/TimedQuiz/Start?playerCode=${playerCode}` +
+                    `&step=${step}` +
+                    `&score=${score}` +
+                    `&incorrectAnswers=${incorrectAnswers}` +
+                    `&streak=${streak}` +
+                    `&mode=${mode}` +
+                    `&lives=${lives}`;
             });
+
             return;
         }
+
+        // ❌ WRONG
+        step++;
+        incorrectAnswers++;
+        streak = 0;   // reset streak
+
+        score -= 10;
+        if (score < 0) score = 0;
 
         if (mode === 1) {
             lives--;
 
             if (lives <= 0) {
-                sessionStorage.removeItem("learnMaltiTimedQuizEnd");
+                sessionStorage.removeItem("timedQuizEnd");
 
-               window.location.href =
-    `/TimedQuiz/Completed?playerCode=${playerCode}` +
-    `&mode=${mode}` +
-    `&score=${score}` +
-    `&step=${step}` +
-    `&failed=true`;
+                window.location.href =
+                    `/TimedQuiz/Completed?playerCode=${playerCode}` +
+                    `&mode=${mode}` +
+                    `&score=${score}` +
+                    `&incorrectAnswers=${incorrectAnswers}`;
+
                 return;
             }
-
-            Swal.fire({
-                title: "Wrong!",
-                text: `Lives left: ${lives}`,
-                icon: "error",
-                timer: 800,
-                showConfirmButton: false
-            }).then(() => {
-                step++;
-                window.location.href =
-                    `/TimedQuiz/Start?playerCode=${playerCode}&step=${step}&score=${score}&mode=${mode}&lives=${lives}`;
-            });
         }
+
+        Swal.fire({
+            title: "Wrong!",
+            text: `Score: ${score}`,
+            icon: "error",
+            timer: 800,
+            showConfirmButton: false
+        }).then(() => {
+
+            window.location.href =
+                `/TimedQuiz/Start?playerCode=${playerCode}` +
+                `&step=${step}` +
+                `&score=${score}` +
+                `&incorrectAnswers=${incorrectAnswers}` +
+                `&streak=${streak}` +
+                `&mode=${mode}` +
+                `&lives=${lives}`;
+        });
     }
 </script>

@@ -13,7 +13,7 @@ namespace LearnMalti.Controllers
             _context = context;
         }
 
-        public IActionResult Start(string playerCode, int step = 1, int score = 0, int mode = 1, int lives = 3)
+        public IActionResult Start(string playerCode, int step = 1, int score = 0, int incorrectAnswers = 0, int mode = 1, int lives = 3, int streak = 0)
         {
             ViewBag.DisableGlobalTimer = true;
             // 🎲 Get 3 random items from entire DB
@@ -51,6 +51,7 @@ namespace LearnMalti.Controllers
             string questionText = current.EnglishText;
             string correctAnswer = current.MalteseText;
 
+
             // 🔤 Special SinPlu handling
             if (current.Category == "SinPlu" && current.NumberForm == "plural")
             {
@@ -69,6 +70,7 @@ namespace LearnMalti.Controllers
 
             ViewBag.QuestionText = questionText;
             ViewBag.CorrectAnswer = correctAnswer;
+            ViewBag.IncorrectAnswers = incorrectAnswers;
 
 
             var wrongChoices = _context.LearningItems
@@ -95,25 +97,24 @@ namespace LearnMalti.Controllers
 
 
         public IActionResult Completed(
-     string playerCode,
-     int mode,
-     int score = 0,
-     int step = 1,
-     bool failed = false)
+         string playerCode,
+         int mode,
+         int score = 0,                 // correct answers
+         int incorrectAnswers = 0,
+         bool failed = false)
         {
             Response.Headers["Cache-Control"] = "no-store";
 
-            // 🔥 Calculate how many questions were actually answered
-            int questionsAnswered = step > 1 ? step - 1 : score;
+            int questionsAnswered = score + incorrectAnswers;
 
-            // 🔥 Insert result into database
             var result = new TimedQuizResult
             {
                 Mode = mode,
                 QuestionsAnswered = questionsAnswered,
                 CorrectAnswers = score,
+                IncorrectAnswers = incorrectAnswers,
                 PlayerCode = playerCode,
-                Score = score, // raw correct answers
+                Score = score,
                 PlayedAt = DateTime.UtcNow
             };
 
@@ -126,12 +127,11 @@ namespace LearnMalti.Controllers
 
             ViewBag.Layout = "~/Views/Shared/_TimedQuizLayout.cshtml";
             ViewBag.Title = "Timed Quiz Completed!";
-
             ViewBag.BadgeText =
-                $"You got {score} question{(score == 1 ? "" : "s")} right!";
+                $"You answered {questionsAnswered} questions and got {score} correct!";
 
             ViewBag.RetryUrl =
-                $"/TimedQuiz/Start?playerCode={playerCode}&step=1&score=0&mode={mode}&lives=3";
+                $"/TimedQuiz/Start?playerCode={playerCode}&step=1&score=0&incorrectAnswers=0&mode={mode}&lives=3";
 
             ViewBag.ShowFeedback = false;
 
