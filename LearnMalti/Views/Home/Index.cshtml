@@ -6,18 +6,39 @@
 <div class="landing-container">
 
     <div class="landing-box">
-        <h1 class="landing-title">🌞Learn Maltese🌞</h1>
+        <h1 class="landing-title">Welcome</h1>
+        <h1 class="landing-title">Would you like to participate?</h1>
 
-        <p class="landing-subtitle">
-            Click <strong>Start Game</strong> to begin your journey!
-        </p>
+        <div class="emoji-buttons">
 
-        <a class="start-btn" href="/Menu/SelectMode">
-            🎮 Start Game
-        </a>
+            <div class="emoji-option">
+                <span class="emoji-label">NO</span>
+                <button class="emoji-btn sad" onclick="submitAnswer(false)">
+                    🙁
+                </button>
+            </div>
+
+            <div class="emoji-option">
+                <span class="emoji-label">YES</span>
+                <button class="emoji-btn happy" onclick="submitAnswer(true)">
+                    🙂
+                </button>
+            </div>
+
+        </div>
     </div>
 
 </div>
+
+<script>
+    function submitAnswer(answer) {
+        if (answer) {
+            window.location.href = "/Menu/SelectMode"; // YES
+        } else {
+            window.close();
+        }
+    }
+</script>
 
 <style>
 
@@ -43,38 +64,57 @@
     /* Main white box */
     .landing-box {
         background: white;
-        padding: 50px;
+        padding: 60px;
         border-radius: 30px;
         box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        width: 500px;
-        animation: fadeIn 1s ease-out;
+        width: 1000px;
+        animation: fadeIn 0.8s ease-out;
     }
 
     .landing-title {
-        font-size: 50px;
+        font-size: 42px;
+        margin-bottom: 40px;
+    }
+
+    .happy:hover {
+        filter: drop-shadow(0 0 15px #4CAF50);
+    }
+
+    .sad:hover {
+        filter: drop-shadow(0 0 15px #f44336);
+    }
+
+    .emoji-buttons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 120px; /* space between NO and YES */
+        margin-top: 30px;
+    }
+
+    .emoji-option {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .emoji-label {
+        font-size: 20px;
+        font-weight: bold;
         margin-bottom: 10px;
     }
 
-    .landing-subtitle {
-        font-size: 22px;
-        margin-bottom: 30px;
-        color: #555;
+    .emoji-btn {
+        font-size: 80px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        transition: transform 0.2s ease;
     }
 
-    .start-btn {
-        display: inline-block;
-        font-size: 26px;
-        padding: 15px 30px;
-        background-color: #42A5F5;
-        color: white;
-        border-radius: 15px;
-        text-decoration: none;
-        font-weight: bold;
-        transition: transform 0.2s ease, background-color 0.2s ease;
-    }
+        .emoji-btn:hover {
+            transform: scale(1.15);
+        }
 
-        .start-btn:hover {
-            transform: scale(1.05);
-            background-color: #1E88E5;
-        }}
 </style>
