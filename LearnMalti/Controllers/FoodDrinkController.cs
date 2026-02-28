@@ -98,10 +98,10 @@ namespace LearnMalti.Controllers
                     .Where(x => x.LearningItemId != current.LearningItemId)
                     .OrderBy(x => Guid.NewGuid())
                     .Take(2)
-                    .Select(x => x.MalteseText)
+                    .Select(x => x.DisplayMalteseWord)
                     .ToList();
 
-                var choices = new List<string> { current.MalteseText };
+                var choices = new List<string> { current.DisplayMalteseWord };
                 choices.AddRange(wrongChoices);
 
                 ViewBag.Choices = choices.OrderBy(x => Guid.NewGuid()).ToList();
@@ -123,7 +123,7 @@ namespace LearnMalti.Controllers
                         ViewBag.Sentence = "Nixtieq nixrob ____ jekk jogħġbok.";
                         ViewBag.EnglishSentence = "I would like to drink water, please.";
                         ViewBag.CorrectAnswer = "Ilma";
-                        ViewBag.Choices = new List<string> { "Ross", "Ilma", "Laham" };
+                        ViewBag.Choices = new List<string> { "Ross", "Ilma", "Laħam" };
                         break;
 
                     case 10:

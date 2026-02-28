@@ -13,6 +13,13 @@
 
         public string? WordKey { get; set; }
         public string? NumberForm { get; set; }
+
+        public string? MalteseWord_Font { get; set; }
+
+        public string DisplayMalteseWord =>
+       !string.IsNullOrEmpty(MalteseWord_Font)
+           ? MalteseWord_Font
+           : MalteseText;
     }
 }
 

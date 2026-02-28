@@ -82,11 +82,19 @@
             .normalize("NFD")
             .replace(/[\u0300-\u036f]/g, "");
     }
-        function submitAnswer(answer) {
 
-        const correct = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
-            ViewBag.CorrectAnswer ?? Model.MalteseText
-        ));
+     // ✅ BUILD VALID ANSWERS ARRAY FROM MODEL
+    const correctAnswers = @Html.Raw(
+           System.Text.Json.JsonSerializer.Serialize(
+               ViewBag.CorrectAnswer != null
+                   ? new List<string> { ViewBag.CorrectAnswer }
+                   : !string.IsNullOrWhiteSpace(Model.MalteseWord_Font)
+         ? new List<string> { Model.MalteseWord_Font, Model.MalteseText }
+         : new List<string> { Model.MalteseText }
+           )
+       );
+
+        function submitAnswer(answer) {
 
         let step = @step;
         let score = @score;
@@ -95,8 +103,11 @@
         let playerCode = "@playerCode";
         let learningItemId = @Model.LearningItemId;
 
-        const isCorrect =
-            normalize(answer.trim()) === normalize(correct);
+        const normalizedInput = normalize(answer.trim());
+
+           const isCorrect = correctAnswers.some(a =>
+               normalize(a) === normalizedInput
+           );
 
         // ✅ CORRECT
         if (isCorrect) {
@@ -173,7 +184,7 @@
 
     function showHint() {
         const correct = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
-            ViewBag.CorrectAnswer ?? Model.MalteseText
+            ViewBag.CorrectAnswer ?? Model.DisplayMalteseWord
         ));
 
         if (!correct || correct.length < 3) return;                                                                                                                                                                                         

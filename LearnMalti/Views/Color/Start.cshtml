@@ -25,7 +25,7 @@
 <div class="card">
 
     @* 🟦 IMAGE QUIZ (steps 1–2) *@
-    @if (type == "ImageQuiz")
+    @if (type == "Quiz")
     {
         <h2 class="quiz-title">@Model.EnglishText</h2>
 
@@ -97,25 +97,37 @@
 
         <button class="color-submit" onclick="finishMatching()">Submit</button>
     }
+    <script>
 
-<script>
-    const questionType = "@type";
+        const questionType = "@type";
 
-    function normalizeText(text) {
-        return text
-            .toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .trim();
-    }
+        function normalize(text) {
+            return text
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .trim();
+        }
 
-           function submitAnswer(answer) {
+        // ===============================
+        // ✅ BUILD VALID ANSWERS ARRAY
+        // ===============================
+        const correctAnswers = @Html.Raw(
+            System.Text.Json.JsonSerializer.Serialize(
+                ViewBag.CorrectAnswer is IEnumerable<string>
+                    ? ViewBag.CorrectAnswer
+                    : ViewBag.CorrectAnswer != null
+                        ? new List<string> { ViewBag.CorrectAnswer }
+                        : !string.IsNullOrWhiteSpace(Model.MalteseWord_Font)
+              ? new List<string> { Model.MalteseWord_Font, Model.MalteseText }
+              : new List<string> { Model.MalteseText }
+            )
+        );
 
-            const correct = @Html.Raw(
-                System.Text.Json.JsonSerializer.Serialize(
-                    ViewBag.CorrectAnswer ?? Model.MalteseText
-                )
-            );
+        // ===============================
+        // ✅ NORMAL QUESTIONS (Quiz, Mixing, Context)
+        // ===============================
+        function submitAnswer(answer) {
 
             let step = @step;
             let score = @score;
@@ -124,8 +136,16 @@
             let playerCode = "@playerCode";
             let learningItemId = @Model.LearningItemId;
 
-            const isCorrect =
-                normalizeText(answer.trim()) === normalizeText(correct);
+            if (!answer || answer.trim() === "") {
+                Swal.fire("Enter an answer first!");
+                return;
+            }
+
+            const normalizedInput = normalize(answer);
+
+            const isCorrect = correctAnswers.some(a =>
+                normalize(a) === normalizedInput
+            );
 
             // ✅ CORRECT
             if (isCorrect) {
@@ -199,18 +219,21 @@
             }
         }
 
+        // ===============================
+        // ✅ MATCHING LOGIC
+        // ===============================
         if (questionType === "Matching") {
 
             const correctPairs = @Html.Raw(
-            System.Text.Json.JsonSerializer.Serialize<object>(ViewBag.Pairs)
-        );
-
+                System.Text.Json.JsonSerializer.Serialize<object>(ViewBag.Pairs)
+            );
 
             let selectedMaltese = null;
             let matchedCount = 0;
 
             document.querySelectorAll(".match-item.maltese").forEach(item => {
                 item.addEventListener("click", () => {
+
                     if (item.classList.contains("matched")) return;
 
                     document.querySelectorAll(".match-item.maltese")
@@ -223,26 +246,29 @@
 
             document.querySelectorAll(".match-item.english").forEach(item => {
                 item.addEventListener("click", () => {
+
                     if (!selectedMaltese || item.classList.contains("matched")) return;
 
-                    const maltese = normalizeText(selectedMaltese.dataset.value);
-                    const english = normalizeText(item.dataset.value);
+                    const maltese = normalize(selectedMaltese.dataset.value);
+                    const english = normalize(item.dataset.value);
 
                     const isCorrect = correctPairs.some(p =>
-                        normalizeText(p.Maltese) === maltese &&
-                        normalizeText(p.English) === english
+                        normalize(p.Maltese) === maltese &&
+                        normalize(p.English) === english
                     );
 
                     if (isCorrect) {
-                            selectedMaltese.classList.remove("wrong", "selected");
-                            item.classList.remove("wrong");
 
-                            // ✅ mark as matched
-                            selectedMaltese.classList.add("matched");
-                            item.classList.add("matched");
+                        selectedMaltese.classList.remove("wrong", "selected");
+                        item.classList.remove("wrong");
 
-                            matchedCount++;
+                        selectedMaltese.classList.add("matched");
+                        item.classList.add("matched");
+
+                        matchedCount++;
+
                     } else {
+
                         selectedMaltese.classList.add("wrong");
                         item.classList.add("wrong");
 
@@ -252,44 +278,41 @@
                         }, 400);
                     }
 
-                    selectedMaltese.classList.remove("selected");
                     selectedMaltese = null;
                 });
             });
 
-                   window.finishMatching = function () {
+            window.finishMatching = function () {
 
-            if (matchedCount < correctPairs.length) {
-                Swal.fire("Finish all matches first!");
-                return;
-            }
+                if (matchedCount < correctPairs.length) {
+                    Swal.fire("Finish all matches first!");
+                    return;
+                }
 
-            if (@mode === 1) {
-                fetch(`/api/playerapi/addxp?playerCode=@playerCode&amount=40`, {
-                    method: "POST"
+                if (@mode === 1) {
+                    fetch(`/api/playerapi/addxp?playerCode=@playerCode&amount=40`, {
+                        method: "POST"
+                    });
+                }
+
+                Swal.fire({
+                    title: "Excellent!",
+                    text: @mode === 1 ? "+40 XP" : "Well done!",
+                    icon: "success",
+                    timer: 1000,
+                    showConfirmButton: false
+                }).then(() => {
+
+                    window.location.href =
+                        `/Color/SubmitAnswer?playerCode=@playerCode` +
+                        `&step=@step` +
+                        `&score=@score` +
+                        `&mode=@mode` +
+                        `&lives=@lives` +
+                        `&learningItemId=@Model.LearningItemId` +
+                        `&isCorrect=true`;
                 });
-            }
-
-            Swal.fire({
-                title: "Excellent!",
-                text: @mode === 1 ? "+40 XP" : "Well done!",
-                icon: "success",
-                timer: 1000,
-                showConfirmButton: false
-            }).then(() => {
-
-                window.location.href =
-                    `/Color/SubmitAnswer?playerCode=@playerCode` +
-                    `&step=@step` +
-                    `&score=@score` +
-                    `&mode=@mode` +
-                    `&lives=@lives` +
-                    `&learningItemId=@Model.LearningItemId` +
-                    `&isCorrect=true`;
-            });
-        };
+            };
         }
 
-
-
-</script>
+    </script>

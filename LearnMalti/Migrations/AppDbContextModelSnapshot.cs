@@ -100,6 +100,9 @@ namespace LearnMalti.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("MalteseWord_Font")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("NumberForm")
                         .HasColumnType("nvarchar(max)");
 

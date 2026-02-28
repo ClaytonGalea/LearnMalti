@@ -86,16 +86,16 @@ namespace LearnMalti.Controllers
             ViewBag.Lives = lives;
 
             // 🟦 Image → MCQ (steps 1–2)
-            if (questionType == "ImageQuiz")
+            if (questionType == "Quiz")
             {
                 var wrongChoices = items
                     .Where(x => x.LearningItemId != current.LearningItemId)
                     .OrderBy(x => Guid.NewGuid())
                     .Take(2)
-                    .Select(x => x.MalteseText)
+                    .Select(x => x.DisplayMalteseWord)
                     .ToList();
 
-                var choices = new List<string> { current.MalteseText };
+                var choices = new List<string> { current.DisplayMalteseWord };
                 choices.AddRange(wrongChoices);
 
                 ViewBag.Choices = choices
@@ -126,7 +126,7 @@ namespace LearnMalti.Controllers
 
         private string GetQuestionType(int step)
         {
-            if (step <= 2) return "ImageQuiz";
+            if (step <= 2) return "Quiz";
             if (step <= 4) return "Mixing";
             if (step <= 9) return "Context";
             return "Matching";
@@ -165,13 +165,13 @@ namespace LearnMalti.Controllers
         }
 
         public IActionResult SubmitAnswer(
- string playerCode,
- int step,
- int score,
- int mode,
- int lives,
- int learningItemId,
- bool isCorrect)
+   string playerCode,
+   int step,
+   int score,
+   int mode,
+   int lives,
+   int learningItemId,
+   bool isCorrect)
         {
             var attemptId = HttpContext.Session.GetInt32("CurrentAttemptId");
 
@@ -219,19 +219,19 @@ namespace LearnMalti.Controllers
                 case 7:
                     ViewBag.ContextImage = "/images/red_ball.png";
                     ViewBag.ContextText = "X'kulur hu l-ballun?";
-                    ViewBag.CorrectAnswer = "Aħmar";
+                    ViewBag.CorrectAnswer = new List<string> { "Aħmar", "Ahmar" };
                     break;
 
                 case 8:
                     ViewBag.ContextImage = "/images/green_book.png";
                     ViewBag.ContextText = "X'kulur hu l-ktieb?";
-                    ViewBag.CorrectAnswer = "Aħdar";
+                    ViewBag.CorrectAnswer = new List<string> { "Aħdar", "Ahdar" };
                     break;
 
                 case 9:
                     ViewBag.ContextImage = "/images/pink_backpack.png";
                     ViewBag.ContextText = "What color is the backpack?";
-                    ViewBag.CorrectAnswer = "Roża";
+                    ViewBag.CorrectAnswer = new List<string> { "Roża", "Roza" };
                     break;
             }
         }
@@ -243,7 +243,7 @@ namespace LearnMalti.Controllers
                 .Take(5)
                 .Select(x => new
                 {
-                    Maltese = x.MalteseText,
+                    Maltese = x.DisplayMalteseWord,
                     English = x.EnglishText
                 })
                 .ToList();
