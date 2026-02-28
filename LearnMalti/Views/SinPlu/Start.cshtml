@@ -25,7 +25,7 @@
     @if (type == "Quiz")
     {
         <h2 class="quiz-title">
-            What is the plural of the word: "@singular.MalteseText"?
+            What is the plural of the word: "@singular.DisplayMalteseWord"?
         </h2>
         <div class="compare-row">
 
@@ -66,6 +66,14 @@
         </div>
 
         <button class="submit" onclick="submitInput()">Submit</button>
+        @if (ViewBag.Mode == 1)
+        {
+            <button class="submit" style="background-color:#64b5f6" onclick="showHint()">
+                💡 Hint
+            </button>
+        }
+
+        <p id="hintText" class="hint-text"></p>
     }
 
     @* 🟥 MATCHING (Step 8) *@
@@ -98,18 +106,25 @@
 
 <script>
     const questionType = "@type";
-
-    function normalizeText(text) {
+    function normalize(text) {
         return text
             .toLowerCase()
             .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .trim();
+            .replace(/[\u0300-\u036f]/g, "");
     }
 
-        function submitAnswer(answer) {
+     // ✅ BUILD VALID ANSWERS ARRAY FROM MODEL
+    const correctAnswers = @Html.Raw(
+           System.Text.Json.JsonSerializer.Serialize(
+               ViewBag.CorrectAnswer != null
+                   ? new List<string> { ViewBag.CorrectAnswer }
+                   : !string.IsNullOrWhiteSpace(Model.MalteseWord_Font)
+         ? new List<string> { Model.MalteseWord_Font, Model.MalteseText }
+         : new List<string> { Model.MalteseText }
+           )
+       );
 
-        const correct = "@ViewBag.CorrectAnswer";
+        function submitAnswer(answer) {
 
         let step = @step;
         let score = @score;
@@ -118,8 +133,11 @@
         let playerCode = "@playerCode";
         let wordKey = "@wordKey";
 
-        const isCorrect =
-            normalizeText(answer) === normalizeText(correct);
+        const normalizedInput = normalize(answer.trim());
+
+           const isCorrect = correctAnswers.some(a =>
+               normalize(a) === normalizedInput
+           );
 
         // ✅ CORRECT
         if (isCorrect) {
@@ -274,5 +292,24 @@
                 `&isCorrect=true`;
         });
     };
+    }
+
+     function showHint() {
+        const correct = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            ViewBag.CorrectAnswer ?? Model.DisplayMalteseWord
+        ));
+
+        if (!correct || correct.length < 3) return;
+
+        const firstTwo = correct.substring(0, 2);
+        const lastLetter = correct.substring(correct.length - 1);
+
+        let middle = "";
+        for (let i = 0; i < correct.length - 3; i++) {
+            middle += "_ ";
+        }
+
+        document.getElementById("hintText").innerText =
+            `Hint: ${firstTwo} ${middle}${lastLetter}`;
     }
 </script>

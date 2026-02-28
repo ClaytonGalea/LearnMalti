@@ -31,10 +31,10 @@ namespace LearnMalti.Controllers
                 .Where(x => x.LearningItemId != current.LearningItemId)
                 .OrderBy(x => Guid.NewGuid())
                 .Take(2)
-                .Select(x => x.MalteseText)
+                .Select(x => x.DisplayMalteseWord)
                 .ToList();
 
-            var choices = new List<string> { current.MalteseText };
+            var choices = new List<string> { current.DisplayMalteseWord };
             choices.AddRange(wrongChoices);
 
             // Shuffle choices randomly

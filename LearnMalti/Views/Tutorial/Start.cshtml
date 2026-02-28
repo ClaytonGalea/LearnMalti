@@ -2,11 +2,16 @@
 
 @{
     Layout = "~/Views/Shared/_TutorialLayout.cshtml";
+
+    var validAnswers = !string.IsNullOrWhiteSpace(Model.MalteseWord_Font)
+        ? new List<string> { Model.MalteseWord_Font, Model.MalteseText }
+        : new List<string> { Model.MalteseText };
 }
+
 <div class="quiz-card">
 
     <h1 class="english-word hover-word"
-        data-translation="@Model.MalteseText">
+        data-translation="@Model.DisplayMalteseWord">
         @Model.EnglishText
     </h1>
 
@@ -19,7 +24,8 @@
         @foreach (var choice in (List<string>)ViewBag.Choices)
         {
             <button class="choice-btn"
-                    onclick="checkAnswer('@choice')">
+                    data-value="@choice"
+                    onclick="checkAnswer(this.dataset.value)">
                 @choice
             </button>
         }
@@ -28,26 +34,45 @@
 </div>
 
 <script>
-    
+
     const correctSound = document.getElementById("correctSound");
     const incorrectSound = document.getElementById("incorrectSound");
 
     function playSound(audio) {
+        if (!audio) return;
         audio.currentTime = 0;
         audio.play().catch(() => {});
     }
 
+    function normalize(text) {
+        return text
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .trim();
+    }
+
+    // ✅ Properly serialized valid answers
+    const correctAnswers = @Html.Raw(
+        System.Text.Json.JsonSerializer.Serialize(validAnswers)
+    );
 
     function checkAnswer(answer) {
-        const correct = "@Model.MalteseText";
+
         const nextStep = @ViewBag.Step + 1;
         const score = @ViewBag.Score;
         const mode = @ViewBag.Mode;
         const playerCode = "@ViewBag.PlayerCode";
 
-        if (answer === correct) {
-             playSound(correctSound);
-           
+        const normalizedInput = normalize(answer);
+
+        const isCorrect = correctAnswers.some(a =>
+            normalize(a) === normalizedInput
+        );
+
+        if (isCorrect) {
+
+            playSound(correctSound);
 
             if (mode === 1) {
                 fetch(`/api/playerapi/addxp?playerCode=${playerCode}&amount=20`, {
@@ -62,14 +87,18 @@
                 timer: 1000,
                 showConfirmButton: false
             }).then(() => {
+
                 window.location.href =
-                    `/Tutorial/Start?playerCode=${playerCode}&step=${nextStep}&score=${score + 1}&mode=${mode}`;
+                    `/Tutorial/Start?playerCode=${playerCode}` +
+                    `&step=${nextStep}` +
+                    `&score=${score + 1}` +
+                    `&mode=${mode}`;
             });
 
             return;
         }
-        incorrectSound.currentTime = 0;
-        incorrectSound.play().catch(() => {});
+
+        playSound(incorrectSound);
 
         Swal.fire({
             title: "Incorrect!",
@@ -79,4 +108,5 @@
             showConfirmButton: false
         });
     }
+
 </script>

@@ -117,12 +117,12 @@ namespace LearnMalti.Controllers
             // 🟦 QUIZ (1–5)
             if (questionType == "Quiz")
             {
-                ViewBag.CorrectAnswer = current.Plural.MalteseText;
+                ViewBag.CorrectAnswer = current.Plural.DisplayMalteseWord;
 
                 var choices = new List<string>
                 {
-                    current.Singular.MalteseText,          // ❌ singular
-                    current.Plural.MalteseText,            // ✅ plural
+                    current.Singular.DisplayMalteseWord,          // ❌ singular
+                    current.Plural.DisplayMalteseWord,            // ✅ plural
                     GetThirdOption(current.WordKey)         // ❌ custom
                 };
 
@@ -140,7 +140,7 @@ namespace LearnMalti.Controllers
             if (questionType == "Input")
             {
                 ViewBag.Prompt = "Type the correct word for the picture";
-                ViewBag.CorrectAnswer = current.Plural.MalteseText;
+                ViewBag.CorrectAnswer = current.Plural.DisplayMalteseWord;
             }
 
             // 🟥 MATCHING (8)
@@ -156,31 +156,31 @@ namespace LearnMalti.Controllers
         }
 
         public IActionResult SubmitAnswer(
-    string playerCode,
-    int step,
-    int score,
-    int mode,
-    int lives,
-    string wordKey,
-    bool isCorrect)
+   string playerCode,
+   int step,
+   int score,
+   int mode,
+   int lives,
+   int learningItemId,
+   bool isCorrect)
         {
             var attemptId = HttpContext.Session.GetInt32("CurrentAttemptId");
 
-            if (attemptId.HasValue)
-            {
-                var attempt = _context.LevelAttempts
-                    .FirstOrDefault(a => a.LevelAttemptId == attemptId.Value);
+            if (!attemptId.HasValue)
+                return RedirectToAction("Start", new { playerCode, step, score, mode, lives });
 
-                if (attempt != null)
-                {
-                    if (isCorrect)
-                        attempt.CorrectAnswers++;
-                    else
-                        attempt.IncorrectAnswers++;
+            var attempt = _context.LevelAttempts
+                .FirstOrDefault(a => a.LevelAttemptId == attemptId.Value);
 
-                    _context.SaveChanges();
-                }
-            }
+            if (attempt == null)
+                return RedirectToAction("Start", new { playerCode, step, score, mode, lives });
+
+            if (isCorrect)
+                attempt.CorrectAnswers++;
+            else
+                attempt.IncorrectAnswers++;
+
+            _context.SaveChanges();
 
             return RedirectToAction("Start", new
             {
@@ -220,8 +220,8 @@ namespace LearnMalti.Controllers
 
         private string GetQuestionType(int step)
         {
-            if (step <= 5) return "Quiz";
-            if (step <= 7) return "Input";
+            if (step <= 4) return "Quiz";
+            if (step <= 6) return "Input";
             return "Matching";
         }
 
