@@ -300,7 +300,7 @@ namespace LearnMalti.Controllers
             ViewBag.TimeUp = timeUp;
             ViewBag.Failed = failed;
 
-            if (!timeUp && !failed)
+            if (!timeUp && !failed && mode == 1)
             {
                 AwardBadgeIfNotExists(playerCode, 12);
             }
@@ -319,10 +319,17 @@ namespace LearnMalti.Controllers
             }
             else
             {
-                ViewBag.BadgeText =
+                if (mode == 1)
+                {
+                    ViewBag.BadgeText =
                     "Great job! You got all the questions right and have been awarded the grammar Badge";
+                }
+                else
+                {
+                    ViewBag.BadgeText =
+                    "Great job! You got all the questions right.";
+                }
             }
-
             ViewBag.RetryUrl =
                 $"/SinPlu/Start?playerCode={playerCode}&step=1&score=0&mode={mode}&lives=3";
 

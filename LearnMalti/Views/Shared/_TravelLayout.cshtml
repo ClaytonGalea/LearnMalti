@@ -17,30 +17,33 @@
     </div>
 }
 
-<!-- BACKGROUND OBJECTS (same as tutorial) -->
-<div class="tutorial-background">
-    <div class="flip-card tree" data-sound="/Sounds/TrainSound.mp3">
-        <div class="flip-card-inner">
-            <div class="flip-card-front">
-                <img src="/images/words/train.png" />
-            </div>
-            <div class="flip-card-back">
-                <p>Ferrovija 🚂</p>
+@if(ViewBag.Mode == 1)
+{
+    <!-- BACKGROUND OBJECTS (same as tutorial) -->
+    <div class="tutorial-background">
+        <div class="flip-card tree" data-sound="/Sounds/TrainSound.mp3">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <img src="/images/words/train.png" />
+                </div>
+                <div class="flip-card-back">
+                    <p>Ferrovija 🚂</p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="flip-card bird" data-sound="/Sounds/BusSound.mp3">
-        <div class="flip-card-inner">
-            <div class="flip-card-front">
-                <img src="/images/words/bus.png" />
-            </div>
-            <div class="flip-card-back">
-                <p>Xarabank</p>
+        <div class="flip-card bird" data-sound="/Sounds/BusSound.mp3">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <img src="/images/words/bus.png" />
+                </div>
+                <div class="flip-card-back">
+                    <p>Xarabank</p>
+                </div>
             </div>
         </div>
     </div>
-</div>
+ }
 
 <!-- MAIN CONTENT -->
 <div class="travel-content">

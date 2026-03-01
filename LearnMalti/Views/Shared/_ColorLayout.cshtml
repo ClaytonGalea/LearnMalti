@@ -14,31 +14,33 @@
         </div>
     </div>
 }
+@if (ViewBag.Mode == 1)
+{
+    <div class="tutorial-background colors-bg">
 
-<div class="tutorial-background colors-bg">
+        <!-- LEFT COLORS -->
+        <div class="colors-column">
+            <div class="color-card red"><span>Aħmar</span></div>
+            <div class="color-card blue"><span>Blu</span></div>
+            <div class="color-card yellow"><span>Isfar</span></div>
+            <div class="color-card green"><span>Aħdar</span></div>
+            <div class="color-card black"><span>Iswed</span></div>
+        </div>
 
-    <!-- LEFT COLORS -->
-    <div class="colors-column">
-        <div class="color-card red"><span>Aħmar</span></div>
-        <div class="color-card blue"><span>Blu</span></div>
-        <div class="color-card yellow"><span>Isfar</span></div>
-        <div class="color-card green"><span>Aħdar</span></div>
-        <div class="color-card black"><span>Iswed</span></div>
+        <!-- CENTER SPACER (IMPORTANT) -->
+        <div class="colors-spacer"></div>
+
+        <!-- RIGHT COLORS -->
+        <div class="colors-column">
+            <div class="color-card white"><span>Abjad</span></div>
+            <div class="color-card orange"><span>Oranġjo</span></div>
+            <div class="color-card purple"><span>Vjola</span></div>
+            <div class="color-card pink"><span>Roża</span></div>
+            <div class="color-card brown"><span>Kannella</span></div>
+        </div>
+
     </div>
-
-    <!-- CENTER SPACER (IMPORTANT) -->
-    <div class="colors-spacer"></div>
-
-    <!-- RIGHT COLORS -->
-    <div class="colors-column">
-        <div class="color-card white"><span>Abjad</span></div>
-        <div class="color-card orange"><span>Oranġjo</span></div>
-        <div class="color-card purple"><span>Vjola</span></div>
-        <div class="color-card pink"><span>Roża</span></div>
-        <div class="color-card brown"><span>Kannella</span></div>
-    </div>
-
-</div>
+}
 
 <!-- MAIN CONTENT -->
 <div class="color-content">

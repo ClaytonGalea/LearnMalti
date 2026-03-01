@@ -95,6 +95,33 @@ namespace LearnMalti.Controllers
             return View("Start", current);
         }
 
+        private void AwardBadgeIfNotExists(string playerCode, int badgeId)
+        {
+            // 1️⃣ Find the player
+            var player = _context.Players
+                .FirstOrDefault(p => p.PlayerCode == playerCode);
+
+            if (player == null)
+                return; // safety check
+
+            // 2️⃣ Check if badge already exists
+            bool alreadyHasBadge = _context.PlayerBadges
+                .Any(pb => pb.PlayerId == player.PlayerId && pb.BadgeId == badgeId);
+
+            if (!alreadyHasBadge)
+            {
+                var playerBadge = new PlayerBadge
+                {
+                    PlayerId = player.PlayerId, // ✅ FK
+                    BadgeId = badgeId,
+                    EarnedAt = DateTime.Now
+                };
+
+                _context.PlayerBadges.Add(playerBadge);
+                _context.SaveChanges();
+            }
+        }
+
 
         public IActionResult Completed(
          string playerCode,
@@ -127,9 +154,21 @@ namespace LearnMalti.Controllers
 
             ViewBag.Layout = "~/Views/Shared/_TimedQuizLayout.cshtml";
             ViewBag.Title = "Timed Quiz Completed!";
-            ViewBag.BadgeText =
-                $"You answered {questionsAnswered} questions and got {score} correct!";
-
+            if (mode == 1 && score >= 50)
+            {
+                AwardBadgeIfNotExists(playerCode, 3);
+                ViewBag.BadgeText =
+               $"You answered {questionsAnswered} questions and got {score} correct! & have been awarded the speedrunner badge!";
+            }
+            else if (mode == 1 && score < 50)
+            {
+                ViewBag.BadgeText =
+                $"You answered {questionsAnswered} questions and got {score} correct! (Achive a total of 50 score to earn the speedrunner badge";
+            }
+            else if(mode == 0) {
+                ViewBag.BadgeText =
+                   $"You answered {questionsAnswered} questions and got {score} correct!";
+            }
             ViewBag.RetryUrl =
                 $"/TimedQuiz/Start?playerCode={playerCode}&step=1&score=0&incorrectAnswers=0&mode={mode}&lives=3";
 

@@ -130,7 +130,7 @@ namespace LearnMalti.Controllers
                         ViewBag.Sentence = "Itfa’ ____ mal-kafè jekk jogħbok.";
                         ViewBag.EnglishSentence = "Add milk to the coffee, please.";
                         ViewBag.CorrectAnswer = "Ħalib";
-                        ViewBag.Choices = new List<string> { "Gobon", "Ħalib", "Patata" };
+                        ViewBag.Choices = new List<string> { "Ġobon", "Ħalib", "Patata" };
                         break;
                 }
 
@@ -223,7 +223,7 @@ namespace LearnMalti.Controllers
             ViewBag.TimeUp = timeUp;
             ViewBag.Failed = failed;
 
-            if (!timeUp && !failed)
+            if (!timeUp && !failed && mode == 1)
             {
                 AwardBadgeIfNotExists(playerCode, 4);
             }
@@ -241,8 +241,16 @@ namespace LearnMalti.Controllers
             }
             else
             {
-                ViewBag.BadgeText =
+                if (mode == 1)
+                {
+                    ViewBag.BadgeText =
                     "Great job! You got all the questions right and have been awarded the Food & Drink Badge";
+                }
+                else
+                {
+                    ViewBag.BadgeText =
+                    "Great job! You got all the questions right!";
+                }
             }
 
             ViewBag.RetryUrl =

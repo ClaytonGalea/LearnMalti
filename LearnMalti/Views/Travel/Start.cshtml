@@ -48,12 +48,11 @@
                     onclick="submitAnswer(document.getElementById('fillInput').value)">
                 Submit
             </button>
-            @if (ViewBag.Mode == 1)
-            {
-                <button class="hint-btn" onclick="showHint()">
-                    💡 Hint
-                </button>
-            }
+          
+            <button class="hint-btn" onclick="showHint()">
+                💡 Hint
+            </button>
+            
         </div>
 
         <p id="hintText" class="hint-text"></p>

@@ -220,10 +220,11 @@ namespace LearnMalti.Controllers
             ViewBag.TimeUp = timeUp;
             ViewBag.Failed = failed;
 
-            if (!timeUp && !failed)
+            if (!timeUp && !failed && mode == 1)
             {
                 AwardBadgeIfNotExists(playerCode, 8);
             }
+
             ViewBag.Layout = "~/Views/Shared/_TravelLayout.cshtml";
             ViewBag.Title = "Travel Completed!";
             if (timeUp)
@@ -236,11 +237,20 @@ namespace LearnMalti.Controllers
             }
             else
             {
-                ViewBag.BadgeText =
+                if (mode == 1)
+                {
+                    ViewBag.BadgeText =
                     "Great job! You got all the questions right and have been awarded the Travel Badge";
+                }
+                else
+                {
+                    ViewBag.BadgeText =
+                    "Great job! You got all the questions right!";
+                }
+
             }
 
-            ViewBag.RetryUrl =
+                ViewBag.RetryUrl =
                 $"/Travel/Start?playerCode={playerCode}&step=1&score=0&mode={mode}&lives=3";
 
             ViewBag.ShowFeedback = false;

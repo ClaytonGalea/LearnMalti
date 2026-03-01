@@ -35,15 +35,6 @@
 
 <script>
 
-    const correctSound = document.getElementById("correctSound");
-    const incorrectSound = document.getElementById("incorrectSound");
-
-    function playSound(audio) {
-        if (!audio) return;
-        audio.currentTime = 0;
-        audio.play().catch(() => {});
-    }
-
     function normalize(text) {
         return text
             .toLowerCase()
@@ -72,8 +63,6 @@
 
         if (isCorrect) {
 
-            playSound(correctSound);
-
             if (mode === 1) {
                 fetch(`/api/playerapi/addxp?playerCode=${playerCode}&amount=20`, {
                     method: "POST"
@@ -97,8 +86,6 @@
 
             return;
         }
-
-        playSound(incorrectSound);
 
         Swal.fire({
             title: "Incorrect!",

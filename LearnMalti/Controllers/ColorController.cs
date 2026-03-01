@@ -296,7 +296,7 @@ namespace LearnMalti.Controllers
             ViewBag.TimeUp = timeUp;
             ViewBag.Failed = failed;
 
-            if (!timeUp && !failed)
+            if (!timeUp && !failed && mode == 1)
             {
                 AwardBadgeIfNotExists(playerCode, 9);
             }
@@ -314,16 +314,25 @@ namespace LearnMalti.Controllers
             }
             else
             {
-                ViewBag.BadgeText =
+                if (mode == 1)
+                {
+                    ViewBag.BadgeText =
                     "Well done! You have completed the Colors level and earned the Colors Badge!";
+                }
+                else
+                {
+                    ViewBag.BadgeText =
+                    "Well done! You have completed the Colors level!";
+                }
             }
 
-            ViewBag.RetryUrl =
-                $"/Color/Start?playerCode={playerCode}&step=1&score=0&mode={mode}&lives=3";
+             ViewBag.RetryUrl =
+                 $"/Color/Start?playerCode={playerCode}&step=1&score=0&mode={mode}&lives=3";
 
-            ViewBag.ShowFeedback = false;
+             ViewBag.ShowFeedback = false;
 
-            return View("~/Views/Game/Complete.cshtml");
+             return View("~/Views/Game/Complete.cshtml");
+            
         }
 
         private void AwardBadgeIfNotExists(string playerCode, int badgeId)

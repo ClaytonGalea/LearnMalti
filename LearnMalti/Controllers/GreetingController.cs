@@ -339,7 +339,7 @@ namespace LearnMalti.Controllers
             ViewBag.TimeUp = timeUp;
             ViewBag.Failed = failed;
 
-            if (!timeUp && !failed)
+            if (!timeUp && !failed && mode == 1)
             {
                 AwardBadgeIfNotExists(playerCode, 6);
             }
@@ -357,8 +357,16 @@ namespace LearnMalti.Controllers
             }
             else
             {
-                ViewBag.BadgeText =
+                if (mode == 1)
+                {
+                    ViewBag.BadgeText =
                     "Great job! You got all the questions right and have been awarded the Greetings Badge";
+                }
+                else
+                {
+                    ViewBag.BadgeText =
+                    "Great job! You got all the questions right!";
+                }
             }
 
             ViewBag.RetryUrl =
