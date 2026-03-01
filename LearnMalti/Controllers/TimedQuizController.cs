@@ -13,10 +13,11 @@ namespace LearnMalti.Controllers
             _context = context;
         }
 
-        public IActionResult Start(string playerCode, int step = 1, int score = 0, int incorrectAnswers = 0, int mode = 1, int lives = 3, int streak = 0)
+        public IActionResult Start(string playerCode, int step = 1, int score = 0, int incorrectAnswers = 0, int mode = 1, int lives = 3, int streak = 0, int correctAnswers = 0)
         {
             ViewBag.DisableGlobalTimer = true;
-            // 🎲 Get 3 random items from entire DB
+
+            // 🎲 Get 20 random items from entire DB
             var items = _context.LearningItems
                 .OrderBy(x => Guid.NewGuid())
                 .Take(20)
@@ -33,6 +34,9 @@ namespace LearnMalti.Controllers
                 {
                     playerCode,
                     mode,
+                    score,
+                    correctAnswers,
+                    incorrectAnswers,
                     failed = true
                 });
             }
@@ -42,14 +46,17 @@ namespace LearnMalti.Controllers
                 return RedirectToAction("Completed", new
                 {
                     playerCode,
-                    mode
+                    mode,
+                    score,
+                    correctAnswers,
+                    incorrectAnswers
                 });
             }
 
             var current = items[step - 1];
 
             string questionText = current.EnglishText;
-            string correctAnswer = current.MalteseText;
+            string correctAnswer = current.DisplayMalteseWord;
 
 
             // 🔤 Special SinPlu handling
@@ -63,34 +70,39 @@ namespace LearnMalti.Controllers
 
                 if (singular != null)
                 {
-                    questionText = $"What is the plural of \"{singular.MalteseText}\"?";
-                    correctAnswer = current.MalteseText;
+                    questionText = $"What is the plural of \"{singular.DisplayMalteseWord}\"?";
+                    correctAnswer = current.DisplayMalteseWord;
                 }
             }
-
-            ViewBag.QuestionText = questionText;
-            ViewBag.CorrectAnswer = correctAnswer;
-            ViewBag.IncorrectAnswers = incorrectAnswers;
-
 
             var wrongChoices = _context.LearningItems
                 .Where(x => x.LearningItemId != current.LearningItemId)
                 .OrderBy(x => Guid.NewGuid())
                 .Take(2)
-                .Select(x => x.MalteseText)
+                .Select(x => x.DisplayMalteseWord)
                 .ToList();
 
-            var choices = new List<string> { current.MalteseText };
+            var choices = new List<string> { current.DisplayMalteseWord };
             choices.AddRange(wrongChoices);
+            choices = choices.OrderBy(x => Guid.NewGuid()).ToList();
 
-            ViewBag.Choices = choices.OrderBy(x => Guid.NewGuid()).ToList();
+            ViewBag.QuestionText = questionText;
+            ViewBag.CorrectAnswer = correctAnswer;
 
             ViewBag.Step = step;
             ViewBag.TotalSteps = items.Count;
             ViewBag.PlayerCode = playerCode;
+
             ViewBag.Score = score;
+            ViewBag.CorrectAnswers = correctAnswers;
+            ViewBag.IncorrectAnswers = incorrectAnswers;
+            
+           
             ViewBag.Mode = mode;
             ViewBag.Lives = lives;
+            ViewBag.Streak = streak;
+
+            ViewBag.Choices = choices;
 
             return View("Start", current);
         }
@@ -128,17 +140,19 @@ namespace LearnMalti.Controllers
          int mode,
          int score = 0,                 // correct answers
          int incorrectAnswers = 0,
+         int correctAnswers = 0,
          bool failed = false)
         {
             Response.Headers["Cache-Control"] = "no-store";
 
-            int questionsAnswered = score + incorrectAnswers;
+            int questionsAnswered = correctAnswers + incorrectAnswers;
+
 
             var result = new TimedQuizResult
             {
                 Mode = mode,
                 QuestionsAnswered = questionsAnswered,
-                CorrectAnswers = score,
+                CorrectAnswers = correctAnswers,
                 IncorrectAnswers = incorrectAnswers,
                 PlayerCode = playerCode,
                 Score = score,
@@ -151,26 +165,46 @@ namespace LearnMalti.Controllers
             ViewBag.PlayerCode = playerCode;
             ViewBag.Mode = mode;
             ViewBag.Score = score;
+            ViewBag.CorrectAnswers = correctAnswers;
+            ViewBag.IncorrectAnswers = incorrectAnswers;
+            ViewBag.QuestionsAnswered = questionsAnswered;
+
 
             ViewBag.Layout = "~/Views/Shared/_TimedQuizLayout.cshtml";
             ViewBag.Title = "Timed Quiz Completed!";
-            if (mode == 1 && score >= 50)
+
+            if (mode == 1)
             {
-                AwardBadgeIfNotExists(playerCode, 3);
-                ViewBag.BadgeText =
-               $"You answered {questionsAnswered} questions and got {score} correct! & have been awarded the speedrunner badge!";
+                if (score >= 50)
+                {
+                    AwardBadgeIfNotExists(playerCode, 3);
+
+                    ViewBag.BadgeText =
+                        $"You answered {questionsAnswered} questions and got {correctAnswers} correct. " +
+                        $"Your final score is {score}. You have been awarded the Speedrunner badge!";
+                }
+                else
+                {
+                    ViewBag.BadgeText =
+                        $"You answered {questionsAnswered} questions and got {correctAnswers} correct. " +
+                        $"Your final score is {score}. Reach 50 points to earn the Speedrunner badge.";
+                }
             }
-            else if (mode == 1 && score < 50)
+            else
             {
                 ViewBag.BadgeText =
-                $"You answered {questionsAnswered} questions and got {score} correct! (Achive a total of 50 score to earn the speedrunner badge";
-            }
-            else if(mode == 0) {
-                ViewBag.BadgeText =
-                   $"You answered {questionsAnswered} questions and got {score} correct!";
+                    $"You answered {questionsAnswered} questions and got {correctAnswers} correct.";
             }
             ViewBag.RetryUrl =
-                $"/TimedQuiz/Start?playerCode={playerCode}&step=1&score=0&incorrectAnswers=0&mode={mode}&lives=3";
+                $"/TimedQuiz/Start?playerCode={playerCode}" +
+                $"&step=1" +
+                $"&score=0" +
+                $"&correctAnswers=0" +
+                $"&incorrectAnswers=0" +
+                $"&mode={mode}" +
+                $"&lives=3" +
+                $"&streak=0";
+
 
             ViewBag.ShowFeedback = false;
 

@@ -30,6 +30,7 @@
     const playerCode = "@ViewBag.PlayerCode";
     const mode = @ViewBag.Mode;
     const incorrectAnswers = @ViewBag.IncorrectAnswers ?? 0;
+    const correctAnswers = @((ViewBag.CorrectAnswers ?? 0));
 
     if (step > 0) {
 
@@ -59,6 +60,7 @@
                     `/TimedQuiz/Completed?playerCode=${playerCode}` +
                     `&mode=${mode}` +
                     `&score=${score}` +
+                    `&correctAnswers=${correctAnswers}` +
                     `&incorrectAnswers=${incorrectAnswers}`;
             }
         }

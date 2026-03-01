@@ -10,6 +10,7 @@
     int lives = ViewBag.Lives ?? 3;
     int incorrectAnswers = ViewBag.IncorrectAnswers ?? 0;
     int streak = ViewBag.Streak ?? 0;
+    int correctAnswers = ViewBag.CorrectAnswers ?? 0;
 
 
     var choices = ViewBag.Choices as List<string>;
@@ -40,8 +41,9 @@
             .trim();
     }
 
-           function submitAnswer(answer) {
+    function submitAnswer(answer) {
 
+        // ✅ SAFE JSON SERIALIZATION
         const correct = @Html.Raw(
             System.Text.Json.JsonSerializer.Serialize(ViewBag.CorrectAnswer)
         );
@@ -53,23 +55,31 @@
         let mode = @mode;
         let lives = @lives;
         let playerCode = "@playerCode";
+        let correctAnswers = @correctAnswers;
 
-        // ✅ CORRECT
-        if (normalizeText(answer) === normalizeText(correct)) {
+        const isCorrect =
+            normalizeText(answer) === normalizeText(correct);
+
+        // ==========================
+        // ✅ CORRECT ANSWER
+        // ==========================
+        if (isCorrect) {
 
             step++;
             streak++;
+            correctAnswers++;
 
-            // 🔥 Base points
-            score += 10;
-
-            // 🔥 Bonus system
-            if (streak === 3) {
+            if (mode === 1) {
+                // Base score
                 score += 10;
-            }
 
-            if (streak === 5) {
-                score += 20;
+                // Streak bonuses
+                if (streak === 3) {
+                    score += 30;
+                }
+                else if (streak === 5) {
+                    score += 50;
+                }
             }
 
             Swal.fire({
@@ -84,6 +94,7 @@
                     `/TimedQuiz/Start?playerCode=${playerCode}` +
                     `&step=${step}` +
                     `&score=${score}` +
+                    `&correctAnswers=${correctAnswers}` +
                     `&incorrectAnswers=${incorrectAnswers}` +
                     `&streak=${streak}` +
                     `&mode=${mode}` +
@@ -93,26 +104,24 @@
             return;
         }
 
-        // ❌ WRONG
+        // ==========================
+        // ❌ WRONG ANSWER
+        // ==========================
+
         step++;
         incorrectAnswers++;
-        streak = 0;   // reset streak
-
-        score -= 10;
-        if (score < 0) score = 0;
+        streak = 0;
 
         if (mode === 1) {
             lives--;
 
             if (lives <= 0) {
-                sessionStorage.removeItem("timedQuizEnd");
-
                 window.location.href =
                     `/TimedQuiz/Completed?playerCode=${playerCode}` +
                     `&mode=${mode}` +
                     `&score=${score}` +
+                    `&correctAnswers=${correctAnswers}` +
                     `&incorrectAnswers=${incorrectAnswers}`;
-
                 return;
             }
         }
@@ -129,6 +138,7 @@
                 `/TimedQuiz/Start?playerCode=${playerCode}` +
                 `&step=${step}` +
                 `&score=${score}` +
+                `&correctAnswers=${correctAnswers}` +
                 `&incorrectAnswers=${incorrectAnswers}` +
                 `&streak=${streak}` +
                 `&mode=${mode}` +

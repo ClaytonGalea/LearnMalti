@@ -63,7 +63,7 @@ namespace LearnMalti.Controllers
                         TotalQuestions = pairs.Count,
                         CorrectAnswers = 0,
                         IncorrectAnswers = 0,
-                        RetryCount = 0,
+                        //RetryCount = 0,
                         TimeRanOut = false
                     };
 

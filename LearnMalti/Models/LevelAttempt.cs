@@ -24,8 +24,6 @@
 
         public bool TimeRanOut { get; set; }
 
-        public int RetryCount { get; set; }
-
         public ICollection<QuestionResponse>? QuestionResponses { get; set; }
     }
 }

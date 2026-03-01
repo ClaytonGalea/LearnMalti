@@ -14,7 +14,6 @@ namespace LearnMalti.Data
         // Tables
         public DbSet<Player> Players { get; set; }
         public DbSet<LearningItem> LearningItems { get; set; }
-        public DbSet<PlayerProgress> PlayerProgress { get; set; }
         public DbSet<Badge> Badges { get; set; }
         public DbSet<PlayerBadge> PlayerBadges { get; set; }
         public DbSet<TimedQuizResult> TimedQuizResults { get; set; }
@@ -31,9 +30,9 @@ namespace LearnMalti.Data
                 .IsUnique();
 
             // Composite unique index: one progress row per (Player, Item)
-            modelBuilder.Entity<PlayerProgress>()
-                .HasIndex(pp => new { pp.PlayerId, pp.LearningItemId })
-                .IsUnique();
+           // modelBuilder.Entity<PlayerProgress>()
+             //   .HasIndex(pp => new { pp.PlayerId, pp.LearningItemId })
+               // .IsUnique();
 
             // Composite unique index: badge can't be earned twice
             modelBuilder.Entity<PlayerBadge>()
@@ -67,9 +66,9 @@ namespace LearnMalti.Data
 
 
             modelBuilder.Entity<Badge>().HasData(
-            new Badge { BadgeId = 1, Name = "Tutorial Master", Description = "Completed the Tutorial", IconKey = "🏅" },
-            new Badge { BadgeId = 2, Name = "Perfect Score", Description = "Scored 100% on any level", IconKey = "🌟" },
-            new Badge { BadgeId = 3, Name = "Speed Runner", Description = "Finished a level before time ran out", IconKey = "⚡" }
+             new Badge { BadgeId = 1, Name = "Tutorial Master", Description = "Completed the Tutorial", IconKey = "🏅" },
+             new Badge { BadgeId = 2, Name = "Perfect Score", Description = "Scored 100% on any level", IconKey = "🌟" },
+             new Badge { BadgeId = 3, Name = "Speed Runner", Description = "Finished a level before time ran out", IconKey = "⚡" }
     );
         }
 

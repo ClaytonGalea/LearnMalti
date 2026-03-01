@@ -144,9 +144,6 @@ namespace LearnMalti.Migrations
                     b.Property<int>("PlayerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RetryCount")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("ScorePercentage")
                         .HasPrecision(5, 2)
                         .HasColumnType("decimal(5,2)");
@@ -191,9 +188,6 @@ namespace LearnMalti.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("YearGroup")
-                        .HasColumnType("int");
-
                     b.HasKey("PlayerId");
 
                     b.HasIndex("PlayerCode")
@@ -227,42 +221,6 @@ namespace LearnMalti.Migrations
                         .IsUnique();
 
                     b.ToTable("PlayerBadges");
-                });
-
-            modelBuilder.Entity("LearnMalti.Models.PlayerProgress", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CorrectAnswers")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("LastAttemptTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("LearningItemId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlayerId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TotalAttempts")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("WasLastAnswerCorrect")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LearningItemId");
-
-                    b.HasIndex("PlayerId", "LearningItemId")
-                        .IsUnique();
-
-                    b.ToTable("PlayerProgress");
                 });
 
             modelBuilder.Entity("LearnMalti.Models.QuestionResponse", b =>
@@ -363,25 +321,6 @@ namespace LearnMalti.Migrations
                         .IsRequired();
 
                     b.Navigation("Badge");
-
-                    b.Navigation("Player");
-                });
-
-            modelBuilder.Entity("LearnMalti.Models.PlayerProgress", b =>
-                {
-                    b.HasOne("LearnMalti.Models.LearningItem", "LearningItem")
-                        .WithMany()
-                        .HasForeignKey("LearningItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("LearnMalti.Models.Player", "Player")
-                        .WithMany()
-                        .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("LearningItem");
 
                     b.Navigation("Player");
                 });
