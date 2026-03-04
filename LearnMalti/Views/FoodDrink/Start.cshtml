@@ -108,20 +108,20 @@
                normalize(a) === normalizedInput
            );
 
-        // ✅ CORRECT
-        if (isCorrect) {
+           // ✅ CORRECT
+    if (isCorrect) {
 
-            score++;
+        score++;
 
-            if (mode === 1) {
-                fetch(`/api/playerapi/addxp?playerCode=${playerCode}&amount=20`, {
-                    method: "POST"
-                });
-            }
+        if (mode === 1) {
+
+            fetch(`/api/playerapi/addxp?playerCode=${playerCode}&amount=20`, {
+                method: "POST"
+            });
 
             Swal.fire({
                 title: "Correct!",
-                text: mode === 1 ? "+20 XP" : "Good job!",
+                text: "+20 XP",
                 icon: "success",
                 timer: 900,
                 showConfirmButton: false
@@ -137,25 +137,12 @@
                     `&isCorrect=true`;
             });
 
-            return;
-        }
+        } else {
 
-        // ❌ WRONG
-        if (mode === 1) {
-
-            lives--;
-
-            if (lives <= 0) {
-                window.location.href =
-                    `/FoodDrink/Completed?playerCode=${playerCode}&mode=${mode}&failed=true`;
-                return;
-            }
-
+            // Non-gamified → minimal success icon only
             Swal.fire({
-                title: "Wrong!",
-                text: `Lives left: ${lives}`,
-                icon: "error",
-                timer: 900,
+                icon: "success",
+                timer: 700,
                 showConfirmButton: false
             }).then(() => {
 
@@ -166,19 +153,53 @@
                     `&mode=${mode}` +
                     `&lives=${lives}` +
                     `&learningItemId=${learningItemId}` +
-                    `&isCorrect=false`;
-            });
-
-        } else {
-
-            Swal.fire({
-                title: "Try again!",
-                icon: "error",
-                timer: 800,
-                showConfirmButton: false
+                    `&isCorrect=true`;
             });
         }
+
+        return;
     }
+
+
+    // ❌ WRONG
+    if (mode === 1) {
+
+        lives--;
+
+        if (lives <= 0) {
+            window.location.href =
+                `/FoodDrink/Completed?playerCode=${playerCode}&mode=${mode}&failed=true`;
+            return;
+        }
+
+        Swal.fire({
+            title: "Wrong!",
+            text: `Lives left: ${lives}`,
+            icon: "error",
+            timer: 900,
+            showConfirmButton: false
+        }).then(() => {
+
+            window.location.href =
+                `/FoodDrink/SubmitAnswer?playerCode=${playerCode}` +
+                `&step=${step}` +
+                `&score=${score}` +
+                `&mode=${mode}` +
+                `&lives=${lives}` +
+                `&learningItemId=${learningItemId}` +
+                `&isCorrect=false`;
+        });
+
+    } else {
+
+        // Non-gamified → just incorrect icon
+        Swal.fire({
+            icon: "error",
+            timer: 700,
+            showConfirmButton: false
+        });
+    }
+   }
     
 
     function showHint() {

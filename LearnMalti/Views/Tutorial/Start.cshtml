@@ -61,17 +61,17 @@
             normalize(a) === normalizedInput
         );
 
-        if (isCorrect) {
+    if (isCorrect) {
 
-            if (mode === 1) {
-                fetch(`/api/playerapi/addxp?playerCode=${playerCode}&amount=20`, {
-                    method: "POST"
-                });
-            }
+        if (mode === 1) {
+
+            fetch(`/api/playerapi/addxp?playerCode=${playerCode}&amount=20`, {
+                method: "POST"
+            });
 
             Swal.fire({
                 title: "Correct!",
-                text: mode === 1 ? "+20 XP" : "Good job!",
+                text: "+20 XP",
                 icon: "success",
                 timer: 1000,
                 showConfirmButton: false
@@ -84,8 +84,29 @@
                     `&mode=${mode}`;
             });
 
-            return;
+        } else {
+
+            // Non-gamified → cross only
+            Swal.fire({
+                icon: "success",
+                timer: 800,
+                showConfirmButton: false
+            }).then(() => {
+
+                window.location.href =
+                    `/Tutorial/Start?playerCode=${playerCode}` +
+                    `&step=${nextStep}` +
+                    `&score=${score + 1}` +
+                    `&mode=${mode}`;
+            });
         }
+
+        return;
+    }
+
+
+    // ❌ NOT CORRECT
+    if (mode === 1) {
 
         Swal.fire({
             title: "Incorrect!",
@@ -94,6 +115,16 @@
             timer: 1200,
             showConfirmButton: false
         });
-    }
 
+    } else {
+
+        // Non-gamified → just cross logo
+        Swal.fire({
+            icon: "error",
+            timer: 800,
+            showConfirmButton: false
+        });
+        }
+    }
+    
 </script>

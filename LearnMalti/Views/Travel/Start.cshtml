@@ -108,8 +108,8 @@
             }
 
             Swal.fire({
-                title: "Correct!",
-                text: mode === 1 ? "+20 XP" : "Good job!",
+                title: mode === 1 ? "Correct!": "",
+                text: mode === 1 ? "+20 XP Good Job!" : "",
                 icon: "success",
                 timer: 900,
                 showConfirmButton: false
@@ -140,8 +140,8 @@
             }
 
             Swal.fire({
-                title: "Wrong!",
-                text: `Lives left: ${lives}`,
+                title: mode === 1 ?"Wrong!": "",
+                text: mode === 1 ?`Lives left: ${lives}`: "",
                 icon: "error",
                 timer: 900,
                 showConfirmButton: false
@@ -160,7 +160,7 @@
         } else {
 
             Swal.fire({
-                title: "Try again!",
+                title: mode === 1 ?"Try again!" : "",
                 icon: "error",
                 timer: 800,
                 showConfirmButton: false
