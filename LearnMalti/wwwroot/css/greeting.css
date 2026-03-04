@@ -161,4 +161,35 @@ body {
         background: #ffca28;
         transform: scale(1.05);
     }
+/* ===== ANSWER ROW ===== */
+.choice-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 15px;
+}
 
+    /* main answer fills space */
+    .choice-row .choice {
+        flex: 1;
+        margin-top: 0;
+    }
+
+/* ===== AUDIO BUTTON ===== */
+.audio-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    border: none;
+    background: #fff8dc;
+    font-size: 1.4rem;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transition: 0.15s;
+}
+
+    .audio-btn:hover {
+        transform: scale(1.1);
+        background: #ffec99;
+    }

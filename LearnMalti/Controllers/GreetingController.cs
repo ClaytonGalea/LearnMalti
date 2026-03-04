@@ -84,17 +84,15 @@ namespace LearnMalti.Controllers
             ViewBag.Mode = mode;
             ViewBag.Lives = lives;
 
-            // 🟦 Quiz & Sentence (MCQ-style)
             if (questionType == "Quiz" || questionType == "Sentence")
             {
                 var wrongChoices = items
-                    .Where(x => x.LearningItemId != current.LearningItemId)
-                    .OrderBy(x => Guid.NewGuid())
-                    .Take(2)
-                    .Select(x => x.MalteseText)
-                    .ToList();
+                 .Where(x => x.LearningItemId != current.LearningItemId)
+                 .OrderBy(x => Guid.NewGuid())
+                 .Take(2)
+                 .ToList();  // ← keep full objects
 
-                var choices = new List<string> { current.MalteseText };
+                var choices = new List<LearningItem> { current };
                 choices.AddRange(wrongChoices);
 
                 ViewBag.Choices = choices
@@ -105,11 +103,7 @@ namespace LearnMalti.Controllers
             {
                 SetupSentence(step);
             }
-            // 🟨 Dialogue
-            if (questionType == "Dialogue")
-            {
-                SetupDialogue(step);
-            }
+    
 
             // 🟥 Matching (final question)
             if (questionType == "Matching")
@@ -123,21 +117,24 @@ namespace LearnMalti.Controllers
         private string GetQuestionType(int step)
         {
             if (step <= 3) return "Quiz";
-            if (step <= 6) return "Sentence";
-            if (step <= 9) return "Dialogue";
+            if (step <= 9) return "Sentence";
             return "Matching"; // step 10
         }
         private void SetupSentence(int step)
         {
+            ViewBag.Sentence = "____";
+
+            List<string> words = new();
+            string correctWord = "";
+
             switch (step)
             {
                 case 4:
                     ViewBag.EnglishSentence = "How do you greet someone in the morning?";
-                    ViewBag.Sentence = "____";
-                    ViewBag.CorrectAnswer = "Bongu";
-                    ViewBag.Choices = new List<string>
+                    correctWord = "Bonġu";
+                    words = new List<string>
             {
-                "Bongu",
+                "Bonġu",
                 "Il-lejl it-tajjeb",
                 "Grazzi"
             };
@@ -145,9 +142,8 @@ namespace LearnMalti.Controllers
 
                 case 5:
                     ViewBag.EnglishSentence = "How do you say thank you politely?";
-                    ViewBag.Sentence = "____";
-                    ViewBag.CorrectAnswer = "Grazzi";
-                    ViewBag.Choices = new List<string>
+                    correctWord = "Grazzi";
+                    words = new List<string>
             {
                 "Grazzi",
                 "Merħba",
@@ -157,18 +153,58 @@ namespace LearnMalti.Controllers
 
                 case 6:
                     ViewBag.EnglishSentence = "What do you say when asking politely?";
-                    ViewBag.Sentence = "____";
-                    ViewBag.CorrectAnswer = "Jekk jogħġbok";
-                    ViewBag.Choices = new List<string>
+                    correctWord = "Jekk joghġbok";
+                    words = new List<string>
             {
-                "Jekk jogħġbok",
+
+                "Jekk joghġbok",
                 "Tajjeb",
                 "Narak iktar tard"
             };
                     break;
+
+                case 7:
+                    ViewBag.EnglishSentence = "Someone says: \"Bongu\". You reply saying:";
+                    correctWord = "Bonġu";
+                    words = new List<string>
+                    {
+                        "Bonġu",
+                        "Il-lejl it-tajjeb",
+                        "Grazzi"
+                    };
+                    break;
+
+                case 8:
+                    ViewBag.EnglishSentence = "You want to ask politely.";
+                    correctWord = "Jekk joghġbok";
+                    words = new List<string>
+                    {
+                        "Jekk joghġbok",
+                        "Grazzi",
+                        "Bonġu"
+                    };
+                    break;
+
+                case 9:
+                    ViewBag.EnglishSentence = "You are leaving. What do you say?";
+                    correctWord = "Narak iktar tard";
+                    words = new List<string>
+                    {
+                        "Narak iktar tard",
+                        "Merħba",
+                        "Kif inti?"
+                    };
+                    break;
             }
 
-            ViewBag.Choices = ((List<string>)ViewBag.Choices)
+            // 🔥 Fetch full objects from DB instead of strings
+            var choices = _context.LearningItems
+                .Where(x => words.Contains(x.MalteseText))
+                .ToList();
+
+            ViewBag.CorrectAnswer = correctWord;
+
+            ViewBag.Choices = choices
                 .OrderBy(x => Guid.NewGuid())
                 .ToList();
         }

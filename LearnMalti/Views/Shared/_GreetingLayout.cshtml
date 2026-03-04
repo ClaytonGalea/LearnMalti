@@ -2,7 +2,10 @@
     Layout = "~/Views/Shared/_GameLevelLayout.cshtml";
 }
 
-<title>Greetings</title>
+@section Styles {
+    <link rel="stylesheet" href="~/css/greeting.css" asp-append-version="true" />
+}
+
 <link rel="stylesheet" href="/css/greeting.css" />
 
 @if (ViewBag.Step > 0 && ViewBag.TotalSteps > 0)

@@ -16,6 +16,8 @@
 
         public string? MalteseWord_Font { get; set; }
 
+        public string? AudioPath { get; set; }
+
         public string DisplayMalteseWord =>
        !string.IsNullOrEmpty(MalteseWord_Font)
            ? MalteseWord_Font
