@@ -1,267 +1,282 @@
 ﻿@{
+    
     Layout = "~/Views/Shared/_GameLevelLayout.cshtml";
 }
 @{
-    string playerCode = ViewBag.PlayerCode;
-    int mode = ViewBag.Mode;
-    int step = ViewBag.Step ?? 0;
-    int total = ViewBag.TotalSteps ?? 0;
-    string title = ViewBag.Title ?? "Tutorial";
+    //Retrieve data passed from the controller via ViewBag
+    string playerCode = ViewBag.PlayerCode; //Unique player ID
+    int mode = ViewBag.Mode;                //Game mode (1 = gamified, 0 = non-gamified)
+    int step = ViewBag.Step ?? 0;           //Current question step (default to 0 if not set)
+    int total = ViewBag.TotalSteps ?? 0;    //Total number of steps in the tutorial (default to 0 if not set)
+    string title = ViewBag.Title ?? "Tutorial"; //Title of the tutorial (default to "Tutorial" if not set)
 }
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>@title</title>
+<!--Stylesheet-->
+@section Styles {
     <link rel="stylesheet" href="/css/tutorial.css" />
-</head>
-<body>
-    <audio id="hoverSound" preload="auto"></audio>
+}
 
-    <audio id="birdSound" preload="auto"></audio>
-    <audio id="dogSound" preload="auto"></audio>
+<!--Audio elements-->
+<audio id="hoverSound" preload="auto"></audio>
+<audio id="birdSound" preload="auto"></audio>
+<audio id="dogSound" preload="auto"></audio>
 
-    <div class="level-header">
-        <h2 class="level-title">@title</h2>
-        <div class="progress-hud">
-            Question @step of @total
-        </div>
+<!--Level title & progress HUD-->
+<div class="level-header">
+    <h2 class="level-title">@title</h2>
+
+    <div class="progress-hud">
+        Question @step of @total
     </div>
+</div>
 
-
-    <!-- BACKGROUND OBJECTS -->
+@if (mode == 1)
+{
+    <!-- Interactive Background Objects -->
     <div class="tutorial-background">
+
         <div class="flip-card dog" data-sound="/Sounds/DogSound.mp3">
             <div class="flip-card-inner">
+
                 <div class="flip-card-front">
                     <img src="/images/Words/dog.png" />
                 </div>
+
                 <div class="flip-card-back">
                     <p>Kelb</p>
                 </div>
+
             </div>
         </div>
 
         <div class="flip-card bird" data-sound="/Sounds/BirdSound.mp3">
             <div class="flip-card-inner">
+
                 <div class="flip-card-front">
                     <img src="/images/bird.png" />
                 </div>
+
                 <div class="flip-card-back">
                     <p>Ghasfur</p>
                 </div>
+
             </div>
         </div>
+
+    </div>
+}
+<!--Guide overlay-->
+<div id="guideOverlay" class="guide-overlay hidden">
+
+    <div class="guide-spotlight"></div>
+
+    <div class="guide-bubble">
+
+        <p id="guideText"></p>
+        <button id="guideNext">Next</button>
+
     </div>
 
-    <div id="guideOverlay" class="guide-overlay hidden">
-        <div class="guide-spotlight"></div>
-
-        <div class="guide-bubble">
-            <p id="guideText"></p>
-            <button id="guideNext">Next</button>
-        </div>
-    </div>
+</div>
 
 
-    <!-- MAIN CONTENT -->
-    <div class="tutorial-content">
-        @RenderBody()
-    </div>
+<!--Main content-->
+<div class="tutorial-content">
+    @RenderBody()
+</div>
 
-    <!-- TIMER SCRIPT -->
-    <script>
-        function startTimer(seconds, onFinish) {
-            let time = seconds;
-            const el = document.getElementById("timerText");
+<!--Timer script-->
+<script>
+    function startTimer(seconds, onFinish) {
 
-            if (!el) return;
-            el.innerText = time;
+        let remaining = seconds;
+        const timerEl = document.getElementById("timerText");
 
-            const interval = setInterval(() => {
-                time--;
-                el.innerText = time;
+        if (!timerEl) return;
 
-                if (time <= 0) {
-                    clearInterval(interval);
+        timerEl.innerText = remaining;
+
+        const interval = setInterval(() => {
+
+            remaining--;
+
+            if (remaining <= 0) {
+                remaining = 0;
+                clearInterval(interval);
+
+                if (typeof onFinish === "function") {
                     onFinish();
                 }
-            }, 1000);
-        }
-    </script>
+            }
 
-    @if (mode == 1)
-    {
-        <script>
-            startTimer(60, () => {
-                window.location.href =
-                     "/Tutorial/Completed?playerCode=@playerCode&total=@total&mode=@mode&timeUp=true";
+            timerEl.innerText = remaining;
+
+        }, 1000);
+
+        return interval; // allows manual stop if needed
+}
+
+</script>
+
+@if (mode == 1)
+{
+    <!--Sound script-->
+    <script>
+        const hoverAudio = document.getElementById('hoverSound');
+
+            const unlockAudios = [
+            document.getElementById('birdSound'),
+            document.getElementById('dogSound'),
+        ];
+
+        let audioUnlocked = false;
+
+        document.addEventListener('click', () => {
+            if (audioUnlocked) return;
+
+            unlockAudios.forEach(a => {
+                a.volume = 0;
+                a.play().then(() => {
+                    a.pause();
+                    a.currentTime = 0;
+                    a.volume = 0.7;
+                }).catch(() => {});
             });
-        </script>
 
-        <script>
-            const hoverAudio = document.getElementById('hoverSound');
+            audioUnlocked = true;
+            console.log("🔓 All audio unlocked");
+        }, { once: true });
 
-             const unlockAudios = [
-                document.getElementById('birdSound'),
-                document.getElementById('dogSound'),
+        // 🔊 Play sound per card
+                    document.querySelectorAll('.flip-card').forEach(card => {
+            let played = false;
+
+            card.addEventListener('mouseenter', () => {
+                if (!audioUnlocked || played) return;
+
+                const soundSrc = card.dataset.sound;
+                if (!soundSrc) return;
+
+                hoverAudio.src = soundSrc;
+                hoverAudio.currentTime = 0;
+                hoverAudio.volume = 0.8;
+                hoverAudio.play().catch(() => {});
+
+                played = true;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                played = false;
+            });
+        });
+
+    </script>
+    <!--Guide overlay script-->
+    <script>
+            
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const currentStep = @step;
+            if (currentStep !== 1) return;
+    
+            const overlay = document.getElementById("guideOverlay");
+            const spotlight = document.querySelector(".guide-spotlight");
+            const bubble = document.querySelector(".guide-bubble");
+            const text = document.getElementById("guideText");
+            const nextBtn = document.getElementById("guideNext");
+
+            if (!overlay || !spotlight || !bubble || !text || !nextBtn) return;
+
+            const steps = [
+                {
+                    element: document.querySelector(".home-btn"),
+                    message: "Press this button to return home at any time."
+                },
+                {
+                    element: document.querySelector(".timer-hud"),
+                    message: "This shows how much time you have to answer."
+                },
+                {
+                    element: document.querySelector(".flip-card"),
+                    message: "You can hover or tap these cards to reveal words."
+                },
+                {
+                    element: document.querySelector(".quiz-card"),
+                    message: "Choose the correct answer here to continue."
+                }
             ];
 
-            let audioUnlocked = false;
+            let stepIndex = 0;
+            overlay.classList.remove("hidden");
 
-            document.addEventListener('click', () => {
-                if (audioUnlocked) return;
+            function showStep(index) {
+                const step = steps[index];
+                const target = step.element;
 
-                unlockAudios.forEach(a => {
-                    a.volume = 0;
-                    a.play().then(() => {
-                        a.pause();
-                        a.currentTime = 0;
-                        a.volume = 0.7;
-                    }).catch(() => {});
-                });
-
-                audioUnlocked = true;
-                console.log("🔓 All audio unlocked");
-            }, { once: true });
-
-            // 🔊 Play sound per card
-                        document.querySelectorAll('.flip-card').forEach(card => {
-                let played = false;
-
-                card.addEventListener('mouseenter', () => {
-                    if (!audioUnlocked || played) return;
-
-                    const soundSrc = card.dataset.sound;
-                    if (!soundSrc) return;
-
-                    hoverAudio.src = soundSrc;
-                    hoverAudio.currentTime = 0;
-                    hoverAudio.volume = 0.8;
-                    hoverAudio.play().catch(() => {});
-
-                    played = true;
-                });
-
-                card.addEventListener('mouseleave', () => {
-                    played = false;
-                });
-            });
-
-        </script>
-
-        <script>
-            
-            document.addEventListener("DOMContentLoaded", () => {
-
-                const currentStep = @step;
-                if (currentStep !== 1) return;
-    
-                const overlay = document.getElementById("guideOverlay");
-                const spotlight = document.querySelector(".guide-spotlight");
-                const bubble = document.querySelector(".guide-bubble");
-                const text = document.getElementById("guideText");
-                const nextBtn = document.getElementById("guideNext");
-
-                if (!overlay || !spotlight || !bubble || !text || !nextBtn) return;
-
-                const steps = [
-                    {
-                        element: document.querySelector(".home-btn"),
-                        message: "Press this button to return home at any time."
-                    },
-                    {
-                        element: document.querySelector(".timer-hud"),
-                        message: "This shows how much time you have to answer."
-                    },
-                    {
-                        element: document.querySelector(".flip-card"),
-                        message: "You can hover or tap these cards to reveal words."
-                    },
-                    {
-                        element: document.querySelector(".quiz-card"),
-                        message: "Choose the correct answer here to continue."
-                    }
-                ];
-
-                let stepIndex = 0;
-                overlay.classList.remove("hidden");
-
-                function showStep(index) {
-                    const step = steps[index];
-                    const target = step.element;
-
-                    if (!target) {
-                        nextStep();
-                        return;
-                    }
-
-                    const rect = target.getBoundingClientRect();
-
-                    /* ===== SPOTLIGHT ===== */
-                    spotlight.style.top = rect.top - 8 + "px";
-                    spotlight.style.left = rect.left - 8 + "px";
-                    spotlight.style.width = rect.width + 16 + "px";
-                    spotlight.style.height = rect.height + 16 + "px";
-
-                    /* ===== BUBBLE TEXT ===== */
-                    text.innerText = step.message;
-
-                    /* ===== BUBBLE POSITION (viewport-safe) ===== */
-                    bubble.style.top = "0px";
-                    bubble.style.left = "0px";
-
-                    const bubbleRect = bubble.getBoundingClientRect();
-                    const padding = 16;
-
-                    let top = rect.bottom + 12;
-                    let left = rect.left + rect.width / 2 - bubbleRect.width / 2;
-
-                    if (top + bubbleRect.height > window.innerHeight) {
-                        top = rect.top - bubbleRect.height - 12;
-                    }
-
-                    if (left < padding) {
-                        left = padding;
-                    }
-
-                    if (left + bubbleRect.width > window.innerWidth - padding) {
-                        left = window.innerWidth - bubbleRect.width - padding;
-                    }
-
-                    if (top < padding) {
-                        top = padding;
-                    }
-
-                    bubble.style.top = `${top}px`;
-                    bubble.style.left = `${left}px`;
-
-                    nextBtn.innerText =
-                        index === steps.length - 1 ? "Got it!" : "Next";
+                if (!target) {
+                    nextStep();
+                    return;
                 }
 
-                function nextStep() {
-                    stepIndex++;
+                const rect = target.getBoundingClientRect();
 
-                    if (stepIndex >= steps.length) {
-                        overlay.classList.add("hidden");
-                        return;
-                    }
+                /* ===== SPOTLIGHT ===== */
+                spotlight.style.top = rect.top - 8 + "px";
+                spotlight.style.left = rect.left - 8 + "px";
+                spotlight.style.width = rect.width + 16 + "px";
+                spotlight.style.height = rect.height + 16 + "px";
 
-                    showStep(stepIndex);
+                /* ===== BUBBLE TEXT ===== */
+                text.innerText = step.message;
+
+                /* ===== BUBBLE POSITION (viewport-safe) ===== */
+                bubble.style.top = "0px";
+                bubble.style.left = "0px";
+
+                const bubbleRect = bubble.getBoundingClientRect();
+                const padding = 16;
+
+                let top = rect.bottom + 12;
+                let left = rect.left + rect.width / 2 - bubbleRect.width / 2;
+
+                if (top + bubbleRect.height > window.innerHeight) {
+                    top = rect.top - bubbleRect.height - 12;
                 }
 
-                nextBtn.addEventListener("click", nextStep);
+                if (left < padding) {
+                    left = padding;
+                }
+
+                if (left + bubbleRect.width > window.innerWidth - padding) {
+                    left = window.innerWidth - bubbleRect.width - padding;
+                }
+
+                if (top < padding) {
+                    top = padding;
+                }
+
+                bubble.style.top = `${top}px`;
+                bubble.style.left = `${left}px`;
+
+                nextBtn.innerText =
+                    index === steps.length - 1 ? "Got it!" : "Next";
+            }
+
+            function nextStep() {
+                stepIndex++;
+
+                if (stepIndex >= steps.length) {
+                    overlay.classList.add("hidden");
+                    return;
+                }
 
                 showStep(stepIndex);
-            });
-        </script>
+            }
 
+            nextBtn.addEventListener("click", nextStep);
 
+            showStep(stepIndex);
+        });
+    </script>
 
-
-    }
-
-
-</body>
-</html>
+}

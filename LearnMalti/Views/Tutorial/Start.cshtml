@@ -1,8 +1,19 @@
 ﻿@model LearnMalti.Models.LearningItem
 
 @{
+    // Set the layout for this view
     Layout = "~/Views/Shared/_TutorialLayout.cshtml";
 
+    int step = ViewBag.Step; //Current question step
+    int nextStep = step + 1; //Next question step
+    int mode = ViewBag.Mode; //Game mode (1 = gamified, 0 = non-gamified)
+    string playerCode = ViewBag.PlayerCode; //Unique identifier for the player
+
+
+    // Some maltese words have two valid formats
+    // -- Font Version
+    // -- Plain Text Version
+    // If a font version exits, accept both as correct answers
     var validAnswers = !string.IsNullOrWhiteSpace(Model.MalteseWord_Font)
         ? new List<string> { Model.MalteseWord_Font, Model.MalteseText }
         : new List<string> { Model.MalteseText };
@@ -10,16 +21,19 @@
 
 <div class="quiz-card">
 
+    <!-- isplays the english word that the learner must translate-->
     <h1 class="english-word hover-word"
         data-translation="@Model.DisplayMalteseWord">
         @Model.EnglishText
     </h1>
 
+    <!-- Show the image related to the word if it exists-->
     @if (!string.IsNullOrEmpty(Model.ImageUrl))
     {
         <img src="@Model.ImageUrl" class="quiz-image" />
     }
 
+    <!-- Multiple choice answer buttons-->
     <div class="choices-container">
         @foreach (var choice in (List<string>)ViewBag.Choices)
         {
@@ -35,6 +49,16 @@
 
 <script>
 
+    // Convert the valid answer list from C# to JavaScipt array 
+    // Allowing the script to check if the selected answer is correct
+    const correctAnswers = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(validAnswers));
+
+    const playerCode = "@playerCode";
+    const mode = @mode;
+    const nextStep = @nextStep;
+
+    //Normalizes text to make comparisons more reliable
+    //Converts to lowercase to prevent case differences
     function normalize(text) {
         return text
             .toLowerCase()
@@ -43,70 +67,57 @@
             .trim();
     }
 
-    // ✅ Properly serialized valid answers
-    const correctAnswers = @Html.Raw(
-        System.Text.Json.JsonSerializer.Serialize(validAnswers)
-    );
-
-    function checkAnswer(answer) {
-
-        const nextStep = @ViewBag.Step + 1;
-        const score = @ViewBag.Score;
-        const mode = @ViewBag.Mode;
-        const playerCode = "@ViewBag.PlayerCode";
-
+    //Checks if the selected answer matches any valid answer
+    function isCorrectAnswer(answer){
         const normalizedInput = normalize(answer);
 
-        const isCorrect = correctAnswers.some(a =>
+        return correctAnswers.some(a =>
             normalize(a) === normalizedInput
         );
-
-    if (isCorrect) {
-
-        if (mode === 1) {
-
-            fetch(`/api/playerapi/addxp?playerCode=${playerCode}&amount=20`, {
-                method: "POST"
-            });
-
-            Swal.fire({
-                title: "Correct!",
-                text: "+20 XP",
-                icon: "success",
-                timer: 1000,
-                showConfirmButton: false
-            }).then(() => {
-
-                window.location.href =
-                    `/Tutorial/Start?playerCode=${playerCode}` +
-                    `&step=${nextStep}` +
-                    `&score=${score + 1}` +
-                    `&mode=${mode}`;
-            });
-
-        } else {
-
-            // Non-gamified → cross only
-            Swal.fire({
-                icon: "success",
-                timer: 800,
-                showConfirmButton: false
-            }).then(() => {
-
-                window.location.href =
-                    `/Tutorial/Start?playerCode=${playerCode}` +
-                    `&step=${nextStep}` +
-                    `&score=${score + 1}` +
-                    `&mode=${mode}`;
-            });
-        }
-
-        return;
     }
 
+    //Redirects the user to the next question
+    function goToNextQuestion(){
+        window.location.href =
+            `/Tutorial/Start?playerCode=${playerCode}` +
+            `&step=${nextStep}` +
+            `&mode=${mode}`;
+    }
 
-    // ❌ NOT CORRECT
-    if (mode === 1) {
+    //Adds XP to the player
+    function addXP(){
+            fetch(`/api/playerapi/addxp?playerCode=${playerCode}&amount=20`, {
+            method: "POST"
+        });
+
+    }
+
+    //Feedback shown when the answer is correct (Gamified version)
+    function showCorrectGamified(){
+
+        addXP();
+
+        swal.fire({
+            title: "Correct!",
+            text: "+20 XP",
+            icon: "success",
+            timer: 1000,
+            showConfirmButton: false
+        }).then(goToNextQuestion);
+    }
+
+    //Feedback shown when the answer is correct (Non-Gamified version)
+    function showCorrectNonGamified() {
+
+        Swal.fire({
+            icon: "success",
+            timer: 800,
+            showConfirmButton: false
+        }).then(goToNextQuestion);
+    }
+
+    //Feedback shown when the answer is incorrect (Gamified version)
+    function showIncorrectGamified() {
 
         Swal.fire({
             title: "Incorrect!",
@@ -115,16 +126,41 @@
             timer: 1200,
             showConfirmButton: false
         });
+    }
 
-    } else {
+    //Feedback shown when the answer is incorrect (Non-Gamified version)
+    function showIncorrectNonGamified() {
 
-        // Non-gamified → just cross logo
         Swal.fire({
             icon: "error",
             timer: 800,
             showConfirmButton: false
         });
+    }
+
+    //Main function that validates the selected answer
+    //Decides which feeback to show based on the mode (game version)
+    function checkAnswer(answer){
+        
+        if(isCorrectAnswer(answer)){
+
+            if(mode === 1){
+                showCorrectGamified();
+            } 
+            else {
+                showCorrectNonGamified();
+            }
+        } 
+
+        else {
+
+            if(mode === 1){
+                showIncorrectGamified();
+            } 
+            else {
+                showIncorrectNonGamified();
+            }
         }
     }
-    
+
 </script>

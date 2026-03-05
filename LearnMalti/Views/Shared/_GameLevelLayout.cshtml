@@ -83,10 +83,14 @@
         }
     </script>
 
+    @{
+        int timerSeconds = ViewBag.TimerSeconds ?? 30; // default timer
+    }
+
     @if (mode == 1 && ViewBag.DisableGlobalTimer != true)
     {
         <script>
-            startTimer(30, () => {
+            startTimer(@timerSeconds, () => {
                 window.location.href =
                     "@Url.Action("Completed", ViewContext.RouteData.Values["controller"].ToString())"
                     + "?playerCode=@playerCode&total=@total&mode=@mode&timeUp=true";

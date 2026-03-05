@@ -1,22 +1,26 @@
 ﻿@model LearnMalti.Models.LearningItem
 
 @{
+    // Set the layout for this view
     Layout = "~/Views/Shared/_FoodDrinkLayout.cshtml";
 
-    string playerCode = ViewBag.PlayerCode;
-    int step = ViewBag.Step;
-    int score = ViewBag.Score;
-    int mode = ViewBag.Mode;
-    string type = ViewBag.QuestionType;
-    var choices = ViewBag.Choices as List<string>;
-    string sentence = ViewBag.Sentence;
-    int lives = ViewBag.Lives ?? 3;
+    string playerCode = ViewBag.PlayerCode; //Unique identifier for the player
+    int step = ViewBag.Step; //Current question step
+    int mode = ViewBag.Mode; //Game mode (1 = gamified, 0 = non-gamified)
+    int lives = ViewBag.Lives ?? 3; //Number of lives the player is given
+
+    string type = ViewBag.QuestionType; //Type of question (Quiz, ImageInput, Sentence)
+    var choices = ViewBag.Choices as List<string>; //Multiple choice options (only for Quiz and Sentence types)
+    string sentence = ViewBag.Sentence; //Sentence with missing word (only for Sentence type)
+   
+    //Used by the layout HUD to show hearths for lives
     ViewBag.HasLives = true;
     ViewBag.Lives = lives;
 }
 
 <div class="card">
 
+    <!--Quiz question type-->
     @if (type == "Quiz")
     {
         <h2 class="quiz-title">@Model.EnglishText</h2>
@@ -24,8 +28,8 @@
         @if (!string.IsNullOrEmpty(Model.ImageUrl))
         {
             <img src="@Model.ImageUrl"
-            class="image quiz-image"
-            alt="@Model.EnglishText" />
+                 class="image quiz-image"
+                 alt="@Model.EnglishText" />
         }
 
         @foreach (var c in choices)
@@ -33,33 +37,26 @@
             <button class="choice" onclick="submitAnswer('@c')">@c</button>
         }
     }
-
-
-    @if (type == "ImageInput")
+    else if (type == "ImageInput")
     {
-        <img src="@Model.ImageUrl" class="image" />
+        <img src="@Model.ImageUrl" class="image" alt="@Model" />
 
         <div class="answer-row">
             <input id="fillInput"
-            class="input"
-            placeholder="Ikteb il-kelma bil-Malti" />
+                   class="input"
+                   placeholder="Ikteb il-kelma bil-Malti" />
 
             <button class="submit"
-            onclick="submitAnswer(document.getElementById('fillInput').value)">
+                    onclick="submitAnswer(document.getElementById('fillInput').value)">
                 Submit
             </button>
 
-       
-            <button class="hint-btn" onclick="showHint()">
-                    💡 Hint
-            </button>
-            
+            <button class="hint-btn" onclick="showHint()">💡 Hint</button>
         </div>
 
         <p id="hintText" class="hint-text"></p>
     }
-
-    @if (type == "Sentence")
+    else if (type == "Sentence")
     {
         <p class="english-sentence">@ViewBag.EnglishSentence</p>
 
@@ -70,153 +67,147 @@
             <button class="choice" onclick="submitAnswer('@c')">@c</button>
         }
     }
-
-
 </div>
 
+@{
+    var correctAnswersList =
+        ViewBag.CorrectAnswer != null
+        ? new List<string> { ViewBag.CorrectAnswer }
+        : new List<string> { Model.DisplayMalteseWord };
+}
+
 <script>
+    
+    const playerCode = "@playerCode"; //Unique player ID
+    const step = @step; //Current question number
+    const mode = @mode; //Game Mode
+    let lives = @lives; //Remaining lives
+    const learningItemId = @Model.LearningItemId; //Id of the current learning item
+
+    //Convert valid answers from C# to a JavaScript array
+      const correctAnswers = @Html.Raw(
+        System.Text.Json.JsonSerializer.Serialize(correctAnswersList)
+    );
+
+
+    //Normalizes text to make comparisons more reliable
+    //Converts to lowercase to prevent case differences
     function normalize(text) {
+        if (!text) return "";
         return text
             .toLowerCase()
             .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "");
+            .replace(/[\u0300-\u036f]/g, "")
+            .trim();
     }
 
-     // ✅ BUILD VALID ANSWERS ARRAY FROM MODEL
-    const correctAnswers = @Html.Raw(
-           System.Text.Json.JsonSerializer.Serialize(
-               ViewBag.CorrectAnswer != null
-                   ? new List<string> { ViewBag.CorrectAnswer }
-                   : !string.IsNullOrWhiteSpace(Model.MalteseWord_Font)
-         ? new List<string> { Model.MalteseWord_Font, Model.MalteseText }
-         : new List<string> { Model.MalteseText }
-           )
-       );
+    //Redirects the olayer to the controller action after answering
+    //This sends the results of the answer to the backend
+    function goToController(isCorrect) {
 
-        function submitAnswer(answer) {
-
-        let step = @step;
-        let score = @score;
-        let mode = @mode;
-        let lives = @lives;
-        let playerCode = "@playerCode";
-        let learningItemId = @Model.LearningItemId;
-
-        const normalizedInput = normalize(answer.trim());
-
-           const isCorrect = correctAnswers.some(a =>
-               normalize(a) === normalizedInput
-           );
-
-           // ✅ CORRECT
-    if (isCorrect) {
-
-        score++;
-
-        if (mode === 1) {
-
-            fetch(`/api/playerapi/addxp?playerCode=${playerCode}&amount=20`, {
-                method: "POST"
-            });
-
-            Swal.fire({
-                title: "Correct!",
-                text: "+20 XP",
-                icon: "success",
-                timer: 900,
-                showConfirmButton: false
-            }).then(() => {
-
-                window.location.href =
-                    `/FoodDrink/SubmitAnswer?playerCode=${playerCode}` +
-                    `&step=${step}` +
-                    `&score=${score}` +
-                    `&mode=${mode}` +
-                    `&lives=${lives}` +
-                    `&learningItemId=${learningItemId}` +
-                    `&isCorrect=true`;
-            });
-
-        } else {
-
-            // Non-gamified → minimal success icon only
-            Swal.fire({
-                icon: "success",
-                timer: 700,
-                showConfirmButton: false
-            }).then(() => {
-
-                window.location.href =
-                    `/FoodDrink/SubmitAnswer?playerCode=${playerCode}` +
-                    `&step=${step}` +
-                    `&score=${score}` +
-                    `&mode=${mode}` +
-                    `&lives=${lives}` +
-                    `&learningItemId=${learningItemId}` +
-                    `&isCorrect=true`;
-            });
-        }
-
-        return;
+        window.location.href =
+            `/FoodDrink/SubmitAnswer?playerCode=${playerCode}` +
+            `&step=${step}` +
+            `&mode=${mode}` +
+            `&lives=${lives}` +
+            `&learningItemId=${learningItemId}` +
+            `&isCorrect=${isCorrect}`;
     }
 
+    //Main function used when the player submits
+    function submitAnswer(answer) {
 
-    // ❌ WRONG
-    if (mode === 1) {
+        //Normalize input before comparison
+        const normalizedInput = normalize(answer);
 
-        lives--;
+        //Checking if answer matches any valid answer
+        const isCorrect = correctAnswers.some(a =>
+            normalize(a) === normalizedInput
+        );
 
-        if (lives <= 0) {
-            window.location.href =
-                `/FoodDrink/Completed?playerCode=${playerCode}&mode=${mode}&failed=true`;
+        //Correct
+        if (isCorrect) {
+
+            //if gamified
+            if (mode === 1) {
+                //Add XP
+                fetch(`/api/playerapi/addxp?playerCode=${playerCode}&amount=20`, {
+                    method: "POST"
+                });
+                //Adaptive feedback
+                Swal.fire({
+                    title: "Correct!",
+                    text: "+20 XP",
+                    icon: "success",
+                    timer: 900,
+                    showConfirmButton: false
+                }).then(() => goToController(true));
+
+            } 
+            else {
+                //Non-gamified version
+                Swal.fire({
+                    icon: "success",
+                    timer: 700,
+                    showConfirmButton: false
+                }).then(() => goToController(true));
+            }
+
             return;
         }
 
-        Swal.fire({
-            title: "Wrong!",
-            text: `Lives left: ${lives}`,
-            icon: "error",
-            timer: 900,
-            showConfirmButton: false
-        }).then(() => {
+        // Wrong
+        //If gamified
+        if (mode === 1) {
+            //Decrease player lives
+            lives--;
 
-            window.location.href =
-                `/FoodDrink/SubmitAnswer?playerCode=${playerCode}` +
-                `&step=${step}` +
-                `&score=${score}` +
-                `&mode=${mode}` +
-                `&lives=${lives}` +
-                `&learningItemId=${learningItemId}` +
-                `&isCorrect=false`;
-        });
+            //If player ran out of lives, redirect to failure screen
+            if (lives <= 0) {
+                window.location.href =
+                    `/FoodDrink/Completed?playerCode=${playerCode}&mode=${mode}&failed=true`;
+                return;
+            }
+            //Adaptive feedback
+            Swal.fire({
+                title: "Wrong!",
+                text: `Lives left: ${lives}`,
+                icon: "error",
+                timer: 900,
+                showConfirmButton: false
+            }).then(() => goToController(false));
 
-    } else {
+        } //Non-Gamified
+        else {
 
-        // Non-gamified → just incorrect icon
-        Swal.fire({
-            icon: "error",
-            timer: 700,
-            showConfirmButton: false
-        });
+            Swal.fire({
+                icon: "error",
+                timer: 700,
+                showConfirmButton: false
+            });
+        }
     }
-   }
-    
 
+    //Displays a hint for ImageInput questions
+    //The hint shows the first 2 and last letters of the word
     function showHint() {
+
         const correct = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
             ViewBag.CorrectAnswer ?? Model.DisplayMalteseWord
         ));
 
-        if (!correct || correct.length < 3) return;                                                                                                                                                                                         
+        if (!correct || correct.length < 3) return;
 
-        const firstTwo = correct.substring(0, 2);
+        const firstTwo = correct.substring(0,2);
         const lastLetter = correct.substring(correct.length - 1);
 
+        //Replace middle letters with "_"
         let middle = "";
         for (let i = 0; i < correct.length - 3; i++) {
             middle += "_ ";
         }
 
+        //Display the hint in the UI
         document.getElementById("hintText").innerText =
             `Hint: ${firstTwo} ${middle}${lastLetter}`;
     }

@@ -1,20 +1,29 @@
 ﻿@{
+    // Set the layout for this view (Contains: HUD, timer and navigation)
     Layout = "~/Views/Shared/_GameLevelLayout.cshtml";
-}
-<title>Food and Drinks</title>
-<link rel="stylesheet" href="~/css/fooddrink.css" asp-append-version="true" />
 
-@if (ViewBag.Step > 0 && ViewBag.TotalSteps > 0)
+    int step = ViewBag.step ?? 0; //Current question step
+    int total = ViewBag.totalSteps ?? 0; //Total number of questions in the level
+    int mode = ViewBag.mode ?? 0; //Game mode (1 = gamified, 0 = non-gamified)
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/fooddrink.css" asp-append-version="true" />
+}
+
+@if (step > 0 && total > 0)
 {
     <div class="level-header">
+
         <h2 class="level-title">Food & Drink</h2>
+
         <div class="progress-hud">
-            Question @ViewBag.Step of @ViewBag.TotalSteps
+            Question @step of @total
         </div>
+
     </div>
 }
 
-@if (ViewBag.Mode == 1)
+@if (mode == 1)
 {
     <div class="tutorial-background colors-bg">
             <!-- LEFT -->
