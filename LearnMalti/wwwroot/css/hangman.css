@@ -1,0 +1,87 @@
+﻿.hangman-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 60px;
+}
+
+/* WORD DISPLAY */
+
+.hangman-word {
+    font-size: 60px;
+    letter-spacing: 20px;
+    font-weight: 600;
+    margin-bottom: 40px;
+    font-family: 'Segoe UI',sans-serif;
+}
+
+/* INPUT AREA */
+
+.hangman-input {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.letter-box {
+    width: 60px;
+    height: 50px;
+    font-size: 26px;
+    text-align: center;
+    border-radius: 8px;
+    border: 2px solid #999;
+}
+
+/* BUTTON */
+
+.guess-btn {
+    padding: 10px 20px;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    background: #4CAF50;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+    .guess-btn:hover {
+        background: #388E3C;
+        transform: scale(1.05);
+    }
+
+/* GUESSED LETTERS */
+
+.guessed-letters {
+    margin-top: 15px;
+    font-size: 18px;
+    color: #333;
+}
+
+    /* LETTER TAGS */
+
+    .guessed-letters span {
+        display: inline-block;
+        background: #eee;
+        padding: 6px 10px;
+        margin: 3px;
+        border-radius: 6px;
+        font-weight: 500;
+    }
+
+.letter-tag {
+    display: inline-block;
+    background: #eee;
+    padding: 6px 10px;
+    margin: 3px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.hangman-drawing {
+    font-family: monospace;
+    font-size: 20px;
+    margin-bottom: 30px;
+    text-align: center;
+}

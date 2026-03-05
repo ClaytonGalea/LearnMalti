@@ -1,0 +1,156 @@
+﻿@{
+    Layout = "~/Views/Shared/_HangmanLayout.cshtml";
+}
+
+<div class="hangman-content">
+
+    
+    <!-- WORD DISPLAY -->
+    <div class="hangman-word">
+        @string.Join(" ", ViewBag.HiddenWord.ToString().ToCharArray())
+    </div>
+
+    <div class="hangman-drawing">
+<pre>
+            @{
+                int lives = ViewBag.Lives ?? 6;
+
+                string[] stages = new string[]
+                {
+@"
+ +---+
+ |   |
+     |
+     |
+     |
+     |
+=======",
+
+@"
+ +---+
+ |   |
+ O   |
+     |
+     |
+     |
+=======",
+
+@"
+ +---+
+ |   |
+ O   |
+ |   |
+     |
+     |
+=======",
+
+@"
+ +---+
+ |   |
+ O   |
+/|   |
+     |
+     |
+=======",
+
+@"
+ +---+
+ |   |
+ O   |
+/|\  |
+     |
+     |
+=======",
+
+@"
+ +---+
+ |   |
+ O   |
+/|\  |
+/    |
+     |
+=======",
+
+@"
+ +---+
+ |   |
+ O   |
+/|\  |
+/ \  |
+     |
+======="
+                };
+
+                int stage = 6 - lives;
+
+                if (stage < 0) stage = 0;
+                if (stage > 6) stage = 6;
+
+                @stages[stage]
+            }
+</pre>
+    </div>
+
+    <!-- GUESS INPUT -->
+    <form method="post" action="/Hangman/Guess" class="hangman-input">
+
+        <!-- KEEP GAME PARAMETERS -->
+        <input type="hidden" name="playerCode" value="@ViewBag.PlayerCode" />
+        <input type="hidden" name="step" value="@ViewBag.Step" />
+        <input type="hidden" name="score" value="@ViewBag.Score" />
+        <input type="hidden" name="mode" value="@ViewBag.Mode" />
+        <input type="hidden" name="lives" value="@ViewBag.Lives" />
+
+        <input type="text"
+               name="letter"
+               maxlength="1"
+               required
+               class="letter-box"
+               autocomplete="off"
+               onfocus="this.value=''" />
+
+        <button type="submit" class="guess-btn">
+            Guess
+        </button>
+
+    </form>
+
+    <!-- GUESSED LETTERS -->
+    @if (ViewBag.GuessedLetters != null)
+    {
+        <div class="guessed-letters">
+
+            <div class="guessed-title">
+                Guessed letters
+            </div>
+
+            <div class="guessed-container">
+                @foreach (var l in ViewBag.GuessedLetters.ToString())
+                {
+                    <span class="letter-tag">@l</span>
+                }
+            </div>
+
+        </div>
+    }
+
+</div>
+
+@if (ViewBag.WordCompleted == true)
+{
+    <script>
+
+        Swal.fire({
+            title: "Great job! 🎉",
+            text: "You guessed the word!",
+            icon: "success",
+            confirmButtonText: "Play Again",
+            allowOutsideClick: false
+        }).then(() => {
+
+            window.location.href = "/Hangman/Start?playerCode=@ViewBag.PlayerCode&mode=@ViewBag.Mode";
+
+        });
+
+    </script>
+}

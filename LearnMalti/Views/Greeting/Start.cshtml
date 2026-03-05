@@ -89,6 +89,16 @@
 </div>
 
 <script>
+    /* ===== GLOBAL GAME STATE ===== */
+    const gameState = {
+        mode: @mode,
+        playerCode: "@playerCode",
+        step: @step,
+        score: @score,
+        lives: @lives,
+        learningItemId: @Model.LearningItemId
+    };
+
     const questionType = "@type";
 
     function normalizeText(text) {
@@ -99,6 +109,7 @@
             .trim();
     }
 
+    /* ===== SUBMIT ANSWER ===== */
     function submitAnswer(answer) {
 
         const correct = @Html.Raw(
@@ -107,81 +118,66 @@
             )
         );
 
-        let step = @step;
-        let score = @score;
-        let mode = @mode;
-        let lives = @lives;
-        let playerCode = "@playerCode";
-        let learningItemId = @Model.LearningItemId;
+        let newScore = gameState.score;
+        let newLives = gameState.lives;
 
-        // ✅ CORRECT
         if (normalizeText(answer) === normalizeText(correct)) {
 
-            score++;
+            newScore++;
 
-            if (mode === 1) {
-                fetch(`/api/playerapi/addxp?playerCode=${playerCode}&amount=20`, {
+            if (gameState.mode === 1) {
+                fetch(`/api/playerapi/addxp?playerCode=${gameState.playerCode}&amount=20`, {
                     method: "POST"
                 });
             }
 
             Swal.fire({
-                title: mode === 1 ? "Correct!" : "",
-                text: mode === 1 ? "+20 XP Good job!" : "",
+                title: gameState.mode === 1 ? "Correct!" : "",
+                text: gameState.mode === 1 ? "+20 XP Good job!" : "",
                 icon: "success",
                 timer: 900,
                 showConfirmButton: false
             }).then(() => {
 
                 window.location.href =
-                    `/Greeting/SubmitAnswer?playerCode=${playerCode}` +
-                    `&step=${step}` +
-                    `&score=${score}` +
-                    `&mode=${mode}` +
-                    `&lives=${lives}` +
-                    `&learningItemId=${learningItemId}` +
+                    `/Greeting/SubmitAnswer?playerCode=${gameState.playerCode}` +
+                    `&step=${gameState.step}` +
+                    `&score=${newScore}` +
+                    `&mode=${gameState.mode}` +
+                    `&lives=${newLives}` +
+                    `&learningItemId=${gameState.learningItemId}` +
                     `&isCorrect=true`;
             });
 
             return;
         }
 
-        // ❌ WRONG
-        if (mode === 1) {
+        if (gameState.mode === 1) {
 
-            lives--;
+            newLives--;
 
-            if (lives <= 0) {
+            if (newLives <= 0) {
                 window.location.href =
-                    `/Greeting/Completed?playerCode=${playerCode}&mode=${mode}&failed=true`;
+                    `/Greeting/Completed?playerCode=${gameState.playerCode}&mode=${gameState.mode}&failed=true`;
                 return;
             }
 
             Swal.fire({
-                title: mode === 1 ? "Wrong!" : "",
-                text: mode === 1 ? `Lives left: ${lives}`: "",
+                title: "Wrong!",
+                text: `Lives left: ${newLives}`,
                 icon: "error",
                 timer: 900,
                 showConfirmButton: false
             }).then(() => {
 
                 window.location.href =
-                    `/Greeting/SubmitAnswer?playerCode=${playerCode}` +
-                    `&step=${step}` +
-                    `&score=${score}` +
-                    `&mode=${mode}` +
-                    `&lives=${lives}` +
-                    `&learningItemId=${learningItemId}` +
+                    `/Greeting/SubmitAnswer?playerCode=${gameState.playerCode}` +
+                    `&step=${gameState.step}` +
+                    `&score=${newScore}` +
+                    `&mode=${gameState.mode}` +
+                    `&lives=${newLives}` +
+                    `&learningItemId=${gameState.learningItemId}` +
                     `&isCorrect=false`;
-            });
-
-        } else {
-
-            Swal.fire({
-                title: mode === 1 ? "Try again!": "",
-                icon: "error",
-                timer: 700,
-                showConfirmButton: false
             });
         }
     }
@@ -198,6 +194,7 @@
 
         document.querySelectorAll(".match-item.maltese").forEach(item => {
             item.addEventListener("click", () => {
+
                 if (item.classList.contains("matched")) return;
 
                 document.querySelectorAll(".match-item.maltese")
@@ -222,6 +219,7 @@
                 );
 
                 if (isCorrect) {
+
                     selectedMaltese.classList.remove("wrong", "selected");
                     item.classList.remove("wrong");
 
@@ -229,7 +227,9 @@
                     item.classList.add("matched");
 
                     matchedCount++;
+
                 } else {
+
                     selectedMaltese.classList.add("wrong");
                     item.classList.add("wrong");
 
@@ -251,36 +251,35 @@
                 return;
             }
 
-            if (mode === 1) {
-                fetch(`/api/playerapi/addxp?playerCode=@playerCode&amount=40`, {
+            if (gameState.mode === 1) {
+                fetch(`/api/playerapi/addxp?playerCode=${gameState.playerCode}&amount=40`, {
                     method: "POST"
                 });
             }
 
             Swal.fire({
                 title: "Excellent!",
-                text: mode === 1 ? "+40 XP Well done!" : "",
+                text: gameState.mode === 1 ? "+40 XP Well done!" : "",
                 icon: "success",
                 timer: 1000,
                 showConfirmButton: false
             }).then(() => {
 
                 window.location.href =
-                    `/Greeting/SubmitAnswer?playerCode=@playerCode` +
-                    `&step=@step` +
-                    `&score=@score` +
-                    `&mode=@mode` +
-                    `&lives=@lives` +
-                    `&learningItemId=@Model.LearningItemId` +
+                    `/Greeting/SubmitAnswer?playerCode=${gameState.playerCode}` +
+                    `&step=${gameState.step}` +
+                    `&score=${gameState.score}` +
+                    `&mode=${gameState.mode}` +
+                    `&lives=${gameState.lives}` +
+                    `&learningItemId=${gameState.learningItemId}` +
                     `&isCorrect=true`;
             });
         };
     }
-        function playAudio(path) {
-        if (!path) return;
 
+    function playAudio(path) {
+        if (!path) return;
         const audio = new Audio(path);
         audio.play();
     }
-
 </script>

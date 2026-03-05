@@ -21,6 +21,8 @@ namespace LearnMalti.Data
         public DbSet<LevelAttempt> LevelAttempts { get; set; }
         public DbSet<QuestionResponse> QuestionResponses { get; set; }
 
+        public DbSet<HangmanResult> HangmanResults { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -70,6 +70,55 @@ namespace LearnMalti.Migrations
                         });
                 });
 
+            modelBuilder.Entity("LearnMalti.Models.HangmanResult", b =>
+                {
+                    b.Property<int>("HangmanResultId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("HangmanResultId"));
+
+                    b.Property<bool>("Completed")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CorrectGuesses")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LivesRemaining")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PlayerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TimeTakenSeconds")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalGuesses")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Word")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("WordLength")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WrongGuesses")
+                        .HasColumnType("int");
+
+                    b.HasKey("HangmanResultId");
+
+                    b.HasIndex("PlayerId");
+
+                    b.ToTable("HangmanResults");
+                });
+
             modelBuilder.Entity("LearnMalti.Models.LearningItem", b =>
                 {
                     b.Property<int>("LearningItemId")
@@ -296,6 +345,17 @@ namespace LearnMalti.Migrations
                     b.HasKey("TimedQuizResultId");
 
                     b.ToTable("TimedQuizResults");
+                });
+
+            modelBuilder.Entity("LearnMalti.Models.HangmanResult", b =>
+                {
+                    b.HasOne("LearnMalti.Models.Player", "Player")
+                        .WithMany()
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Player");
                 });
 
             modelBuilder.Entity("LearnMalti.Models.LevelAttempt", b =>

@@ -1,0 +1,24 @@
+﻿@{
+    Layout = "~/Views/Shared/_GameLevelLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/hangman.css" asp-append-version="true" />
+}
+
+<link rel="stylesheet" href="/css/hangman.css" />
+
+@if (ViewBag.Step > 0 && ViewBag.TotalSteps > 0)
+{
+     <div class="level-header">
+        <h2 class="level-title">Hangman</h2> <div class="progress-hud">
+            Word @ViewBag.Step of @ViewBag.TotalSteps
+        </div>
+    </div>
+}
+
+<!-- MAIN CONTENT -->
+
+<div class="hangman-content">
+    @RenderBody()
+</div>

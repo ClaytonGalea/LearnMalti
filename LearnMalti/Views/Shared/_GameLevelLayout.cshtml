@@ -28,27 +28,30 @@
 
             <div class="hud-left">
                 <a class="home-btn"
-                   href="/Menu/Game?playerCode=@playerCode&mode=@mode">
+                href="/Menu/Game?playerCode=@playerCode&mode=@mode">
                     🏠 Home
                 </a>
-                
-        @if (ViewBag.Mode == 1)
-        {
-                @if (ViewBag.HasLives == true)
+
+                @if (ViewBag.Mode == 1)
                 {
-                    <div class="lives-hud">
-                        @for (int i = 0; i < (ViewBag.Lives ?? 0); i++)
-                        {
-                            <span class="heart">❤️</span>
-                        }
-                    </div>
+                    @if (ViewBag.HasLives == true)
+                    {
+                        <div class="lives-hud">
+                            @for (int i = 0; i < (ViewBag.Lives ?? 0); i++)
+                            {
+                                <span class="heart">❤️</span>
+                            }
+                        </div>
+                    }
                 }
-        }
-        </div>
-        
-        <div class="timer-hud">
-              ⏱ <span id="timerText"></span>s
-        </div>
+            </div>
+
+        @if (ViewBag.Mode == 1)
+            {
+                <div class="timer-hud">
+                    ⏱ <span id="timerText"></span>s
+                </div>
+            }
 
 
         </div>

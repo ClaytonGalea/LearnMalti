@@ -92,8 +92,6 @@
 
             <div class="level-row">
                 <button class="level-btn" onclick="window.location.href='/SinPlu/Start?playerCode=@player.PlayerCode&mode=@mode'"> Singular-Plural</button>
-                <!--<button class="level-btn">Verb Conjugations (Coming soon...)</button>
-                <button class="level-btn">Build-a-Sentence (Coming soon...)</button-->
             </div>
 
         </div>
@@ -104,7 +102,9 @@
 
                 <div class="level-row">
                 <button class="level-btn" onclick="window.location.href='/TimedQuiz/Start?playerCode=@player.PlayerCode&mode=@mode'">⏱ Timed Quiz (60s)</button>
-                    <button class="level-btn">📦 Collect-the-Word</button>
+                @if(mode ==1){
+                    <button class="level-btn" onclick="window.location.href='/Hangman/Start?playerCode=@player.PlayerCode&mode=@mode'">🏗️ Hangman</button>
+                }
                 </div>
 
             </div>
