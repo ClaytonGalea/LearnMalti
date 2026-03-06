@@ -1,5 +1,5 @@
 ﻿@{
-    string title = ViewBag.Title ?? "Level";
+    //string title = ViewBag.Title ?? "Level";
     string playerCode = ViewBag.PlayerCode;
     int mode = ViewBag.Mode;
     int total = ViewBag.TotalSteps ?? 0;
@@ -9,7 +9,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>@title</title>
+    <title>@ViewData["Title"]</title>
 
     <link rel="stylesheet" href="~/css/game-layout.css" />
     <link rel="stylesheet" href="~/css/completion.css" />

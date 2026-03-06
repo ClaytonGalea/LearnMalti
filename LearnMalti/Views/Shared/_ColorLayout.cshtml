@@ -2,8 +2,10 @@
     Layout = "~/Views/Shared/_GameLevelLayout.cshtml";
 }
 
-<title>Colors</title>
-<link rel="stylesheet" href="/css/color.css" />
+@section Styles {
+    <link rel="stylesheet" href="~/css/color.css" asp-append-version="true" />
+}
+
 
 @if (ViewBag.Step > 0 && ViewBag.TotalSteps > 0)
 {
@@ -18,7 +20,7 @@
 {
     <div class="tutorial-background colors-bg">
 
-        <!-- LEFT COLORS -->
+        <!--Left-->
         <div class="colors-column">
             <div class="color-card red"><span>Aħmar</span></div>
             <div class="color-card blue"><span>Blu</span></div>
@@ -27,10 +29,10 @@
             <div class="color-card black"><span>Iswed</span></div>
         </div>
 
-        <!-- CENTER SPACER (IMPORTANT) -->
+        <!--Center-->
         <div class="colors-spacer"></div>
 
-        <!-- RIGHT COLORS -->
+        <!--Right-->
         <div class="colors-column">
             <div class="color-card white"><span>Abjad</span></div>
             <div class="color-card orange"><span>Oranġjo</span></div>
@@ -42,7 +44,6 @@
     </div>
 }
 
-<!-- MAIN CONTENT -->
 <div class="color-content">
     @RenderBody()
 </div>

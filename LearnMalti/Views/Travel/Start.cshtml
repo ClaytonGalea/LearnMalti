@@ -4,12 +4,14 @@
 
     string playerCode = ViewBag.PlayerCode;
     int step = ViewBag.Step;
-    int score = ViewBag.Score;
     int mode = ViewBag.Mode;
+    int lives = ViewBag.Lives;
+
     string type = ViewBag.QuestionType;
     var choices = ViewBag.Choices as List<string>;
     string sentence = ViewBag.Sentence;
-    int lives = ViewBag.Lives ?? 3;
+    string englishSentence = ViewBag.EnglishSentence;
+    
     ViewBag.HasLives = true;
     ViewBag.Lives = lives;
 
@@ -35,11 +37,12 @@
     }
 
 
-    @if (type == "ImageInput")
+    else if (type == "ImageInput")
     {
         <img src="@Model.ImageUrl" class="image" />
 
         <div class="answer-row">
+
             <input id="fillInput"
                    class="input"
                    placeholder="Ikteb il-kelma bil-Malti" />
@@ -58,7 +61,7 @@
         <p id="hintText" class="hint-text"></p>
     }
 
-    @if (type == "Sentence")
+    else if (type == "Sentence")
     {
         <p class="english-sentence">@ViewBag.EnglishSentence</p>
 
@@ -73,75 +76,128 @@
 
 </div>
 
+@{
+    var correctAnswersList =
+        ViewBag.CorrectAnswer != null
+        ? new List<string> { ViewBag.CorrectAnswer }
+        : new List<string> { Model.DisplayMalteseWord };
+}
+
+
 <script>
+
+    const playerCode = "@playerCode";
+    const step = @step;
+    const mode = @mode;
+    let lives = @lives;
+    const learningItemId = @Model.LearningItemId;
+    const totalSteps = @ViewBag.TotalSteps;
+
+     //Convert valid answers from C# to a JavaScript array
+      const correctAnswers = @Html.Raw(
+        System.Text.Json.JsonSerializer.Serialize(correctAnswersList)
+    );
+
+
+    //Normalizes text to make comparisons more reliable
+    //Converts to lowercase to prevent case differences
     function normalize(text) {
         return text
             .toLowerCase()
             .normalize("NFD")
             .replace(/[\u0300-\u036f]/g, "");
     }
+
+    //Redirects the player to the controller action after answering
+    //This sends the results of the answer to the backend
+    function goToController(isCorrect){
+        window.location.href =
+            `/Travel/SubmitAnswer?playerCode=${playerCode}` +
+            `&step=${step}` +
+            `&mode=${mode}` +
+            `&lives=${lives}` +
+            `&learningItemId=${learningItemId}` +
+            `&isCorrect=${isCorrect}`;
+    }
+
+     //Main function used when the player submits
     function submitAnswer(answer) {
 
-        const correct = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
-            ViewBag.CorrectAnswer ?? Model.MalteseText
-        ));
+       //Normalize input before comparison
+        const normalizedInput = normalize(answer);
 
-        let step = @step;
-        let score = @score;
-        let mode = @mode;
-        let lives = @lives;
-        let playerCode = "@playerCode";
-        let learningItemId = @Model.LearningItemId;
+        //Checking if answer matches any valid answer
+        const isCorrect = correctAnswers.some(a =>
+            normalize(a) === normalizedInput
+        );
 
-        const isCorrect =
-            normalize(answer.trim()) === normalize(correct);
-
-        // ✅ CORRECT
+        //Correct
         if (isCorrect) {
 
-            score++;
-
             if (mode === 1) {
+
+                //Add XP
                 fetch(`/api/playerapi/addxp?playerCode=${playerCode}&amount=20`, {
                     method: "POST"
                 });
+
+                //Gamified feedback
+                Swal.fire({
+                    title: "Correct!",
+                    text: "+20 XP Good Job!",
+                    icon: "success",
+                    timer: 900,
+                    showConfirmButton: false
+                }).then(() => {
+
+                    window.location.href =
+                        `/Travel/SubmitAnswer?playerCode=${playerCode}` +
+                        `&step=${step}` +
+                        `&mode=${mode}` +
+                        `&lives=${lives}` +
+                        `&learningItemId=${learningItemId}` +
+                        `&isCorrect=true`;
+                });
+
             }
+            else {
 
-            Swal.fire({
-                title: mode === 1 ? "Correct!": "",
-                text: mode === 1 ? "+20 XP Good Job!" : "",
-                icon: "success",
-                timer: 900,
-                showConfirmButton: false
-            }).then(() => {
+                // Non-gamified feedback
+                Swal.fire({
+                    icon: "success",
+                    timer: 700,
+                    showConfirmButton: false
+                }).then(() => {
 
-                window.location.href =
-                    `/Travel/SubmitAnswer?playerCode=${playerCode}` +
-                    `&step=${step}` +
-                    `&score=${score}` +
-                    `&mode=${mode}` +
-                    `&lives=${lives}` +
-                    `&learningItemId=${learningItemId}` +
-                    `&isCorrect=true`;
-            });
+                    window.location.href =
+                        `/Travel/SubmitAnswer?playerCode=${playerCode}` +
+                        `&step=${step}` +
+                        `&mode=${mode}` +
+                        `&lives=${lives}` +
+                        `&learningItemId=${learningItemId}` +
+                        `&isCorrect=true`;
+                });
+            }
 
             return;
         }
 
-        // ❌ WRONG
+        //Incorrect
         if (mode === 1) {
 
             lives--;
 
+            //Player ran out of lives
             if (lives <= 0) {
                 window.location.href =
-                    `/Travel/Completed?playerCode=${playerCode}&score=${score}&total=@ViewBag.TotalSteps&mode=${mode}&failed=true`;
+                    `/Travel/Completed?playerCode=${playerCode}&total=@ViewBag.TotalSteps&mode=${mode}&failed=true`;
                 return;
             }
 
+            //Gamified feedback
             Swal.fire({
-                title: mode === 1 ?"Wrong!": "",
-                text: mode === 1 ?`Lives left: ${lives}`: "",
+                title: "Wrong!",
+                text: `Lives left: ${lives}`,
                 icon: "error",
                 timer: 900,
                 showConfirmButton: false
@@ -150,25 +206,28 @@
                 window.location.href =
                     `/Travel/SubmitAnswer?playerCode=${playerCode}` +
                     `&step=${step}` +
-                    `&score=${score}` +
                     `&mode=${mode}` +
                     `&lives=${lives}` +
                     `&learningItemId=${learningItemId}` +
                     `&isCorrect=false`;
             });
 
-        } else {
+        }
+        else {
 
+            //Non-gamified feedback
             Swal.fire({
-                title: mode === 1 ?"Try again!" : "",
                 icon: "error",
-                timer: 800,
+                timer: 700,
                 showConfirmButton: false
             });
         }
     }
 
+    //Displays a hint for ImageInput questions
+    //The hint shows the first 2 and last letters of the word
      function showHint() {
+
         const correct = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
             ViewBag.CorrectAnswer ?? Model.MalteseText
         ));
@@ -178,11 +237,13 @@
         const firstTwo = correct.substring(0, 2);
         const lastLetter = correct.substring(correct.length - 1);
 
+         //Replace middle letters with "_"
         let middle = "";
         for (let i = 0; i < correct.length - 3; i++) {
             middle += "_ ";
         }
 
+        //Display the hint in the UI
         document.getElementById("hintText").innerText =
             `Hint: ${firstTwo} ${middle}${lastLetter}`;
     }

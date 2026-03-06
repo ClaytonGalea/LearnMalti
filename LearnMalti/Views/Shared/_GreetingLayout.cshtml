@@ -6,12 +6,11 @@
     <link rel="stylesheet" href="~/css/greeting.css" asp-append-version="true" />
 }
 
-<link rel="stylesheet" href="/css/greeting.css" />
-
 @if (ViewBag.Step > 0 && ViewBag.TotalSteps > 0)
 {
     <div class="level-header">
         <h2 class="level-title">Greetings</h2>
+
         <div class="progress-hud">
             Question @ViewBag.Step of @ViewBag.TotalSteps
         </div>

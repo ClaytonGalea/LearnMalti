@@ -41,6 +41,7 @@ namespace LearnMalti.Controllers
             ViewBag.PlayerCode = playerCode;   //Player ID
             ViewBag.Mode = mode;              // Game mode (Gamified || non Gamified)
             ViewBag.TimerSeconds = 60;        //Time limit for answering the question
+            ViewData["Title"] = "Tutorial Level"; //Page title
 
             //Return the current learning item as the view model
             return View(currentItem);

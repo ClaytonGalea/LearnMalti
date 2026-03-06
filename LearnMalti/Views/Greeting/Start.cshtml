@@ -5,20 +5,19 @@
 
     string playerCode = ViewBag.PlayerCode;
     int step = ViewBag.Step;
-    int score = ViewBag.Score;
     int mode = ViewBag.Mode;
     int lives = ViewBag.Lives ?? 3;
 
     string type = ViewBag.QuestionType;
+
     var choices = ViewBag.Choices as List<LearnMalti.Models.LearningItem>
               ?? new List<LearnMalti.Models.LearningItem>();
 
+    var malteseWords = ViewBag.Maltese as List<string> ?? new List<string>();
+    var englishWords = ViewBag.English as List<string> ?? new List<string>();
+
     ViewBag.HasLives = true;
     ViewBag.Lives = lives;
-
-    string pairsJson = type == "Matching" && ViewBag.Pairs != null
-        ? System.Text.Json.JsonSerializer.Serialize((IEnumerable<object>)ViewBag.Pairs)
-        : "null";
 }
 
 <div class="card">
@@ -27,10 +26,13 @@
     @if (type == "Quiz")
     {
         <h2 class="quiz-title">@Model.EnglishText</h2>
+
         @foreach (var c in choices)
         {
             <div class="choice-row">
-                <button class="choice" onclick="submitAnswer('@c.MalteseText')">
+
+                <button class="choice"
+                        onclick="submitAnswer('@c.MalteseText')">
                     @c.DisplayMalteseWord
                 </button>
 
@@ -39,6 +41,7 @@
                         onclick="playAudio('@c.AudioPath')">
                     🔊
                 </button>
+
             </div>
         }
     }
@@ -47,20 +50,27 @@
     @if (type == "Sentence")
     {
         <p class="english-sentence">@ViewBag.EnglishSentence</p>
+
         <h3 class="sentence">@ViewBag.Sentence</h3>
+
         @foreach (var c in choices)
         {
             <div class="choice-row">
-                <button class="choice" onclick="submitAnswer('@c.MalteseText')">@c.DisplayMalteseWord</button>
+
+                <button class="choice"
+                        onclick="submitAnswer('@c.MalteseText')">
+                    @c.DisplayMalteseWord
+                </button>
+
                 <button class="audio-btn"
                         type="button"
                         onclick="playAudio('@c.AudioPath')">
                     🔊
                 </button>
+
             </div>
         }
     }
-
 
     @* 🟥 MATCHING *@
     @if (type == "Matching")
@@ -68,38 +78,47 @@
         <h3 class="sentence">Match the Maltese words to their meanings</h3>
 
         <div class="matching-container">
+
             <div class="matching-column">
-                @foreach (var m in (List<string>)ViewBag.Maltese)
+                @foreach (var m in malteseWords)
                 {
-                    <div class="match-item maltese" data-value="@m">@m</div>
+                    <div class="match-item maltese"
+                         data-value="@m">
+                        @m
+                    </div>
                 }
             </div>
 
             <div class="matching-column">
-                @foreach (var e in (List<string>)ViewBag.English)
+                @foreach (var e in englishWords)
                 {
-                    <div class="match-item english" data-value="@e">@e</div>
+                    <div class="match-item english"
+                         data-value="@e">
+                        @e
+                    </div>
                 }
             </div>
+
         </div>
 
-        <button class="submit" onclick="finishMatching()">Submit</button>
+        <button class="submit" onclick="finishMatching()">
+            Submit
+        </button>
     }
 
 </div>
 
 <script>
-    /* ===== GLOBAL GAME STATE ===== */
-    const gameState = {
-        mode: @mode,
-        playerCode: "@playerCode",
-        step: @step,
-        score: @score,
-        lives: @lives,
-        learningItemId: @Model.LearningItemId
-    };
 
+    /* ===== GLOBAL VARIABLES (same as other levels) ===== */
+
+    const playerCode = "@playerCode";
+    const step = @step;
+    const mode = @mode;
+    let lives = @lives;
+    const learningItemId = @Model.LearningItemId;
     const questionType = "@type";
+
 
     function normalizeText(text) {
         return text
@@ -109,7 +128,9 @@
             .trim();
     }
 
+
     /* ===== SUBMIT ANSWER ===== */
+
     function submitAnswer(answer) {
 
         const correct = @Html.Raw(
@@ -118,71 +139,71 @@
             )
         );
 
-        let newScore = gameState.score;
-        let newLives = gameState.lives;
-
         if (normalizeText(answer) === normalizeText(correct)) {
 
-            newScore++;
-
-            if (gameState.mode === 1) {
-                fetch(`/api/playerapi/addxp?playerCode=${gameState.playerCode}&amount=20`, {
+            if (mode === 1) {
+                fetch(`/api/playerapi/addxp?playerCode=${playerCode}&amount=20`, {
                     method: "POST"
                 });
             }
 
             Swal.fire({
-                title: gameState.mode === 1 ? "Correct!" : "",
-                text: gameState.mode === 1 ? "+20 XP Good job!" : "",
+                title: mode === 1 ? "Correct!" : "",
+                text: mode === 1 ? "+20 XP Good job!" : "",
                 icon: "success",
                 timer: 900,
                 showConfirmButton: false
             }).then(() => {
 
                 window.location.href =
-                    `/Greeting/SubmitAnswer?playerCode=${gameState.playerCode}` +
-                    `&step=${gameState.step}` +
-                    `&score=${newScore}` +
-                    `&mode=${gameState.mode}` +
-                    `&lives=${newLives}` +
-                    `&learningItemId=${gameState.learningItemId}` +
+                    `/Greeting/SubmitAnswer?playerCode=${playerCode}` +
+                    `&step=${step}` +
+                    `&mode=${mode}` +
+                    `&lives=${lives}` +
+                    `&learningItemId=${learningItemId}` +
                     `&isCorrect=true`;
             });
 
             return;
         }
 
-        if (gameState.mode === 1) {
 
-            newLives--;
+        if (mode === 1) {
 
-            if (newLives <= 0) {
+            lives--;
+
+            if (lives <= 0) {
+
                 window.location.href =
-                    `/Greeting/Completed?playerCode=${gameState.playerCode}&mode=${gameState.mode}&failed=true`;
+                    `/Greeting/Completed?playerCode=${playerCode}` +
+                    `&mode=${mode}&failed=true`;
+
                 return;
             }
 
             Swal.fire({
                 title: "Wrong!",
-                text: `Lives left: ${newLives}`,
+                text: `Lives left: ${lives}`,
                 icon: "error",
                 timer: 900,
                 showConfirmButton: false
             }).then(() => {
 
                 window.location.href =
-                    `/Greeting/SubmitAnswer?playerCode=${gameState.playerCode}` +
-                    `&step=${gameState.step}` +
-                    `&score=${newScore}` +
-                    `&mode=${gameState.mode}` +
-                    `&lives=${newLives}` +
-                    `&learningItemId=${gameState.learningItemId}` +
+                    `/Greeting/SubmitAnswer?playerCode=${playerCode}` +
+                    `&step=${step}` +
+                    `&mode=${mode}` +
+                    `&lives=${lives}` +
+                    `&learningItemId=${learningItemId}` +
                     `&isCorrect=false`;
             });
+
         }
     }
+    
 
-    /* ===== MATCHING ===== */
+    /* ===== MATCHING GAME ===== */
+
     if (questionType === "Matching") {
 
         const correctPairs = @Html.Raw(
@@ -192,7 +213,9 @@
         let selectedMaltese = null;
         let matchedCount = 0;
 
+
         document.querySelectorAll(".match-item.maltese").forEach(item => {
+
             item.addEventListener("click", () => {
 
                 if (item.classList.contains("matched")) return;
@@ -202,13 +225,18 @@
 
                 item.classList.add("selected");
                 selectedMaltese = item;
+
             });
+
         });
 
+
         document.querySelectorAll(".match-item.english").forEach(item => {
+
             item.addEventListener("click", () => {
 
-                if (!selectedMaltese || item.classList.contains("matched")) return;
+                if (!selectedMaltese || item.classList.contains("matched"))
+                    return;
 
                 const maltese = normalizeText(selectedMaltese.dataset.value);
                 const english = normalizeText(item.dataset.value);
@@ -217,6 +245,7 @@
                     normalizeText(p.Maltese) === maltese &&
                     normalizeText(p.English) === english
                 );
+
 
                 if (isCorrect) {
 
@@ -228,7 +257,8 @@
 
                     matchedCount++;
 
-                } else {
+                }
+                else {
 
                     selectedMaltese.classList.add("wrong");
                     item.classList.add("wrong");
@@ -237,12 +267,16 @@
                         selectedMaltese.classList.remove("wrong", "selected");
                         item.classList.remove("wrong");
                     }, 400);
+
                 }
 
                 selectedMaltese.classList.remove("selected");
                 selectedMaltese = null;
+
             });
+
         });
+
 
         window.finishMatching = function () {
 
@@ -251,35 +285,41 @@
                 return;
             }
 
-            if (gameState.mode === 1) {
-                fetch(`/api/playerapi/addxp?playerCode=${gameState.playerCode}&amount=40`, {
+            if (mode === 1) {
+                fetch(`/api/playerapi/addxp?playerCode=${playerCode}&amount=40`, {
                     method: "POST"
                 });
             }
 
             Swal.fire({
                 title: "Excellent!",
-                text: gameState.mode === 1 ? "+40 XP Well done!" : "",
+                text: mode === 1 ? "+40 XP Well done!" : "",
                 icon: "success",
                 timer: 1000,
                 showConfirmButton: false
             }).then(() => {
 
                 window.location.href =
-                    `/Greeting/SubmitAnswer?playerCode=${gameState.playerCode}` +
-                    `&step=${gameState.step}` +
-                    `&score=${gameState.score}` +
-                    `&mode=${gameState.mode}` +
-                    `&lives=${gameState.lives}` +
-                    `&learningItemId=${gameState.learningItemId}` +
+                    `/Greeting/SubmitAnswer?playerCode=${playerCode}` +
+                    `&step=${step}` +
+                    `&mode=${mode}` +
+                    `&lives=${lives}` +
+                    `&learningItemId=${learningItemId}` +
                     `&isCorrect=true`;
             });
+
         };
+
     }
 
+
     function playAudio(path) {
+
         if (!path) return;
+
         const audio = new Audio(path);
         audio.play();
+
     }
+
 </script>

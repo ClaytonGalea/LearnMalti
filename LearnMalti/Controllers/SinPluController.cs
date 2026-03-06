@@ -113,6 +113,7 @@ namespace LearnMalti.Controllers
             ViewBag.WordKey = current.WordKey;
             ViewBag.Singular = current.Singular;
             ViewBag.Plural = current.Plural;
+            ViewData["Title"] = "SinPlu Level";
 
             // 🟦 QUIZ (1–5)
             if (questionType == "Quiz")

@@ -103,6 +103,7 @@ namespace LearnMalti.Controllers
             ViewBag.Streak = streak;
 
             ViewBag.Choices = choices;
+            ViewData["Title"] = "TimedQuiz Mini Game";
 
             return View("Start", current);
         }

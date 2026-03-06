@@ -63,6 +63,7 @@ namespace LearnMalti.Controllers
             ViewBag.Mode = mode;
             ViewBag.Lives = lives;
             ViewBag.TimerSeconds = 45;
+            ViewData["Title"] = "FoodDrink Level";
 
             //Generate answer choices depending on question type
             GenerateChoices(items, currentItem, questionType, step);

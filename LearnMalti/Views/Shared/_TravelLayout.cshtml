@@ -1,25 +1,32 @@
 ﻿@{
+    // Set the layout for this view (Contains: HUD, timer and navigation)
     Layout = "~/Views/Shared/_GameLevelLayout.cshtml";
+
+    int step = ViewBag.Step;
+    int total = ViewBag.TotalSteps;
+    int mode = ViewBag.Mode;
 }
 
-<title>Travel</title>
-<link rel="stylesheet" href="/css/travel.css" />
+@section Styles {
+    <link rel="stylesheet" href="~/css/travel.css" asp-append-version="true" />
+}
 
 <audio id="trainSound" preload="auto"></audio>
 <audio id="busSound" preload="auto"></audio>
-@if (ViewBag.Step > 0 && ViewBag.TotalSteps > 0)
+
+@if (step > 0 && total > 0)
 {
     <div class="level-header">
         <h2 class="level-title">Travel</h2>
         <div class="progress-hud">
-            Question @ViewBag.Step of @ViewBag.TotalSteps
+            Question @step of @total
         </div>
     </div>
 }
 
-@if(ViewBag.Mode == 1)
+@if(mode == 1)
 {
-    <!-- BACKGROUND OBJECTS (same as tutorial) -->
+    <!--Background Cards-->
     <div class="tutorial-background">
         <div class="flip-card tree" data-sound="/Sounds/TrainSound.mp3">
             <div class="flip-card-inner">
@@ -45,7 +52,7 @@
     </div>
  }
 
-<!-- MAIN CONTENT -->
+
 <div class="travel-content">
     @RenderBody()
 </div>

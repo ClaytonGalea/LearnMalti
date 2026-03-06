@@ -52,13 +52,14 @@ namespace LearnMalti.Controllers
 
                 HttpContext.Session.SetInt32("CurrentHangmanAttemptId", result.HangmanResultId);
             }
-            // REQUIRED BY _GameLevelLayout
+         
             ViewBag.PlayerCode = playerCode;
             ViewBag.Step = step;
             ViewBag.TotalSteps = 1;
             ViewBag.Score = score;
             ViewBag.Mode = mode;
             ViewBag.Lives = lives;
+            ViewData["Title"] = "Hangman Mini Game";
 
 
             return View("Start");
