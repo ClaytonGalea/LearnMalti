@@ -2,8 +2,9 @@
     Layout = "~/Views/Shared/_GameLevelLayout.cshtml";
 }
 
-<title>Singular & Plural</title>
-<link rel="stylesheet" href="/css/sinplu.css" />
+@section Styles {
+    <link rel="stylesheet" href="~/css/sinplu.css" asp-append-version="true" />
+}
 
 @if (ViewBag.Step > 0 && ViewBag.TotalSteps > 0)
 {
@@ -15,10 +16,10 @@
     </div>
 }
 
-<!-- BACKGROUND OBJECTS -->
+<!--Background-->
 <div class="tutorial-background">
 
-    <!-- LEFT OBJECT (Singular) -->
+    <!--Left Image (Singular) -->
     <div class="flip-card left-object">
         <div class="flip-card-inner">
             <div class="flip-card-front">
@@ -30,7 +31,7 @@
         </div>
     </div>
 
-    <!-- RIGHT OBJECT (Plural) -->
+    <!--Right Image (Plural)-->
     <div class="flip-card right-object">
         <div class="flip-card-inner">
             <div class="flip-card-front">
