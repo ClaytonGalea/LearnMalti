@@ -2,8 +2,9 @@
     Layout = "~/Views/Shared/_GameLevelLayout.cshtml";
 }
 
-<title>Timed Quiz</title>
-<link rel="stylesheet" href="/css/timedquiz.css" />
+@section Styles {
+    <link rel="stylesheet" href="~/css/timedquiz.css" asp-append-version="true" />
+}
 
 @if (ViewBag.Step > 0 && ViewBag.TotalSteps > 0)
 {

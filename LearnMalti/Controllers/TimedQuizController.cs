@@ -1,5 +1,6 @@
 ﻿using LearnMalti.Data;
 using LearnMalti.Models;
+using LearnMalti.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearnMalti.Controllers
@@ -7,21 +8,19 @@ namespace LearnMalti.Controllers
     public class TimedQuizController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly GameService _gameService;
 
-        public TimedQuizController(AppDbContext context)
+        public TimedQuizController(AppDbContext context, GameService gameService)
         {
             _context = context;
+            _gameService = gameService;
         }
 
         public IActionResult Start(string playerCode, int step = 1, int score = 0, int incorrectAnswers = 0, int mode = 1, int lives = 3, int streak = 0, int correctAnswers = 0)
         {
             ViewBag.DisableGlobalTimer = true;
-
-            // 🎲 Get 20 random items from entire DB
-            var items = _context.LearningItems
-                .OrderBy(x => Guid.NewGuid())
-                .Take(20)
-                .ToList();
+           
+            var items = GetQuizItems();
 
             if (items.Count == 0)
             {
@@ -55,36 +54,10 @@ namespace LearnMalti.Controllers
 
             var current = items[step - 1];
 
-            string questionText = current.EnglishText;
-            string correctAnswer = current.DisplayMalteseWord;
+            string questionText = GetQuestionText(current);
+            string correctAnswer = GetCorrectAnswer(current);
 
-
-            // 🔤 Special SinPlu handling
-            if (current.Category == "SinPlu" && current.NumberForm == "plural")
-            {
-                var singular = _context.LearningItems
-                    .FirstOrDefault(x =>
-                        x.Category == "SinPlu" &&
-                        x.WordKey == current.WordKey &&
-                        x.NumberForm == "singular");
-
-                if (singular != null)
-                {
-                    questionText = $"What is the plural of \"{singular.DisplayMalteseWord}\"?";
-                    correctAnswer = current.DisplayMalteseWord;
-                }
-            }
-
-            var wrongChoices = _context.LearningItems
-                .Where(x => x.LearningItemId != current.LearningItemId)
-                .OrderBy(x => Guid.NewGuid())
-                .Take(2)
-                .Select(x => x.DisplayMalteseWord)
-                .ToList();
-
-            var choices = new List<string> { current.DisplayMalteseWord };
-            choices.AddRange(wrongChoices);
-            choices = choices.OrderBy(x => Guid.NewGuid()).ToList();
+            var choices = GetChoices(current);
 
             ViewBag.QuestionText = questionText;
             ViewBag.CorrectAnswer = correctAnswer;
@@ -103,51 +76,17 @@ namespace LearnMalti.Controllers
             ViewBag.Streak = streak;
 
             ViewBag.Choices = choices;
+
             ViewData["Title"] = "TimedQuiz Mini Game";
 
             return View("Start", current);
         }
 
-        private void AwardBadgeIfNotExists(string playerCode, int badgeId)
-        {
-            // 1️⃣ Find the player
-            var player = _context.Players
-                .FirstOrDefault(p => p.PlayerCode == playerCode);
-
-            if (player == null)
-                return; // safety check
-
-            // 2️⃣ Check if badge already exists
-            bool alreadyHasBadge = _context.PlayerBadges
-                .Any(pb => pb.PlayerId == player.PlayerId && pb.BadgeId == badgeId);
-
-            if (!alreadyHasBadge)
-            {
-                var playerBadge = new PlayerBadge
-                {
-                    PlayerId = player.PlayerId, // ✅ FK
-                    BadgeId = badgeId,
-                    EarnedAt = DateTime.Now
-                };
-
-                _context.PlayerBadges.Add(playerBadge);
-                _context.SaveChanges();
-            }
-        }
-
-
-        public IActionResult Completed(
-         string playerCode,
-         int mode,
-         int score = 0,                 // correct answers
-         int incorrectAnswers = 0,
-         int correctAnswers = 0,
-         bool failed = false)
+        public IActionResult Completed(string playerCode, int mode, int score = 0, int incorrectAnswers = 0, int correctAnswers = 0, bool failed = false)
         {
             Response.Headers["Cache-Control"] = "no-store";
 
             int questionsAnswered = correctAnswers + incorrectAnswers;
-
 
             var result = new TimedQuizResult
             {
@@ -173,12 +112,70 @@ namespace LearnMalti.Controllers
 
             ViewBag.Layout = "~/Views/Shared/_TimedQuizLayout.cshtml";
             ViewBag.Title = "Timed Quiz Completed!";
+            SetCompletionMessage(playerCode, mode, score, correctAnswers, questionsAnswered);
+            ViewBag.RetryUrl = $"/TimedQuiz/Start?playerCode={playerCode}" + $"&step=1" + $"&score=0" + $"&correctAnswers=0" + $"&incorrectAnswers=0" + $"&mode={mode}" + $"&lives=3" + $"&streak=0";
+            ViewBag.ShowFeedback = false;
+
+            return View("~/Views/Game/Complete.cshtml");
+        }
+
+        private List<LearningItem> GetQuizItems()
+        {
+            return _context.LearningItems
+                .OrderBy(x => Guid.NewGuid())
+                .Take(20)
+                .ToList();
+        }
+
+        private string GetQuestionText(LearningItem item)
+        {
+            string questionText = item.EnglishText;
+
+            if (item.Category == "SinPlu" && item.NumberForm == "plural")
+            {
+                var singular = _context.LearningItems
+                    .FirstOrDefault(x =>
+                        x.Category == "SinPlu" &&
+                        x.WordKey == item.WordKey &&
+                        x.NumberForm == "singular");
+
+                if (singular != null)
+                {
+                    questionText = $"What is the plural of \"{singular.DisplayMalteseWord}\"?";
+                }
+            }
+
+            return questionText;
+        }
+
+        private string GetCorrectAnswer(LearningItem item)
+        {
+            return item.DisplayMalteseWord;
+        }
+        private List<string> GetChoices(LearningItem current)
+        {
+            var wrongChoices = _context.LearningItems
+                .Where(x => x.LearningItemId != current.LearningItemId)
+                .OrderBy(x => Guid.NewGuid())
+                .Take(2)
+                .Select(x => x.DisplayMalteseWord)
+                .ToList();
+
+            var choices = new List<string> { current.DisplayMalteseWord };
+            choices.AddRange(wrongChoices);
+
+            return choices.OrderBy(x => Guid.NewGuid()).ToList();
+        }
+
+        private void SetCompletionMessage(string playerCode, int mode, int score, int correctAnswers, int questionsAnswered)
+        {
+            ViewBag.ShowCompletionMessage = true;
 
             if (mode == 1)
             {
                 if (score >= 50)
                 {
-                    AwardBadgeIfNotExists(playerCode, 3);
+                   _gameService.AwardBadgeIfNotExists(playerCode, 3);
 
                     ViewBag.BadgeText =
                         $"You answered {questionsAnswered} questions and got {correctAnswers} correct. " +
@@ -196,20 +193,6 @@ namespace LearnMalti.Controllers
                 ViewBag.BadgeText =
                     $"You answered {questionsAnswered} questions and got {correctAnswers} correct.";
             }
-            ViewBag.RetryUrl =
-                $"/TimedQuiz/Start?playerCode={playerCode}" +
-                $"&step=1" +
-                $"&score=0" +
-                $"&correctAnswers=0" +
-                $"&incorrectAnswers=0" +
-                $"&mode={mode}" +
-                $"&lives=3" +
-                $"&streak=0";
-
-
-            ViewBag.ShowFeedback = false;
-
-            return View("~/Views/Game/Complete.cshtml");
         }
 
         public IActionResult Index()

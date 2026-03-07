@@ -1,22 +1,12 @@
 ﻿@{
     Layout = "~/Views/Shared/_HangmanLayout.cshtml";
-}
 
-<div class="hangman-content">
+    int lives = ViewBag.Lives;
+    int stage = Math.Clamp(6 - lives, 0, 6);
 
-    
-    <!-- WORD DISPLAY -->
-    <div class="hangman-word">
-        @string.Join(" ", ViewBag.HiddenWord.ToString().ToCharArray())
-    </div>
 
-    <div class="hangman-drawing">
-<pre>
-            @{
-                int lives = ViewBag.Lives ?? 6;
-
-                string[] stages = new string[]
-                {
+    string[] stages = 
+    {
 @"
  +---+
  |   |
@@ -79,16 +69,20 @@
 / \  |
      |
 ======="
-                };
+    };
+    
+}
 
-                int stage = 6 - lives;
+<div class="hangman-content">
 
-                if (stage < 0) stage = 0;
-                if (stage > 6) stage = 6;
+    
+    <!-- WORD DISPLAY -->
+    <div class="hangman-word">
+        @string.Join(" ", ViewBag.HiddenWord.ToString().ToCharArray())
+    </div>
 
-                @stages[stage]
-            }
-</pre>
+    <div class="hangman-drawing">
+        <pre> @stages[stage]</pre>
     </div>
 
     <!-- GUESS INPUT -->
@@ -97,7 +91,6 @@
         <!-- KEEP GAME PARAMETERS -->
         <input type="hidden" name="playerCode" value="@ViewBag.PlayerCode" />
         <input type="hidden" name="step" value="@ViewBag.Step" />
-        <input type="hidden" name="score" value="@ViewBag.Score" />
         <input type="hidden" name="mode" value="@ViewBag.Mode" />
         <input type="hidden" name="lives" value="@ViewBag.Lives" />
 
@@ -113,13 +106,14 @@
             Guess
         </button>
 
+        
+
     </form>
 
     <!-- GUESSED LETTERS -->
     @if (ViewBag.GuessedLetters != null)
     {
         <div class="guessed-letters">
-
             <div class="guessed-title">
                 Guessed letters
             </div>
@@ -136,19 +130,61 @@
 
 </div>
 
+<div style="margin-top:20px; font-size:18px; color:red;">
+    Word (debug): @Context.Session.GetString("HangmanWord")
+</div>
+
+<script>
+        function goHome(){
+        window.location.href = "/Menu/Game?playerCode=@ViewBag.PlayerCode&mode=@ViewBag.Mode";
+    }
+
+    function playAgain(){
+        window.location.href = "/Hangman/Start?playerCode=@ViewBag.PlayerCode&mode=@ViewBag.Mode";
+    }
+</script>
+
 @if (ViewBag.WordCompleted == true)
 {
     <script>
 
+        fetch(`/api/playerapi/addxp?playerCode=@ViewBag.PlayerCode&amount=100`, {
+            method: "POST"
+        });
+
         Swal.fire({
             title: "Great job! 🎉",
-            text: "You guessed the word!",
+            text: "+100 XP You guessed the word!",
             icon: "success",
             confirmButtonText: "Play Again",
+            cancelButtonText: "Home",
+            showCancelButton: true,
             allowOutsideClick: false
-        }).then(() => {
+        }).then((result) => {
 
-            window.location.href = "/Hangman/Start?playerCode=@ViewBag.PlayerCode&mode=@ViewBag.Mode";
+            if (result.isConfirmed) playAgain();
+            else goHome();
+
+        });
+
+    </script>
+}
+
+@if (ViewBag.GameOver == true)
+{
+    <script>
+        Swal.fire({
+            title: "Game Over 💀",
+            text: "You ran out of lives!",
+            icon: "error",
+            confirmButtonText: "Try Again",
+            cancelButtonText: "Home",
+            showCancelButton: true,
+            allowOutsideClick: false
+        }).then((result) => {
+
+            if (result.isConfirmed) playAgain();
+            else goHome();
 
         });
 

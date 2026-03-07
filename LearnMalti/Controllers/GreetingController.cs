@@ -1,5 +1,6 @@
 ﻿using LearnMalti.Data;
 using LearnMalti.Models;
+using LearnMalti.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearnMalti.Controllers
@@ -7,6 +8,7 @@ namespace LearnMalti.Controllers
     public class GreetingController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly GameService _gameService;
 
         private const string CategoryName = "Greetings";
         private const string LevelName = "Greetings";
@@ -15,15 +17,16 @@ namespace LearnMalti.Controllers
         private const int Lives = 3;
 
 
-        public GreetingController(AppDbContext context)
+        public GreetingController(AppDbContext context, GameService gameService)
         {
             _context = context;
+            _gameService = gameService; 
         }
         public IActionResult Start(string playerCode, int step = 1, int mode = 1, int lives = 3)
         {
             var items = GetGreetingItems();
 
-           EnsureAttemptStarted(playerCode, mode, items.Count, step);
+           _gameService.EnsureAttemptStarted(playerCode, LevelName, mode, items.Count, step, HttpContext);
 
             if (lives <= 0)
             {
@@ -64,15 +67,9 @@ namespace LearnMalti.Controllers
         }
 
        
-        public IActionResult SubmitAnswer(
-            string playerCode,
-            int step,
-            int mode,
-            int lives,
-            int learningItemId,
-            bool isCorrect)
+        public IActionResult SubmitAnswer(string playerCode, int step, int mode, int lives, int learningItemId, bool isCorrect)
         {
-           UpdateAttemptStats(isCorrect);
+          _gameService.UpdateAttemptStats(isCorrect, HttpContext);
 
             return RedirectToAction("Start", new
             {
@@ -85,7 +82,7 @@ namespace LearnMalti.Controllers
 
         public IActionResult Completed(string playerCode, int mode, bool timeUp = false, bool failed = false)
         {
-            FinishAttempt(timeUp);
+            _gameService.FinishAttempt(timeUp, HttpContext);
            
             var attemptId = HttpContext.Session.GetInt32("CurrentAttemptId");
 
@@ -98,7 +95,7 @@ namespace LearnMalti.Controllers
 
             if (!timeUp && !failed && mode == 1)
             {
-                AwardBadgeIfNotExists(playerCode, BadgeId);
+                _gameService.AwardBadgeIfNotExists(playerCode, BadgeId);
             }
 
             ViewBag.Layout = "~/Views/Shared/_GreetingLayout.cshtml";
@@ -229,34 +226,6 @@ namespace LearnMalti.Controllers
                 .ToList();
         }
 
-
-        private void AwardBadgeIfNotExists(string playerCode, int badgeId)
-        {
-            //Find the player
-            var player = _context.Players
-                .FirstOrDefault(p => p.PlayerCode == playerCode);
-
-            if (player == null)
-                return; 
-
-            //Check if badge already exists
-            bool alreadyHasBadge = _context.PlayerBadges
-                .Any(pb => pb.PlayerId == player.PlayerId && pb.BadgeId == badgeId);
-
-            if (!alreadyHasBadge)
-            {
-                var playerBadge = new PlayerBadge
-                {
-                    PlayerId = player.PlayerId, 
-                    BadgeId = badgeId,
-                    EarnedAt = DateTime.Now
-                };
-
-                _context.PlayerBadges.Add(playerBadge);
-                _context.SaveChanges();
-            }
-        }
-
         private string GetQuestionType(int step)
         {
             if (step <= 3) return "Quiz";
@@ -275,78 +244,6 @@ namespace LearnMalti.Controllers
             return mode == 1
                 ? "Great job! You got all the questions right and have been awarded the Greetings Badge"
                 : "Great job! You got all the questions right!";
-        }
-
-
-
-        //Ensure LevelAttempt exists
-        private void EnsureAttemptStarted(string playerCode, int mode, int totalQuestions, int step)
-        {
-            if (step != 1 || HttpContext.Session.GetInt32("CurrentAttemptId") != null)
-                return;
-
-            var player = _context.Players.FirstOrDefault(p => p.PlayerCode == playerCode);
-            if (player == null) return;
-
-            var attempt = new LevelAttempt
-            {
-                PlayerId = player.PlayerId,
-                LevelName = LevelName,
-                Mode = mode,
-                StartedAt = DateTime.UtcNow,
-                TotalQuestions = totalQuestions
-            };
-
-            _context.LevelAttempts.Add(attempt);
-            _context.SaveChanges();
-
-            HttpContext.Session.SetInt32("CurrentAttemptId", attempt.LevelAttemptId);
-        }
-
-        //Update attempt stats
-        private void UpdateAttemptStats(bool isCorrect)
-        {
-            var attemptId = HttpContext.Session.GetInt32("CurrentAttemptId");
-
-            if (!attemptId.HasValue) return;
-
-            var attempt = _context.LevelAttempts
-                .FirstOrDefault(a => a.LevelAttemptId == attemptId.Value);
-
-            if (attempt == null) return;
-
-            if (isCorrect)
-                attempt.CorrectAnswers++;
-            else
-                attempt.IncorrectAnswers++;
-
-            _context.SaveChanges();
-        }
-
-        //Finalize attempt
-        private void FinishAttempt(bool timeUp)
-        {
-            var attemptId = HttpContext.Session.GetInt32("CurrentAttemptId");
-
-            if (!attemptId.HasValue) return;
-
-            var attempt = _context.LevelAttempts
-                .FirstOrDefault(a => a.LevelAttemptId == attemptId.Value);
-
-            if (attempt == null || attempt.CompletedAt != null) return;
-
-            attempt.CompletedAt = DateTime.UtcNow;
-            attempt.DurationSeconds =
-                (int)(attempt.CompletedAt.Value - attempt.StartedAt).TotalSeconds;
-
-            attempt.TimeRanOut = timeUp;
-
-            attempt.ScorePercentage =
-                attempt.TotalQuestions > 0
-                ? Math.Round((decimal)attempt.CorrectAnswers / attempt.TotalQuestions * 100, 2)
-                : 0;
-
-            _context.SaveChanges();
         }
 
         public IActionResult Index()

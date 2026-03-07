@@ -19,6 +19,7 @@ namespace LearnMalti
 
             builder.Services.AddSession();
             builder.Services.AddHttpContextAccessor();
+            builder.Services.AddScoped<GameService>();
 
             var app = builder.Build();
 

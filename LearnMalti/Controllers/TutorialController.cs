@@ -1,5 +1,6 @@
 ﻿using LearnMalti.Data;
 using LearnMalti.Models;
+using LearnMalti.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearnMalti.Controllers
@@ -8,15 +9,17 @@ namespace LearnMalti.Controllers
     {
         //Allowing access to database
         private readonly AppDbContext _context;
+        private readonly GameService _gameService;
 
         //Constant valies for the controller
         private const string CategoryName = "Tutorial"; //Used to fetch tutorial learning items from the database
         private const int TutorialBadgeId = 1; //Used to award the badge
         private const int TutorialItemCount = 5; //Total number of questions
 
-        public TutorialController(AppDbContext context)
+        public TutorialController(AppDbContext context, GameService gameService)
         {
             _context = context;
+            _gameService = gameService;
         }
 
         public IActionResult Start(string playerCode, int step = 1, int mode = 1)
@@ -57,7 +60,7 @@ namespace LearnMalti.Controllers
             //Award the tutorial badge if the player completed the tutorial successfully without running out of time
             if (!timeUp)
             {
-                AwardBadgeIfNotExists(playerCode, TutorialBadgeId);
+                _gameService.AwardBadgeIfNotExists(playerCode, TutorialBadgeId);
             }
 
             //Configure completion screen UI
@@ -99,37 +102,5 @@ namespace LearnMalti.Controllers
             //Shuffle the choices order
             return choices.OrderBy(x => Guid.NewGuid()).ToList();
         }
-
-        //Awards a badge to the player if they do not already have it
-        private void AwardBadgeIfNotExists(string playerCode, int badgeId)
-        {
-            //Find the player based on the unique player code
-            var player = _context.Players
-                .FirstOrDefault(p => p.PlayerCode == playerCode);
-
-            //Safety check in case player not found
-            if (player == null)
-                return;
-
-            //Check if the player already has the badge to prevent duplicates
-            bool alreadyHasBadge = _context.PlayerBadges
-                .Any(pb => pb.PlayerId == player.PlayerId && pb.BadgeId == badgeId);
-
-            //If the player does not already have the badge, create a new PlayerBadge entry to award it
-            if (!alreadyHasBadge)
-            {
-                var playerBadge = new PlayerBadge
-                {
-                    PlayerId = player.PlayerId, // FK
-                    BadgeId = badgeId,
-                    EarnedAt = DateTime.Now
-                };
-
-                //Save the badge to the database
-                _context.PlayerBadges.Add(playerBadge);
-                _context.SaveChanges();
-            }
-        }
-
     }
 }

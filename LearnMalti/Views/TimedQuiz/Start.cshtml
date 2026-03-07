@@ -43,7 +43,6 @@
 
     function submitAnswer(answer) {
 
-        // ✅ SAFE JSON SERIALIZATION
         const correct = @Html.Raw(
             System.Text.Json.JsonSerializer.Serialize(ViewBag.CorrectAnswer)
         );
@@ -60,9 +59,7 @@
         const isCorrect =
             normalizeText(answer) === normalizeText(correct);
 
-        // ==========================
-        // ✅ CORRECT ANSWER
-        // ==========================
+   //Correct Answer
         if (isCorrect) {
 
             step++;
@@ -103,11 +100,7 @@
 
             return;
         }
-
-        // ==========================
-        // ❌ WRONG ANSWER
-        // ==========================
-
+//Wrong Answer
         step++;
         incorrectAnswers++;
         streak = 0;
@@ -128,7 +121,7 @@
 
         Swal.fire({
             title: mode === 1 ? "Wrong!": "",
-            text: mode === 1 ? `Score: ${score}`: "",
+            text: mode === 1 ? `Streak Reset`: "",
             icon: "error",
             timer: 800,
             showConfirmButton: false

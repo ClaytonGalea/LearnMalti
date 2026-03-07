@@ -1,5 +1,6 @@
 ﻿using LearnMalti.Data;
 using LearnMalti.Models;
+using LearnMalti.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LearnMalti.Controllers
@@ -8,6 +9,7 @@ namespace LearnMalti.Controllers
     {
         //Allowing access to database
         private readonly AppDbContext _context;
+        private readonly GameService _gameService;
 
         private const string CategoryName = "FoodDrink"; //Learning item category
         private const string LevelName = "FoodDrink";    // name used for attempts tracking
@@ -15,9 +17,10 @@ namespace LearnMalti.Controllers
         private const int TotalItems = 10;    //Total number of questions in the level
         private const int Lives = 3;          //Number of lives for the player in gamified mode
 
-        public FoodDrinkController(AppDbContext context)
+        public FoodDrinkController(AppDbContext context, GameService gameService)
         {
             _context = context;
+            _gameService = gameService;
         }
         public IActionResult Start(string playerCode, int step = 1, int mode = 1, int lives = 3)
         {
@@ -25,7 +28,7 @@ namespace LearnMalti.Controllers
             var items = GetFoodDrinkItems();
 
             //Ensure a levelAttempt record exists when the level starts
-            EnsureAttemptStarted(playerCode, mode, items.Count, step);
+            _gameService.EnsureAttemptStarted(playerCode, LevelName, mode, items.Count, step, HttpContext);
 
             //If player has no lives left, redirect to completion page
             if (lives <= 0)
@@ -80,7 +83,7 @@ namespace LearnMalti.Controllers
            bool isCorrect)
         {
             //Update statistics for the current attempt
-            UpdateAttemptStats(isCorrect);
+           _gameService.UpdateAttemptStats(isCorrect, HttpContext);
 
             //Move to the next question
             return RedirectToAction("Start", new
@@ -95,7 +98,7 @@ namespace LearnMalti.Controllers
         public IActionResult Completed(string playerCode, int mode, bool timeUp = false, bool failed = false)
         {
             //Finalize the LevelAttempt record
-            FinishAttempt(timeUp);
+           _gameService.FinishAttempt(timeUp, HttpContext);
 
             //Remove the stored attempt ID from session to prevent reuse
             HttpContext.Session.Remove("CurrentAttemptId");
@@ -109,7 +112,7 @@ namespace LearnMalti.Controllers
             //Award bage if level completed successfully in gamified mode
             if (!timeUp && !failed && mode == 1)
             {
-                AwardBadgeIfNotExists(playerCode, BadgeId);
+               _gameService.AwardBadgeIfNotExists(playerCode, BadgeId);
             }
 
             //Configure completion screen UI
@@ -135,36 +138,6 @@ namespace LearnMalti.Controllers
                 .Take(TotalItems)
                 .ToList();
         }
-
-        //Ensures that a LevelAttempt record is created when the player starts the level 
-        private void EnsureAttemptStarted(string playerCode, int mode, int totalQuestions, int step)
-        {
-            //Only create attempt on FIRST question
-            if (step != 1 || HttpContext.Session.GetInt32("CurrentAttemptId") != null)
-                return;
-
-            //Finding the player in the database
-            var player = _context.Players.FirstOrDefault(p => p.PlayerCode == playerCode);
-            if (player == null) return;
-
-            //Create an LevelAttempt object
-            var attempt = new LevelAttempt
-            {
-                PlayerId = player.PlayerId,
-                LevelName = LevelName,
-                Mode = mode,
-                StartedAt = DateTime.UtcNow,
-                TotalQuestions = totalQuestions
-            };
-
-            //Save the attempt to the database
-            _context.LevelAttempts.Add(attempt);
-            _context.SaveChanges();
-
-            //Store attempt ID in session for tracking
-            HttpContext.Session.SetInt32("CurrentAttemptId", attempt.LevelAttemptId);
-        }
-
 
         //Generates answer option for the current question
         private void GenerateChoices(List<LearningItem> items, LearningItem current, string type, int step)
@@ -219,96 +192,14 @@ namespace LearnMalti.Controllers
             ViewBag.CorrectAnswer = correct;
             ViewBag.Choices = choices.OrderBy(x => Guid.NewGuid()).ToList();
         }
-
-        //Updates statistics for the current attempt based on whether the player's answer was correct or not
-        private void UpdateAttemptStats(bool isCorrect)
-        {
-            var attemptId = HttpContext.Session.GetInt32("CurrentAttemptId");
-
-            if (!attemptId.HasValue) return;
-
-            var attempt = _context.LevelAttempts
-                .FirstOrDefault(a => a.LevelAttemptId == attemptId.Value);
-
-            if (attempt == null) return;
-
-            if (isCorrect)
-                attempt.CorrectAnswers++;
-            else
-                attempt.IncorrectAnswers++;
-
-            _context.SaveChanges();
-        }
-
-       
+     
         //Determine question type at each step
         private string GetQuestionType(int step)
         {
             if (step <= 3) return "Quiz";
             if (step <= 7) return "ImageInput";
             return "Sentence";
-        }
-
-        //Finalizes attemp statistics when level ends
-        private void FinishAttempt(bool timeUp)
-        {
-            //Get the current attempt based on the ID stored in session from earlier
-            var attemptId = HttpContext.Session.GetInt32("CurrentAttemptId");
-
-            //If the session does not exist
-            if (!attemptId.HasValue) return;
-
-            //Retrieve the attempt from the database
-            var attempt = _context.LevelAttempts
-                .FirstOrDefault(a => a.LevelAttemptId == attemptId.Value);
-
-            //If the attempt does not exist or is already completed, do nothing
-            if (attempt == null || attempt.CompletedAt != null) return;
-
-            //Mark attempt as completed and calculate final statistics
-            attempt.CompletedAt = DateTime.UtcNow;
-            attempt.DurationSeconds =
-                (int)(attempt.CompletedAt.Value - attempt.StartedAt).TotalSeconds;
-
-            attempt.TimeRanOut = timeUp;
-
-            //Calculate score percentage
-            attempt.ScorePercentage =
-                attempt.TotalQuestions > 0
-                ? Math.Round((decimal)attempt.CorrectAnswers / attempt.TotalQuestions * 100, 2)
-                : 0;
-
-            //Save the updated attempt back to the database
-            _context.SaveChanges();
-        }
-
-        //Awards a badge to the player if they do not already have it
-        private void AwardBadgeIfNotExists(string playerCode, int badgeId)
-        {
-            // 1️⃣ Find the player
-            var player = _context.Players
-                .FirstOrDefault(p => p.PlayerCode == playerCode);
-
-            if (player == null)
-                return; // safety check
-
-            // 2️⃣ Check if badge already exists
-            bool alreadyHasBadge = _context.PlayerBadges
-                .Any(pb => pb.PlayerId == player.PlayerId && pb.BadgeId == badgeId);
-
-            if (!alreadyHasBadge)
-            {
-                var playerBadge = new PlayerBadge
-                {
-                    PlayerId = player.PlayerId, // ✅ FK
-                    BadgeId = badgeId,
-                    EarnedAt = DateTime.Now
-                };
-
-                _context.PlayerBadges.Add(playerBadge);
-                _context.SaveChanges();
-            }
-        }
+        }     
 
         //Generates completion message dependsing on how the level ended
         private string GetCompletionText(int mode, bool timeUp, bool failed)
