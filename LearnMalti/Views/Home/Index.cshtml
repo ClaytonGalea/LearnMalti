@@ -1,123 +1,210 @@
 ﻿@{
     Layout = null;
-    ViewData["Title"] = "Welcome Page";
+    ViewData["Title"] = "Participation Information";
 }
 
 <meta charset="utf-8" />
 <title>@ViewData["Title"]</title>
+<link rel="stylesheet" href="~/css/index.css" />
 
 <div class="landing-container">
 
     <div class="landing-box">
-        <h1 class="landing-title">Welcome</h1>
-        <h1 class="landing-title">Would you like to participate?</h1>
 
-        <div class="emoji-buttons">
+        <!-- Progress -->
+        <div class="progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
 
-            <div class="emoji-option">
-                <span class="emoji-label">NO</span>
-                <button class="emoji-btn sad" onclick="submitAnswer(false)">
-                    🙁
-                </button>
-            </div>
+        <!-- FORM STEP 1 -->
+        <div class="form-step active">
+            <h2>👋 Hello!</h2>
 
-            <div class="emoji-option">
-                <span class="emoji-label">YES</span>
-                <button class="emoji-btn happy" onclick="submitAnswer(true)">
-                    🙂
-                </button>
+            <p>
+                My name is <b>Clayton Galea</b> and I am making a project
+                for my studies at <b>MCAST</b>.
+            </p>
+
+            <p>
+                I created a computer game to help children learn Maltese words.
+            </p>
+
+            <p>
+                I would like to ask if you would like to try the game
+                and help me with my project.
+            </p>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="form-step">
+            <h2>🖥 What will you do?</h2>
+
+            <p>If you say yes, you will:</p>
+
+            <ul>
+                <li>🎮 Play a short learning game</li>
+                <li>📚 Answer some Maltese word questions</li>
+                <li>🙂 Tell us what you think about the game</li>
+            </ul>
+
+            <p>This will take about one school lesson.</p>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="form-step">
+            <h2>🤔 Do you have to do this?</h2>
+
+            <p>No. It is your choice.</p>
+
+            <p>You can say <b>NO</b> and that is completely okay 👍</p>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="form-step">
+            <h2>✋ Can you stop later?</h2>
+
+            <p>
+                Yes! If you start playing and later do not want to continue,
+                you can stop at any time.
+            </p>
+
+            <p>Just tell your teacher or me.</p>
+        </div>
+
+        <!-- STEP 5 -->
+        <div class="form-step">
+            <h2>🔒 Will anyone know your answers?</h2>
+
+            <p>
+                Your name will not be used.
+            </p>
+
+            <p>
+                We only look at how the game works for children,
+                not how well anyone does.
+            </p>
+        </div>
+
+        <!-- FINAL STEP -->
+        <div class="form-step">
+
+            <h2>😊 Do you want to help?</h2>
+
+            <p class="participant-info">
+                Your anonymous Player ID: <span id="playerIdDisplay">Loading...</span>
+            </p>
+
+            <p class="participant-info">
+                Date: <span id="currentDateDisplay"></span>
+            </p>
+
+            <div class="emoji-buttons">
+
+                <div class="emoji-option">
+                    <span class="emoji-label">NO</span>
+                    <button class="emoji-btn sad" onclick="submitAnswer(false)">🙁</button>
+                </div>
+
+                <div class="emoji-option">
+                    <span class="emoji-label">YES</span>
+                    <button class="emoji-btn happy" onclick="submitAnswer(true)">🙂</button>
+                </div>
+
             </div>
 
         </div>
+
+        <!-- NEXT BUTTON -->
+        <button class="next-btn" id="nextBtn" onclick="nextStep()">Next ➜</button>
+
     </div>
 
 </div>
-
 <script>
+
+    let playerCode = null;
+
+    document.addEventListener("DOMContentLoaded", async function () {
+
+        try {
+
+            const response = await fetch("/api/playerapi/create", {
+                method: "POST"
+            });
+
+            const data = await response.json();
+
+            playerCode = data.playerCode;
+
+            sessionStorage.setItem("playerCode", playerCode);
+
+            const idElement = document.getElementById("playerIdDisplay");
+            if (idElement) {
+                idElement.innerText = playerCode;
+            }
+
+            // Display current date
+            const dateElement = document.getElementById("currentDateDisplay");
+
+            const today = new Date();
+
+            const formattedDate = today.toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            });
+
+            if (dateElement) {
+                dateElement.innerText = formattedDate;
+            }
+
+        } catch (err) {
+            console.error("Player creation failed", err);
+        }
+
+    });
+
+</script>
+<script>
+
+    let currentStep = 0;
+
+    const steps = document.querySelectorAll(".form-step");
+    const progressBar = document.getElementById("progressBar");
+    const nextBtn = document.getElementById("nextBtn");
+
+    function showStep() {
+
+        steps.forEach((step, i) => {
+            step.classList.remove("active");
+            if (i === currentStep) step.classList.add("active");
+        });
+
+        let progress = ((currentStep) / (steps.length - 1)) * 100;
+        progressBar.style.width = progress + "%";
+
+        if (currentStep === steps.length - 1) {
+            nextBtn.style.display = "none";
+        }
+    }
+
+    function nextStep() {
+
+        if (currentStep < steps.length - 1) {
+            currentStep++;
+            showStep();
+        }
+    }
+
     function submitAnswer(answer) {
+
         if (answer) {
-            window.location.href = "/Menu/SelectMode"; // YES
+            window.location.href = "/Menu/SelectMode";
         } else {
             window.close();
         }
     }
+
+    showStep();
+
 </script>
-
-<style>
-
-    html, body {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        overflow: hidden;
-    }
-
-    /* Full-screen background */
-    .landing-container {
-        height: 100vh;
-        width: 100%;
-        background: linear-gradient(180deg, #A5D6A7 0%, #C8E6C9 100%);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: "Comic Sans MS", "Poppins", sans-serif;
-        text-align: center;
-    }
-
-    /* Main white box */
-    .landing-box {
-        background: white;
-        padding: 60px;
-        border-radius: 30px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        width: 1000px;
-        animation: fadeIn 0.8s ease-out;
-    }
-
-    .landing-title {
-        font-size: 42px;
-        margin-bottom: 40px;
-    }
-
-    .happy:hover {
-        filter: drop-shadow(0 0 15px #4CAF50);
-    }
-
-    .sad:hover {
-        filter: drop-shadow(0 0 15px #f44336);
-    }
-
-    .emoji-buttons {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 120px; /* space between NO and YES */
-        margin-top: 30px;
-    }
-
-    .emoji-option {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .emoji-label {
-        font-size: 20px;
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
-
-    .emoji-btn {
-        font-size: 80px;
-        background: none;
-        border: none;
-        cursor: pointer;
-        transition: transform 0.2s ease;
-    }
-
-        .emoji-btn:hover {
-            transform: scale(1.15);
-        }
-
-</style>

@@ -1,0 +1,136 @@
+﻿html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+.game-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    background: linear-gradient(180deg, #E0F7FA, #B2EBF2);
+    font-family: "Comic Sans MS", "Poppins", sans-serif;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 260px;
+    background: #ffffffcc;
+    backdrop-filter: blur(5px);
+    padding: 25px;
+    border-right: 3px solid #b0bec5;
+}
+
+.sidebar-title {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.player-id {
+    color: #555;
+    margin-bottom: 25px;
+}
+
+.xp-box {
+    padding-top: 18px;
+    margin-top: 12px;
+    margin-bottom: 30px;
+    border-top: 1px solid #e0e0e0;
+}
+
+
+.badges-box,
+.leaderboard-box {
+    padding-top: 18px;
+    margin-top: 12px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.xp-bar {
+    width: 100%;
+    height: 15px;
+    background: #eeeeee;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.xp-fill {
+    height: 100%;
+    background-color: #42A5F5;
+}
+
+.level {
+    font-weight: bold;
+    color: #1976D2;
+}
+
+.badges-box {
+    margin-bottom: 30px;
+}
+
+.badges {
+    display: flex;
+    gap: 10px;
+}
+
+.badge-icon {
+    font-size: 28px;
+}
+
+/* MAIN CONTENT */
+.main-content {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+}
+
+.main-title {
+    font-size: 46px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.section {
+    margin-bottom: 40px;
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.section-title {
+    font-size: 30px;
+    margin-bottom: 20px;
+}
+
+.section-btn, .level-btn, .boss-btn {
+    padding: 15px 25px;
+    font-size: 22px;
+    border-radius: 15px;
+    background-color: #42A5F5;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin: 10px;
+}
+
+    .section-btn:hover, .level-btn:hover {
+        transform: scale(1.05);
+        background-color: #1E88E5;
+    }
+
+.boss-btn {
+    background: #E53935;
+}
+
+    .boss-btn:hover {
+        background: #C62828;
+    }
+
+.level-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}

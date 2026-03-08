@@ -4,7 +4,7 @@
     {
         public int PlayerId { get; set; }
         public string PlayerCode { get; set; } = string.Empty;
-        public int Mode { get; set; }  // 0 = Control, 1 = Gamified
+        public int? Mode { get; set; }  // 0 = Control, 1 = Gamified
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public int CurrentLevel { get; set; } = 1;

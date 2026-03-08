@@ -18,9 +18,10 @@ namespace LearnMalti.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreatePlayer(int mode)
+        public async Task<IActionResult> CreatePlayer()
         {
             string code;
+
             do
             {
                 code = PlayerCodeGenerator.Generate();
@@ -30,10 +31,26 @@ namespace LearnMalti.Controllers
             var player = new Player
             {
                 PlayerCode = code,
-                Mode = mode
+                Mode = null
             };
 
             _context.Players.Add(player);
+            await _context.SaveChangesAsync();
+
+            return Ok(player);
+        }
+
+        [HttpPost("setmode")]
+        public async Task<IActionResult> SetMode(string playerCode, int mode)
+        {
+            var player = await _context.Players
+                .FirstOrDefaultAsync(p => p.PlayerCode == playerCode);
+
+            if (player == null)
+                return NotFound("Player not found");
+
+            player.Mode = mode;
+
             await _context.SaveChangesAsync();
 
             return Ok(player);

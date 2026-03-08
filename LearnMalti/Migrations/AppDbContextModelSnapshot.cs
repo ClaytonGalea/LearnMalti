@@ -233,7 +233,7 @@ namespace LearnMalti.Migrations
                     b.Property<int>("CurrentXp")
                         .HasColumnType("int");
 
-                    b.Property<int>("Mode")
+                    b.Property<int?>("Mode")
                         .HasColumnType("int");
 
                     b.Property<string>("PlayerCode")

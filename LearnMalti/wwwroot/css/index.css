@@ -1,0 +1,112 @@
+﻿html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: "Comic Sans MS","Poppins",sans-serif;
+}
+
+.landing-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(180deg,#A5D6A7,#C8E6C9);
+}
+
+.landing-box {
+    background: white;
+    padding: 60px;
+    border-radius: 25px;
+    width: 850px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.form-step {
+    display: none;
+    font-size: 20px;
+    line-height: 1.6;
+}
+
+    .form-step.active {
+        display: block;
+    }
+
+.progress {
+    height: 10px;
+    background: #eee;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #4CAF50;
+    border-radius: 10px;
+    transition: 0.4s;
+}
+
+.next-btn {
+    margin-top: 30px;
+    padding: 12px 30px;
+    font-size: 18px;
+    border: none;
+    background: #4CAF50;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+    .next-btn:hover {
+        background: #43a047;
+    }
+
+.emoji-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 120px;
+    margin-top: 30px;
+}
+
+.emoji-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.emoji-label {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.emoji-btn {
+    font-size: 70px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+    .emoji-btn:hover {
+        transform: scale(1.15);
+    }
+
+.happy:hover {
+    filter: drop-shadow(0 0 10px #4CAF50);
+}
+
+.sad:hover {
+    filter: drop-shadow(0 0 10px #f44336);
+}
+
+.participant-info {
+    font-size: 16px;
+    color: #555;
+    margin-top: 5px;
+}
+
+.participant-info span {
+    font-weight: bold;
+    color: #2e7d32;
+    }
