@@ -32,15 +32,17 @@
             <div class="choice-row">
 
                 <button class="choice"
-                        onclick="submitAnswer('@c.MalteseText')">
+                onclick="submitAnswer('@c.MalteseText')">
                     @c.DisplayMalteseWord
                 </button>
-
-                <button class="audio-btn"
-                        type="button"
-                        onclick="playAudio('@c.AudioPath')">
-                    🔊
-                </button>
+                @if (mode == 1)
+                {
+                    <button class="audio-btn"
+                    type="button"
+                    onclick="playAudio('@c.AudioPath')">
+                        🔊
+                    </button>
+                }
 
             </div>
         }
@@ -58,16 +60,17 @@
             <div class="choice-row">
 
                 <button class="choice"
-                        onclick="submitAnswer('@c.MalteseText')">
+                onclick="submitAnswer('@c.MalteseText')">
                     @c.DisplayMalteseWord
                 </button>
-
-                <button class="audio-btn"
-                        type="button"
+                @if (mode == 1)
+                {
+                    <button class="audio-btn"
+                    type="button"
                         onclick="playAudio('@c.AudioPath')">
                     🔊
                 </button>
-
+                }
             </div>
         }
     }

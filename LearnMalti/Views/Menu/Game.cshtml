@@ -4,6 +4,14 @@
     ViewData["Title"] = "Game Hub";
     string playerCode = Context.Request.Query["playerCode"];
     int mode = int.Parse(Context.Request.Query["mode"]); // 0 = non-gamified, 1 = gamified
+    var completed = ViewBag.CompletedLevels as List<string> ?? new List<string>();
+
+    @functions {
+        public bool IsUnlocked(List<string> completed, string requiredLevel)
+        {
+            return completed.Contains(requiredLevel);
+        }
+    }
 }
 
 <meta charset="utf-8" />
@@ -65,7 +73,7 @@
     <!-- MAIN CONTENT -->
     <div class="main-content">
 
-        <h1 class="main-title">🌈 Learn Maltese Adventure</h1>
+        <h1 class="main-title">🌈 Your Adventure</h1>
 
         <div class="section">
 
@@ -74,7 +82,6 @@
                 Start Tutorial
             </button>
 
-
         </div>
 
         <div class="section">
@@ -82,10 +89,85 @@
             <h2 class="section-title">🍎 Vocabulary Levels</h2>
 
             <div class="level-row">
-                <button class="level-btn" onclick="window.location.href='/FoodDrink/Start?playerCode=@player.PlayerCode&mode=@mode'">🥪 Food & Drink</button>
-                <button class="level-btn" onclick="window.location.href='/Travel/Start?playerCode=@player.PlayerCode&mode=@mode'">✈ Travel</button>
-                <button class="level-btn" onclick="window.location.href='/Greeting/Start?playerCode=@player.PlayerCode&mode=@mode'">👋 Greetings</button>
-                <button class="level-btn" onclick="window.location.href='/Color/Start?playerCode=@player.PlayerCode&mode=@mode'">🎨 Colors</button>
+                <!--<button class="level-btn" onclick="window.location.href='/FoodDrink/Start?playerCode=@player.PlayerCode&mode=@mode'">🥪 Food & Drink</button>-->
+                @{
+                    bool foodUnlocked = IsUnlocked(completed, "Tutorial");
+                }
+                <button class="level-btn @(foodUnlocked ? "" : "locked")"
+                @(foodUnlocked ? "" : "disabled")
+                        onclick="@(foodUnlocked ? $"window.location.href='/FoodDrink/Start?playerCode={player.PlayerCode}&mode={mode}'" : "")">
+
+                    @if (foodUnlocked)
+                    {
+                        <span>🥪 Food & Drink</span>
+                    }
+                    else
+                    {
+                        <span class="lock-icon">🔒</span>
+                        <span>Food & Drink</span>
+                      //  <small class="lock-text">Complete Tutorial</small>
+                    }
+                </button>
+
+                @{
+                    bool travelUnlocked = IsUnlocked(completed, "FoodDrink");
+                }
+                <button class="level-btn @(travelUnlocked ? "" : "locked")"
+                @(travelUnlocked ? "" : "disabled")
+                        onclick="@(travelUnlocked ? $"window.location.href='/Travel/Start?playerCode={player.PlayerCode}&mode={mode}'" : "")">
+
+                    @if (travelUnlocked)
+                    {
+                        <span>✈ Travel</span>
+                    }
+                    else
+                    {
+                        <span class="lock-icon">🔒</span>
+                        <span>Travel</span>
+                     //   <small class="lock-text">Complete Food & Drink</small>
+                    }
+
+                </button>
+
+                @{
+                    bool greetingsUnlocked = IsUnlocked(completed, "Travel");
+                }
+                <button class="level-btn @(greetingsUnlocked ? "" : "locked")"
+                @(greetingsUnlocked ? "" : "disabled")
+                        onclick="@(greetingsUnlocked ? $"window.location.href='/Greeting/Start?playerCode={player.PlayerCode}&mode={mode}'" : "")">
+
+                    @if (greetingsUnlocked)
+                    {
+                        <span>👋 Greetings</span>
+                    }
+                    else
+                    {
+                        <span class="lock-icon">🔒</span>
+                        <span>Greetings</span>
+                      //  <small class="lock-text">Complete Travel</small>
+                    }
+
+                </button>
+
+                @{
+                    bool colorUnlocked = IsUnlocked(completed, "Greetings");
+                }
+                <button class="level-btn @(colorUnlocked ? "" : "locked")"
+                @(colorUnlocked ? "" : "disabled")
+                        onclick="@(colorUnlocked ? $"window.location.href='/Color/Start?playerCode={player.PlayerCode}&mode={mode}'" : "")">
+
+                    @if (colorUnlocked)
+                    {
+                        <span>🎨 Colors</span>
+                    }
+                    else
+                    {
+                        <span class="lock-icon">🔒</span>
+                        <span>Colors</span>
+                    //    <small class="lock-text">Complete Greetings</small>
+                    }
+
+                </button>
             </div>
 
         </div>
@@ -95,7 +177,24 @@
             <h2 class="section-title">✏ Grammar Levels</h2>
 
             <div class="level-row">
-                <button class="level-btn" onclick="window.location.href='/SinPlu/Start?playerCode=@player.PlayerCode&mode=@mode'"> Singular-Plural</button>
+                @{
+                    bool sinPluUnlocked = IsUnlocked(completed, "Color");
+                }
+                <button class="level-btn @(sinPluUnlocked ? "" : "locked")"
+                @(sinPluUnlocked ? "" : "disabled")
+                        onclick="@(sinPluUnlocked ? $"window.location.href='/SinPlu/Start?playerCode={player.PlayerCode}&mode={mode}'" : "")">
+
+                    @if (sinPluUnlocked)
+                    {
+                        <span>Singular-Plural</span>
+                    }
+                    else
+                    {
+                        <span class="lock-icon">🔒</span>
+                        <span>Singular-Plural</span>
+                    }
+
+                </button>
             </div>
 
         </div>
@@ -105,16 +204,54 @@
                 <h2 class="section-title">🎮 Mini-Games</h2>
 
                 <div class="level-row">
-                <button class="level-btn" onclick="window.location.href='/TimedQuiz/Start?playerCode=@player.PlayerCode&mode=@mode'">⏱ Timed Quiz (60s)</button>
-                @if(mode ==1){
-                    <button class="level-btn" onclick="window.location.href='/Hangman/Start?playerCode=@player.PlayerCode&mode=@mode'">🏗️ Hangman</button>
+                @{
+                    bool miniGamesUnlocked = IsUnlocked(completed, "SinPlu");
                 }
+                <!-- ⏱ Timed Quiz -->
+                <button class="level-btn @(miniGamesUnlocked ? "" : "locked")"
+                @(miniGamesUnlocked ? "" : "disabled")
+                        onclick="@(miniGamesUnlocked ? $"window.location.href='/TimedQuiz/Start?playerCode={player.PlayerCode}&mode={mode}'" : "")">
+
+                    @if (miniGamesUnlocked)
+                    {
+                        <span>⏱ Timed Quiz (60s)</span>
+                    }
+                    else
+                    {
+                        <span class="lock-icon">🔒</span>
+                        <span>Timed Quiz</span>
+                    }
+
+                </button>
+
+                <!-- 🏗 Hangman -->
+                @if (mode == 1)
+                {
+                    <button class="level-btn @(miniGamesUnlocked ? "" : "locked")"
+                    @(miniGamesUnlocked ? "" : "disabled")
+                            onclick="@(miniGamesUnlocked ? $"window.location.href='/Hangman/Start?playerCode={player.PlayerCode}&mode={mode}'" : "")">
+
+                        @if (miniGamesUnlocked)
+                        {
+                            <span>🏗️ Hangman</span>
+                        }
+                        else
+                        {
+                            <span class="lock-icon">🔒</span>
+                            <span>Hangman</span>
+                        }
+
+                    </button>
+                }
+
+                <button class="level-btn" onclick="window.location.href='/Greeting/Start?playerCode=@player.PlayerCode&mode=@mode'">HM</button
+
                 </div>
 
             </div>
     </div>
 
-</div>
+</div>67
 
 <script>
     async function addXp() {

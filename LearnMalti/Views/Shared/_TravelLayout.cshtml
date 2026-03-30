@@ -2,9 +2,10 @@
     // Set the layout for this view (Contains: HUD, timer and navigation)
     Layout = "~/Views/Shared/_GameLevelLayout.cshtml";
 
-    int step = ViewBag.Step;
-    int total = ViewBag.TotalSteps;
-    int mode = ViewBag.Mode;
+
+    int step = ViewBag.step ?? 0; //Current question step
+    int total = ViewBag.totalSteps ?? 0; //Total number of questions in the level
+    int mode = ViewBag.mode ?? 0; //Game mode (1 = gamified, 0 = non-gamified)
 }
 
 @section Styles {

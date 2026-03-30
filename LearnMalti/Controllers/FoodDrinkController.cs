@@ -22,8 +22,25 @@ namespace LearnMalti.Controllers
             _context = context;
             _gameService = gameService;
         }
+        private bool HasCompletedLevel(string playerCode, string levelName)
+        {
+            var player = _context.Players.FirstOrDefault(p => p.PlayerCode == playerCode);
+
+            if (player == null) return false;
+
+            return _context.LevelAttempts.Any(a =>
+                a.PlayerId == player.PlayerId &&
+                a.LevelName == levelName &&
+                a.CompletedAt != null);
+        }
         public IActionResult Start(string playerCode, int step = 1, int mode = 1, int lives = 3)
         {
+            // 🔒 LOCK: FoodDrink requires Tutorial completion
+            if (!HasCompletedLevel(playerCode, "Tutorial"))
+            {
+                return RedirectToAction("Game", "Menu", new { playerCode, mode });
+            }
+
             //Fetch the learning items for this level
             var items = GetFoodDrinkItems();
 
@@ -157,15 +174,25 @@ namespace LearnMalti.Controllers
                 ViewBag.Choices = choices.OrderBy(x => Guid.NewGuid()).ToList();
             }
 
-            if (type != "Sentence") return;
+
+            if (type == "ImageInput")
+            {
+                ViewBag.CorrectAnswer = new List<string>
+    {
+        current.DisplayMalteseWord,
+        current.DisplayMalteseWord
+            .Replace("Ħ", "H")
+            .Replace("ħ", "h")
+    };
+            }
 
             switch (step)
             {
                 case 8:
                     SetSentence("Jien niekol ____ kuljum.",
                         "I eat chicken every day.",
-                        "Tiġieġ",
-                        new List<string> { "Tiġieġ", "Ilma", "Kafè" });
+                        "Tiġieġa",
+                        new List<string> { "Tiġieġa", "Ilma", "Kafè" });
                     break;
 
                 case 9:
@@ -189,7 +216,7 @@ namespace LearnMalti.Controllers
         {
             ViewBag.Sentence = sentence;
             ViewBag.EnglishSentence = english;
-            ViewBag.CorrectAnswer = correct;
+            ViewBag.CorrectAnswer = new List<string> { correct };
             ViewBag.Choices = choices.OrderBy(x => Guid.NewGuid()).ToList();
         }
      

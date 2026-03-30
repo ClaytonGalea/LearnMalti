@@ -15,6 +15,7 @@ namespace LearnMalti.Controllers
         private const string CategoryName = "Tutorial"; //Used to fetch tutorial learning items from the database
         private const int TutorialBadgeId = 1; //Used to award the badge
         private const int TutorialItemCount = 5; //Total number of questions
+        private const string LevelName = "Tutorial";
 
         public TutorialController(AppDbContext context, GameService gameService)
         {
@@ -27,6 +28,7 @@ namespace LearnMalti.Controllers
             //Retrieves the tutorial learning items from the database
             var items = GetTutorialItems();
 
+            _gameService.EnsureAttemptStarted(playerCode, LevelName, mode, items.Count, step, HttpContext);
             //If step is outside the range, redirect to completion page
             if (step < 1 || step > items.Count)
                 return RedirectToAction("Completed", new { playerCode, mode });
@@ -52,6 +54,9 @@ namespace LearnMalti.Controllers
 
         public IActionResult Completed(string playerCode, int mode, bool timeUp = false)
         {
+            _gameService.FinishAttempt(timeUp, HttpContext);
+            HttpContext.Session.Remove("CurrentAttemptId");
+
             //Pass player and mode information to the view using ViewBag
             ViewBag.PlayerCode = playerCode;
             ViewBag.Mode = mode;

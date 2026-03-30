@@ -71,9 +71,8 @@
 
 @{
     var correctAnswersList =
-        ViewBag.CorrectAnswer != null
-        ? new List<string> { ViewBag.CorrectAnswer }
-        : new List<string> { Model.DisplayMalteseWord };
+        ViewBag.CorrectAnswer as List<string>
+        ?? new List<string> { Model.DisplayMalteseWord };
 }
 
 <script>
@@ -192,9 +191,13 @@
     //The hint shows the first 2 and last letters of the word
     function showHint() {
 
-        const correct = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
-            ViewBag.CorrectAnswer ?? Model.DisplayMalteseWord
-        ));
+           const correctAnswers = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+        ViewBag.CorrectAnswer ?? new List<string> { Model.DisplayMalteseWord }
+    ));
+
+    const correct = Array.isArray(correctAnswers)
+        ? correctAnswers[0]
+        : correctAnswers;
 
         if (!correct || correct.length < 3) return;
 

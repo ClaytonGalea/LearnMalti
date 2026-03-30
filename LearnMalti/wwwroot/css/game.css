@@ -134,3 +134,31 @@
     flex-wrap: wrap;
     gap: 15px;
 }
+
+/* LOCKED BUTTON */
+.level-btn.locked {
+    background: linear-gradient(145deg, #2c5fa8, #1f4a85); /* darker blue */
+    color: #cfd8e3; /* faded text */
+    cursor: not-allowed;
+    opacity: 0.85;
+    filter: saturate(60%) brightness(80%);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+    .level-btn.locked::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(120, 120, 120, 0.25); /* grey shade */
+        border-radius: inherit;
+    }
+
+/* LOCK ICON */
+.lock-icon {
+    margin-right: 6px;
+    font-size: 18px;
+    opacity: 0.9;
+}
+

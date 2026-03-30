@@ -8,6 +8,18 @@ namespace LearnMalti.Controllers
     {
         private readonly AppDbContext _context;
 
+        private readonly List<string> LevelOrder = new()
+{
+    "Tutorial",
+    "FoodDrink",
+    "Travel",
+    "Color",
+    "Greetings",
+    "SinPlu",
+    "TimedQuiz",
+    "Hangman"
+};
+
         public MenuController(AppDbContext context)
         {
             _context = context;
@@ -33,9 +45,20 @@ namespace LearnMalti.Controllers
             .Select(pb => pb.Badge)
             .ToListAsync();
 
+            // ✅ Get completed levels
+            var completedLevels = await _context.LevelAttempts
+                .Where(a => a.PlayerId == player.PlayerId && a.CompletedAt != null)
+                .Select(a => a.LevelName)
+                .Distinct()
+                .ToListAsync();
+
+            // ✅ Send everything to view
             ViewBag.Player = player;
             ViewBag.Mode = mode;
             ViewBag.Badges = badges;
+
+            ViewBag.CompletedLevels = completedLevels;
+            ViewBag.LevelOrder = LevelOrder;
 
             return View();
         }
