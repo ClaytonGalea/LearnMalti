@@ -150,7 +150,7 @@
                 </button>
 
                 @{
-                    bool colorUnlocked = IsUnlocked(completed, "Greeting");
+                    bool colorUnlocked = IsUnlocked(completed, "Greetings");
                 }
                 <button class="level-btn @(colorUnlocked ? "" : "locked")"
                 @(colorUnlocked ? "" : "disabled")
