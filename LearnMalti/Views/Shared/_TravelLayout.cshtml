@@ -29,7 +29,7 @@
 {
     <!--Background Cards-->
     <div class="tutorial-background">
-        <div class="flip-card tree" data-sound="/Sounds/TrainSound.mp3">
+        <div class="flip-card tree" data-sound="/sounds/TrainSound.mp3">
             <div class="flip-card-inner">
                 <div class="flip-card-front">
                     <img src="/images/words/train.png" />
@@ -40,7 +40,7 @@
             </div>
         </div>
 
-        <div class="flip-card bird" data-sound="/Sounds/BusSound.mp3">
+        <div class="flip-card bird" data-sound="/sounds/BusSound.mp3">
             <div class="flip-card-inner">
                 <div class="flip-card-front">
                     <img src="/images/words/bus.png" />
@@ -68,7 +68,7 @@
         if (audioUnlocked) return;
 
         audio.volume = 0;
-        audio.src = "/Sounds/TrainSound.mp3"; // any valid sound just to unlock
+        audio.src = "/sounds/TrainSound.mp3"; // any valid sound just to unlock
         audio.play().then(() => {
             audio.pause();
             audio.currentTime = 0;

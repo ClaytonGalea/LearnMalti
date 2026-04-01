@@ -150,7 +150,7 @@
                 </button>
 
                 @{
-                    bool colorUnlocked = IsUnlocked(completed, "Greetings");
+                    bool colorUnlocked = IsUnlocked(completed, "Greeting");
                 }
                 <button class="level-btn @(colorUnlocked ? "" : "locked")"
                 @(colorUnlocked ? "" : "disabled")
@@ -214,7 +214,7 @@
 
                     @if (miniGamesUnlocked)
                     {
-                        <span>⏱ Timed Quiz (60s)</span>
+                        <span>⏱ Timed Quiz (30s)</span>
                     }
                     else
                     {
