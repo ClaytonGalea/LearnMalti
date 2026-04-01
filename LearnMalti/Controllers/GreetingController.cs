@@ -165,8 +165,8 @@ namespace LearnMalti.Controllers
                     break;
 
                 case 6:
-                    SetSentence("____", "What do you say when asking politely?", "Jekk joghġbok",
-                        new List<string> { "Jekk joghġbok", "Tajjeb", "Narak aktar tard" });
+                    SetSentence("____", "What do you say when asking politely?", "Jekk jogħġbok",
+                        new List<string> { "Jekk jogħġbok", "Tajjeb", "Narak aktar tard" });
                     break;
 
                 case 7:
@@ -175,8 +175,8 @@ namespace LearnMalti.Controllers
                     break;
 
                 case 8:
-                    SetSentence("____", "You want to ask politely.", "Jekk joghġbok",
-                        new List<string> { "Jekk joghġbok", "Grazzi", "Bonġu" });
+                    SetSentence("____", "You want to ask politely.", "Jekk jogħġbok",
+                        new List<string> { "Jekk jogħġbok", "Grazzi", "Bonġu" });
                     break;
 
                 case 9:
