@@ -31,7 +31,7 @@ namespace LearnMalti.Services
                 {
                     PlayerId = player.PlayerId,
                     BadgeId = badgeId,
-                    EarnedAt = DateTime.Now
+                    EarnedAt = DateTime.UtcNow
                 };
 
                 _context.PlayerBadges.Add(playerBadge);

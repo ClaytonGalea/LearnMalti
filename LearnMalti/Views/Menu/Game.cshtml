@@ -205,7 +205,7 @@
 
                 <div class="level-row">
                 @{
-                    bool miniGamesUnlocked = IsUnlocked(completed, "SinPlu");
+                    bool miniGamesUnlocked = IsUnlocked(completed, "Tutorial");
                 }
                 <!-- ⏱ Timed Quiz -->
                 <button class="level-btn @(miniGamesUnlocked ? "" : "locked")"
@@ -251,7 +251,7 @@
             </div>
     </div>
 
-</div>67
+</div>
 
 <script>
     async function addXp() {
