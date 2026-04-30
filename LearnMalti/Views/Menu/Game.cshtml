@@ -5,6 +5,8 @@
     string playerCode = Context.Request.Query["playerCode"];
     int mode = int.Parse(Context.Request.Query["mode"]); // 0 = non-gamified, 1 = gamified
     var completed = ViewBag.CompletedLevels as List<string> ?? new List<string>();
+    bool showFeedback = ViewBag.ShowFeedback == true;
+}
 
     @functions {
         public bool IsUnlocked(List<string> completed, string requiredLevel)
@@ -65,6 +67,11 @@
                     <p>Loading...</p>
                 </div>
             </div>
+
+            <button class="feedback-btn"
+                    onclick="window.location.href='/Menu/Feedback?playerCode=@playerCode'">
+                📝 Give Feedback
+            </button>
 
         }
 
